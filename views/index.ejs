@@ -1173,8 +1173,8 @@
         // FUNGSI BARU KHUSUS: DASHBOARD REKAP KEMITRAAN DI HALAMAN EVALUASI
         // =========================================
         function renderKemitraanDashboard() {
-            // Mengambil data dari Sheet Evaluasi Kinerja (Sumber/Source Data)
-            let rawRekapData = rawData["Sumber/Source Data"] || [];
+            // Mengambil langsung dari sumber mentah SHEET "Rekap Kemitraan" (Sheet Evaluasi Kinerja)
+            const rawRekapData = rawData["Rekap Kemitraan"] || [];
             
             let totalSudah = 0;
             let totalBelum = 0;
@@ -1184,82 +1184,101 @@
             let summaryMap = {}; // Untuk menampung Summary per CRO + Wilayah
 
             // ==========================================
-            // SMART HEADER DETECTION (ANTI-ERROR MERGED CELLS)
+            // SMART HEADER DETECTION (Membaca langsung tabel Tahap 1-7 di Excel)
             // ==========================================
-            let keyCRO = "Regional", keyPT = "Nama PT", keyWilayah = "Wilayah", keyStatus = "Status";
+            let targetIndices = null;
             let startIndex = 0;
 
             if (rawRekapData.length > 0) {
-                // Scan 15 baris pertama untuk mencari baris mana yang jadi Header Asli
+                // xlsx mem-parsing baris pertama sebagai keys
+                let allKeys = Object.keys(rawRekapData[0]); 
+                
+                // Scan 15 baris pertama untuk mencari Header dari tabel "Tahap 1 - 7"
                 for (let i = 0; i < Math.min(15, rawRekapData.length); i++) {
                     let row = rawRekapData[i];
-                    let tCRO = null, tPT = null, tWilayah = null, tStatus = null;
+                    let regKeys = [];
                     
-                    for (let key in row) {
-                        let val = String(row[key]).toLowerCase().trim();
-                        if (val === 'regional' || val === 'cro') tCRO = key;
-                        if (val === 'wilayah') tWilayah = key;
-                        if (val === 'status' || val.includes('dikelola') || val.includes('mitra')) tStatus = key;
-                        if (val === 'nama pt' || val.includes('perusahaan') || val === 'pt') tPT = key;
-                    }
-                    
-                    // Jika baris ini mengandung Regional dan Status, maka ini adalah baris Header
-                    if (tCRO && tStatus) {
-                        keyCRO = tCRO;
-                        if (tWilayah) keyWilayah = tWilayah;
-                        if (tPT) keyPT = tPT;
-                        keyStatus = tStatus;
-                        startIndex = i + 1; // Mulai baca data dari baris persis di bawah header
-                        break;
+                    // Cari semua keys di mana valuenya adalah 'Regional'
+                    allKeys.forEach(key => {
+                        let val = String(row[key]).trim().toLowerCase();
+                        if (val === 'regional') regKeys.push(key);
+                    });
+
+                    // Tabel "Tahap 1 - 7" adalah tabel KEDUA di sheet, jadi kita ambil index regional yang ke-2
+                    if (regKeys.length >= 2) {
+                        let baseKey = regKeys[1];
+                        let baseIdx = allKeys.indexOf(baseKey);
+                        
+                        let keyWilayah, keyJumlah, keySudah, keyBelum;
+                        
+                        // Cari key untuk kolom setelahnya di baris yang sama (Membaca kekanan dari Regional)
+                        for (let j = baseIdx; j < allKeys.length; j++) {
+                            let val = String(row[allKeys[j]]).trim().toLowerCase();
+                            if (val === 'wilayah' && !keyWilayah) keyWilayah = allKeys[j];
+                            if (val === 'jumlah pt' && !keyJumlah) keyJumlah = allKeys[j];
+                            if (val === 'sudah dikelola' && !keySudah) keySudah = allKeys[j];
+                            if (val === 'belum dikelola' && !keyBelum) keyBelum = allKeys[j];
+                        }
+                        
+                        if(baseKey && keyWilayah && keyJumlah && keySudah && keyBelum) {
+                            targetIndices = {
+                                regional: baseKey,
+                                wilayah: keyWilayah,
+                                jumlah: keyJumlah,
+                                sudah: keySudah, 
+                                belum: keyBelum
+                            };
+                            startIndex = i + 1; // Mulai dari baris setelah Header
+                            break;
+                        }
                     }
                 }
             }
 
-            // Potong array data agar judul dokumen yang ter-merge di Excel tidak ikut kehitung
-            let validData = rawRekapData.slice(startIndex);
+            // Loop untuk narik data persis seperti yang tertulis di Excel Tahap 1-7
+            if (targetIndices) {
+                // Potong array data biar header yg nyangkut ke filter
+                let validData = rawRekapData.slice(startIndex);
 
-            // Loop untuk kalkulasi data Evaluasi menggunakan data yang sudah valid
-            validData.forEach(row => {
-                let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
-                let namaPt = String(row[keyPT] || "").trim();
-                let rowWilayah = String(row[keyWilayah] || "").trim();
-                let rowStatus = String(row[keyStatus] || "").trim().toLowerCase();
+                validData.forEach(row => {
+                    let rowCRO = String(row[targetIndices.regional] || "").replace(/^[+-]\s*/, '').trim();
+                    let rowWilayah = String(row[targetIndices.wilayah] || "").trim();
+                    
+                    // Bersihin angka dari text dan pastikan jadi Integer
+                    let rowJumlah = parseInt(String(row[targetIndices.jumlah]).replace(/[^0-9]/g,'')) || 0;
+                    let rowSudah = parseInt(String(row[targetIndices.sudah]).replace(/[^0-9]/g,'')) || 0;
+                    let rowBelum = parseInt(String(row[targetIndices.belum]).replace(/[^0-9]/g,'')) || 0;
 
-                // Filter Super Ketat: Buang baris kosong, header palsu, dan grand total
-                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase() === "regional") return;
-                
-                // Pastikan format nama CRO seragam (Misal: "CRO I")
-                if(rowCRO.toLowerCase().startsWith('cro')) {
-                    rowCRO = rowCRO.toUpperCase();
-                } else {
-                    rowCRO = "CRO " + rowCRO.toUpperCase(); 
-                }
+                    // Filter Buang baris kosong atau baris judul
+                    if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") return;
+                    
+                    // Jangan hitung baris Grand Total (biar kita hitung manual dan validasi)
+                    if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) return;
 
-                totalPtCount++;
-                
-                let isSudah = rowStatus.includes("sudah");
-                if (isSudah) {
-                    totalSudah++;
-                } else {
-                    totalBelum++;
-                }
+                    // Seragamkan nama CRO (Misal: ketulis "I" -> jadi "CRO I")
+                    if(rowCRO.toLowerCase().startsWith('cro')) {
+                        rowCRO = rowCRO.toUpperCase();
+                    } else {
+                        rowCRO = "CRO " + rowCRO.toUpperCase(); 
+                    }
 
-                // Agregasi untuk Bar Chart (Jumlah PT per CRO)
-                chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + 1;
+                    totalPtCount += rowJumlah;
+                    totalSudah += rowSudah;
+                    totalBelum += rowBelum;
 
-                // Agregasi Summary Per Wilayah
-                let sumKey = rowCRO + "_" + rowWilayah;
-                if (!summaryMap[sumKey]) {
-                    summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
-                }
-                
-                summaryMap[sumKey].jumlahPT++;
-                if (isSudah) {
-                    summaryMap[sumKey].sudah++;
-                } else {
-                    summaryMap[sumKey].belum++;
-                }
-            });
+                    // Agregasi untuk Bar Chart (Jumlah PT per CRO)
+                    chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
+
+                    // Agregasi Summary Per Wilayah untuk Tabel
+                    let sumKey = rowCRO + "_" + rowWilayah;
+                    if (!summaryMap[sumKey]) {
+                        summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
+                    }
+                    summaryMap[sumKey].jumlahPT += rowJumlah;
+                    summaryMap[sumKey].sudah += rowSudah;
+                    summaryMap[sumKey].belum += rowBelum;
+                });
+            }
 
             // Render KPI Boxes Rekap Kemitraan
             const kpiContainer = document.getElementById('kemitraan-kpi-container');
@@ -1648,14 +1667,10 @@
             loadTable("REKAPITULASI");
             loadEvaluasiTable("Sumber/Source Data");
             
-            // Re-adjust DataTables on window resize (untuk HP ke Desktop / Rotate)
+            // Re-adjust DataTables on window resize
             window.addEventListener('resize', () => {
-                if(currentDataTable) {
-                    setTimeout(() => currentDataTable.columns.adjust(), 200);
-                }
-                if(evaluasiDataTable) {
-                    setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
-                }
+                if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
+                if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             // ==========================================
