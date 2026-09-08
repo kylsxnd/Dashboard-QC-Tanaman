@@ -9,6 +9,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <!-- ALAT PENYEDOT DATA CADANGAN (PAPAPARSE) KHUSUS REKAP KEMITRAAN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <!-- DataTables -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -1172,226 +1175,211 @@
         // =========================================
         // FUNGSI BARU KHUSUS: DASHBOARD REKAP KEMITRAAN DI HALAMAN EVALUASI
         // =========================================
-        function renderKemitraanDashboard() {
-            // Mengambil langsung dari sumber mentah SHEET "Rekap Kemitraan" (Sheet Evaluasi Kinerja)
-            const rawRekapData = rawData["Rekap Kemitraan"] || [];
-            
-            let totalSudah = 0;
-            let totalBelum = 0;
-            let totalPtCount = 0;
-            
-            let chartBarDataMap = {};
-            let summaryMap = {}; // Untuk menampung Summary per CRO + Wilayah
-
-            // ==========================================
-            // SMART HEADER DETECTION (Membaca langsung tabel Tahap 1-7 di Excel)
-            // ==========================================
-            let targetIndices = null;
-            let startIndex = 0;
-
-            if (rawRekapData.length > 0) {
-                // xlsx mem-parsing baris pertama sebagai keys
-                let allKeys = Object.keys(rawRekapData[0]); 
+        async function renderKemitraanDashboard() {
+            try {
+                // Gunakan PapaParse untuk menarik data murni dari Google Sheets Evaluasi (Bebas dari limit server)
+                const res = await fetch('https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/gviz/tq?tqx=out:csv&sheet=Rekap+Kemitraan');
+                const csvText = await res.text();
                 
-                // Scan 15 baris pertama untuk mencari Header dari tabel "Tahap 1 - 7"
-                for (let i = 0; i < Math.min(15, rawRekapData.length); i++) {
-                    let row = rawRekapData[i];
-                    let regKeys = [];
-                    
-                    // Cari semua keys di mana valuenya adalah 'Regional'
-                    allKeys.forEach(key => {
-                        let val = String(row[key]).trim().toLowerCase();
-                        if (val === 'regional') regKeys.push(key);
-                    });
+                Papa.parse(csvText, {
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        const rows = results.data;
+                        let totalSudah = 0;
+                        let totalBelum = 0;
+                        let totalPtCount = 0;
+                        
+                        let chartBarDataMap = {};
+                        let summaryMap = {}; 
 
-                    // Tabel "Tahap 1 - 7" adalah tabel KEDUA di sheet, jadi kita ambil index regional yang ke-2
-                    if (regKeys.length >= 2) {
-                        let baseKey = regKeys[1];
-                        let baseIdx = allKeys.indexOf(baseKey);
-                        
-                        let keyWilayah, keyJumlah, keySudah, keyBelum;
-                        
-                        // Cari key untuk kolom setelahnya di baris yang sama (Membaca kekanan dari Regional)
-                        for (let j = baseIdx; j < allKeys.length; j++) {
-                            let val = String(row[allKeys[j]]).trim().toLowerCase();
-                            if (val === 'wilayah' && !keyWilayah) keyWilayah = allKeys[j];
-                            if (val === 'jumlah pt' && !keyJumlah) keyJumlah = allKeys[j];
-                            if (val === 'sudah dikelola' && !keySudah) keySudah = allKeys[j];
-                            if (val === 'belum dikelola' && !keyBelum) keyBelum = allKeys[j];
+                        let colRegional = -1, colWilayah = -1, colJumlah = -1, colSudah = -1, colBelum = -1;
+                        let startRow = -1;
+
+                        // Scan 15 baris pertama untuk mencari Header Tahap 1 - 7
+                        for (let i = 0; i < Math.min(15, rows.length); i++) {
+                            let row = rows[i];
+                            let regionalIndexes = [];
+                            
+                            row.forEach((val, idx) => {
+                                if(String(val).trim().toLowerCase() === 'regional') regionalIndexes.push(idx);
+                            });
+
+                            // Tabel Tahap 1-7 adalah tabel kedua (index ke-1)
+                            if (regionalIndexes.length >= 2) {
+                                colRegional = regionalIndexes[1];
+                                
+                                for(let j = colRegional; j < row.length; j++) {
+                                    let v = String(row[j]).toLowerCase().trim();
+                                    if (v === 'wilayah' && colWilayah === -1) colWilayah = j;
+                                    if ((v === 'jumlah pt' || v === 'jumlah') && colJumlah === -1) colJumlah = j;
+                                    if (v === 'sudah dikelola' && colSudah === -1) colSudah = j;
+                                    if (v === 'belum dikelola' && colBelum === -1) colBelum = j;
+                                }
+                                
+                                if(colRegional !== -1 && colSudah !== -1) {
+                                    startRow = i + 1; // Baris setelah header
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (startRow !== -1) {
+                            for (let i = startRow; i < rows.length; i++) {
+                                let row = rows[i];
+                                let rowCRO = String(row[colRegional] || "").replace(/^[+-]\s*/, '').trim();
+                                let rowWilayah = String(row[colWilayah] || "").trim();
+                                
+                                // Bersihin angka dari text
+                                let rowJumlah = parseInt(String(row[colJumlah]).replace(/[^0-9]/g,'')) || 0;
+                                let rowSudah = parseInt(String(row[colSudah]).replace(/[^0-9]/g,'')) || 0;
+                                let rowBelum = parseInt(String(row[colBelum]).replace(/[^0-9]/g,'')) || 0;
+
+                                // Filter Buang baris kosong atau baris judul
+                                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
+                                if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
+
+                                // Seragamkan nama CRO
+                                if(rowCRO.toLowerCase().startsWith('cro')) {
+                                    rowCRO = rowCRO.toUpperCase();
+                                } else {
+                                    rowCRO = "CRO " + rowCRO.toUpperCase(); 
+                                }
+
+                                totalPtCount += rowJumlah;
+                                totalSudah += rowSudah;
+                                totalBelum += rowBelum;
+
+                                // Agregasi Bar Chart
+                                chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
+
+                                // Agregasi Summary Per Wilayah
+                                let sumKey = rowCRO + "_" + rowWilayah;
+                                if (!summaryMap[sumKey]) {
+                                    summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
+                                }
+                                summaryMap[sumKey].jumlahPT += rowJumlah;
+                                summaryMap[sumKey].sudah += rowSudah;
+                                summaryMap[sumKey].belum += rowBelum;
+                            }
+                        }
+
+                        // Render KPI Boxes Rekap Kemitraan
+                        const kpiContainer = document.getElementById('kemitraan-kpi-container');
+                        if(kpiContainer) {
+                            kpiContainer.innerHTML = `
+                                <div class="premium-card p-4 md:p-5 border-t-4 border-t-yellow-500 relative group">
+                                    <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Keseluruhan PT</div>
+                                    <div class="text-2xl md:text-3xl font-bold theme-text-main mb-1">${totalPtCount} PT</div>
+                                    <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">(Data Kalkulasi Kemitraan)</div>
+                                </div>
+                                
+                                <div class="premium-card p-4 md:p-5 border-t-4 border-t-blue-500 relative group">
+                                    <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Sudah Dikelola</div>
+                                    <div class="text-2xl md:text-3xl font-bold text-blue-400 mb-1">${totalSudah} PT</div>
+                                    <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">Status Aktif Berjalan</div>
+                                </div>
+                                
+                                <div class="premium-card p-4 md:p-5 border-t-4 border-t-red-500 relative group">
+                                    <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Belum Dikelola</div>
+                                    <div class="text-2xl md:text-3xl font-bold text-red-400 mb-1">${totalBelum} PT</div>
+                                    <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">Status Belum Berjalan</div>
+                                </div>
+                            `;
+                        }
+
+                        // Render Bar Chart (Sebaran PT)
+                        if(document.getElementById('kemitraan-bar-chart')) {
+                            Highcharts.chart('kemitraan-bar-chart', {
+                                chart: { type: 'column', backgroundColor: 'transparent' },
+                                title: { text: null },
+                                tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
+                                xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: 'var(--text-muted)' } }, lineWidth: 0, tickWidth: 0 },
+                                yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } },
+                                series: [{ name: 'Jumlah Kemitraan PT', data: Object.values(chartBarDataMap), color: '#8b5cf6' }],
+                                plotOptions: { column: { borderRadius: 4, borderWidth: 0 } },
+                                credits: { enabled: false }
+                            });
+                        }
+
+                        // Render Pie Chart (Sudah vs Belum)
+                        if(document.getElementById('kemitraan-pie-chart')) {
+                            Highcharts.chart('kemitraan-pie-chart', {
+                                chart: { type: 'pie', backgroundColor: 'transparent' },
+                                title: { text: null },
+                                tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
+                                plotOptions: { pie: { innerSize: '65%', borderWidth: 0, dataLabels: { enabled: true, color: 'var(--text-muted)', connectorColor: 'var(--border-color)', style: { textOutline: 'none', fontWeight: 'normal' } } } },
+                                series: [{ 
+                                    name: 'Total PT', 
+                                    data: [
+                                        {name: 'Sudah Dikelola', y: totalSudah, color: '#3b82f6'},
+                                        {name: 'Belum Dikelola', y: totalBelum, color: '#f43f5e'}
+                                    ] 
+                                }],
+                                credits: { enabled: false }
+                            });
                         }
                         
-                        if(baseKey && keyWilayah && keyJumlah && keySudah && keyBelum) {
-                            targetIndices = {
-                                regional: baseKey,
-                                wilayah: keyWilayah,
-                                jumlah: keyJumlah,
-                                sudah: keySudah, 
-                                belum: keyBelum
-                            };
-                            startIndex = i + 1; // Mulai dari baris setelah Header
-                            break;
+                        // RENDER TABEL SUMMARY PER WILAYAH
+                        let ptHtml = '';
+                        let sumSudah = 0;
+                        let sumBelum = 0;
+                        let sumPT = 0;
+                        let no = 1;
+                        
+                        // Urutkan berdasarkan CRO lalu Wilayah
+                        let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
+                        
+                        if (sortedSummaries.length > 0) {
+                            sortedSummaries.forEach(item => {
+                                sumSudah += item.sudah;
+                                sumBelum += item.belum;
+                                sumPT += item.jumlahPT;
+                                
+                                let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
+                                let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
+                                
+                                ptHtml += `
+                                    <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border">
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-center">${no++}</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-semibold">${item.cro}</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main">${item.wilayah}</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-center font-bold">${item.jumlahPT}</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${item.sudah}</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${item.belum}</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${pctSudah}%</td>
+                                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${pctBelum}%</td>
+                                    </tr>
+                                `;
+                            });
+                            
+                            // Baris Grand Total di paling bawah
+                            let pctTotSudah = sumPT > 0 ? Math.round((sumSudah / sumPT) * 100) : 0;
+                            let pctTotBelum = sumPT > 0 ? Math.round((sumBelum / sumPT) * 100) : 0;
+                            
+                            ptHtml += `
+                                <tr class="bg-[var(--hover-bg)] border-t border-[#83b765]">
+                                    <td colspan="3" class="py-3 px-4 text-[11px] md:text-sm theme-text-main font-bold text-center uppercase tracking-widest">Grand Total</td>
+                                    <td class="py-3 px-4 text-[11px] md:text-sm theme-text-main text-center font-bold">${sumPT}</td>
+                                    <td class="py-3 px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${sumSudah}</td>
+                                    <td class="py-3 px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${sumBelum}</td>
+                                    <td class="py-3 px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${pctTotSudah}%</td>
+                                    <td class="py-3 px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${pctTotBelum}%</td>
+                                </tr>
+                            `;
+                        } else {
+                            ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap.</td></tr>`;
                         }
+                        
+                        if(document.getElementById('kemitraan-list-body')) {
+                            document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
+                        }
+                        const isLightNow = document.body.classList.contains('light-mode');
+                        updateChartTheme(isLightNow);
                     }
-                }
-            }
-
-            // Loop untuk narik data persis seperti yang tertulis di Excel Tahap 1-7
-            if (targetIndices) {
-                // Potong array data biar header yg nyangkut ke filter
-                let validData = rawRekapData.slice(startIndex);
-
-                validData.forEach(row => {
-                    let rowCRO = String(row[targetIndices.regional] || "").replace(/^[+-]\s*/, '').trim();
-                    let rowWilayah = String(row[targetIndices.wilayah] || "").trim();
-                    
-                    // Bersihin angka dari text dan pastikan jadi Integer
-                    let rowJumlah = parseInt(String(row[targetIndices.jumlah]).replace(/[^0-9]/g,'')) || 0;
-                    let rowSudah = parseInt(String(row[targetIndices.sudah]).replace(/[^0-9]/g,'')) || 0;
-                    let rowBelum = parseInt(String(row[targetIndices.belum]).replace(/[^0-9]/g,'')) || 0;
-
-                    // Filter Buang baris kosong atau baris judul
-                    if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") return;
-                    
-                    // Jangan hitung baris Grand Total (biar kita hitung manual dan validasi)
-                    if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) return;
-
-                    // Seragamkan nama CRO (Misal: ketulis "I" -> jadi "CRO I")
-                    if(rowCRO.toLowerCase().startsWith('cro')) {
-                        rowCRO = rowCRO.toUpperCase();
-                    } else {
-                        rowCRO = "CRO " + rowCRO.toUpperCase(); 
-                    }
-
-                    totalPtCount += rowJumlah;
-                    totalSudah += rowSudah;
-                    totalBelum += rowBelum;
-
-                    // Agregasi untuk Bar Chart (Jumlah PT per CRO)
-                    chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
-
-                    // Agregasi Summary Per Wilayah untuk Tabel
-                    let sumKey = rowCRO + "_" + rowWilayah;
-                    if (!summaryMap[sumKey]) {
-                        summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
-                    }
-                    summaryMap[sumKey].jumlahPT += rowJumlah;
-                    summaryMap[sumKey].sudah += rowSudah;
-                    summaryMap[sumKey].belum += rowBelum;
                 });
+            } catch (e) {
+                console.error("Gagal mengambil data kemitraan:", e);
             }
-
-            // Render KPI Boxes Rekap Kemitraan
-            const kpiContainer = document.getElementById('kemitraan-kpi-container');
-            if(kpiContainer) {
-                kpiContainer.innerHTML = `
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-yellow-500 relative group">
-                        <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Keseluruhan PT</div>
-                        <div class="text-2xl md:text-3xl font-bold theme-text-main mb-1">${totalPtCount} PT</div>
-                        <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">(Data Kalkulasi Kemitraan)</div>
-                    </div>
-                    
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-blue-500 relative group">
-                        <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Sudah Dikelola</div>
-                        <div class="text-2xl md:text-3xl font-bold text-blue-400 mb-1">${totalSudah} PT</div>
-                        <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">Status Aktif Berjalan</div>
-                    </div>
-                    
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-red-500 relative group">
-                        <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Belum Dikelola</div>
-                        <div class="text-2xl md:text-3xl font-bold text-red-400 mb-1">${totalBelum} PT</div>
-                        <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">Status Belum Berjalan</div>
-                    </div>
-                `;
-            }
-
-            // Render Bar Chart (Sebaran PT)
-            if(document.getElementById('kemitraan-bar-chart')) {
-                Highcharts.chart('kemitraan-bar-chart', {
-                    chart: { type: 'column', backgroundColor: 'transparent' },
-                    title: { text: null },
-                    tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
-                    xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: 'var(--text-muted)' } }, lineWidth: 0, tickWidth: 0 },
-                    yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } },
-                    series: [{ name: 'Jumlah Kemitraan PT', data: Object.values(chartBarDataMap), color: '#8b5cf6' }],
-                    plotOptions: { column: { borderRadius: 4, borderWidth: 0 } },
-                    credits: { enabled: false }
-                });
-            }
-
-            // Render Pie Chart (Sudah vs Belum)
-            if(document.getElementById('kemitraan-pie-chart')) {
-                Highcharts.chart('kemitraan-pie-chart', {
-                    chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: null },
-                    tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
-                    plotOptions: { pie: { innerSize: '65%', borderWidth: 0, dataLabels: { enabled: true, color: 'var(--text-muted)', connectorColor: 'var(--border-color)', style: { textOutline: 'none', fontWeight: 'normal' } } } },
-                    series: [{ 
-                        name: 'Total PT', 
-                        data: [
-                            {name: 'Sudah Dikelola', y: totalSudah, color: '#3b82f6'},
-                            {name: 'Belum Dikelola', y: totalBelum, color: '#f43f5e'}
-                        ] 
-                    }],
-                    credits: { enabled: false }
-                });
-            }
-            
-            // RENDER TABEL SUMMARY PER WILAYAH
-            let ptHtml = '';
-            let sumSudah = 0;
-            let sumBelum = 0;
-            let sumPT = 0;
-            let no = 1;
-            
-            // Urutkan berdasarkan CRO lalu Wilayah
-            let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
-            
-            if (sortedSummaries.length > 0) {
-                sortedSummaries.forEach(item => {
-                    sumSudah += item.sudah;
-                    sumBelum += item.belum;
-                    sumPT += item.jumlahPT;
-                    
-                    let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
-                    let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
-                    
-                    ptHtml += `
-                        <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border">
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-center">${no++}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-semibold">${item.cro}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main">${item.wilayah}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-center font-bold">${item.jumlahPT}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${item.sudah}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${item.belum}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${pctSudah}%</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${pctBelum}%</td>
-                        </tr>
-                    `;
-                });
-                
-                // Baris Grand Total di paling bawah
-                let pctTotSudah = sumPT > 0 ? Math.round((sumSudah / sumPT) * 100) : 0;
-                let pctTotBelum = sumPT > 0 ? Math.round((sumBelum / sumPT) * 100) : 0;
-                
-                ptHtml += `
-                    <tr class="bg-[var(--hover-bg)] border-t border-[#83b765]">
-                        <td colspan="3" class="py-3 px-4 text-[11px] md:text-sm theme-text-main font-bold text-center uppercase tracking-widest">Grand Total</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm theme-text-main text-center font-bold">${sumPT}</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${sumSudah}</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${sumBelum}</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${pctTotSudah}%</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${pctTotBelum}%</td>
-                    </tr>
-                `;
-            } else {
-                ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap.</td></tr>`;
-            }
-            
-            if(document.getElementById('kemitraan-list-body')) {
-                document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
-            }
-            const isLightNow = document.body.classList.contains('light-mode');
-            updateChartTheme(isLightNow);
         }
 
         // FUNGSI MENDAPATKAN IKON FILE
@@ -1563,7 +1551,7 @@
             if (sheetName === "Rekap Kemitraan") {
                 document.getElementById('evaluasi-table-area').classList.add('hidden');
                 document.getElementById('evaluasi-dashboard-area').classList.remove('hidden');
-                renderKemitraanDashboard(); // Panggil fungsi perakit chart & tabel rekap
+                renderKemitraanDashboard(); 
                 return; 
             } 
             
@@ -1571,6 +1559,7 @@
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
 
             const data = rawData[sheetName] || [];
+            
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
                 $('#evaluasiTable').DataTable().destroy(); 
                 $('#evaluasiTable').empty(); 
