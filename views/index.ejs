@@ -626,34 +626,31 @@
             const tableHead = document.getElementById('kemitraan-list-head');
             const tableBody = document.getElementById('kemitraan-list-body');
             
-            // MENGAMBIL DATA DARI SERVER (Udah dibenerin format keys-nya oleh Server)
-            // Cari nama sheet dengan anti-spasi
-            let sheetName = Object.keys(rawData).find(k => k.trim() === "Rekap Kemitraan");
+            // Trik Ambil Nama Sheet Anti-Spasi
+            let sheetName = Object.keys(rawData).find(k => k.trim() === "Rekap Kemitraan" || k.trim().includes("Rekap Kemitraan"));
             const rawRekapData = rawData[sheetName] || [];
 
             if (rawRekapData.length === 0) {
-                if (kpiContainer) kpiContainer.innerHTML = `<div class="p-5 text-yellow-500 font-bold col-span-3">Sedang memproses data. Jika tidak muncul, harap muat ulang halaman.</div>`;
+                if (kpiContainer) kpiContainer.innerHTML = `<div class="p-5 text-yellow-500 font-bold col-span-3">Sedang memproses data dari Server...</div>`;
                 return;
             }
 
-            // KITA SCAN ARRAY UNTUK MENCARI DIMANA POSISI 4 TABEL TERSEBUT
+            // MENCARI INDEX POSISI TABEL YANG BENAR (Meskipun Header di Excel di Merge)
             let allKeys = Object.keys(rawRekapData[2] || rawRekapData[3] || rawRekapData[0]); 
-            let regKeys = []; // Array untuk menyimpan semua index kolom 'Regional'
+            let regKeys = []; 
 
-            // Scan cari tulisan 'Regional' di 15 baris pertama
+            // Cari tulisan 'Regional' di seluruh kolom yang ada
             for(let i=0; i<Math.min(15, rawRekapData.length); i++) {
                 let rowKeys = Object.keys(rawRekapData[i]);
                 let tempReg = [];
                 rowKeys.forEach(k => {
                     if(String(rawRekapData[i][k]).toLowerCase().trim() === 'regional') tempReg.push(k);
                 });
-                
-                // Kalo nemu lebih dari yang lama, simpan. Max ada 4 'Regional' di excel lu
                 if (tempReg.length > regKeys.length) {
                     regKeys = tempReg;
                     allKeys = rowKeys;
                 }
-                if(tempReg.length >= 4) break; 
+                if(tempReg.length >= 4) break; // Kalo ketemu ke-4 tabelnya, stop.
             }
 
             // Tentukan target "Regional" berdasarkan Tab yg dipilih
@@ -666,20 +663,18 @@
             let baseIdx = allKeys.indexOf(baseRegionalKey);
             if(baseIdx === -1 && regKeys.length > 0) baseIdx = allKeys.indexOf(regKeys[0]);
 
-            // VARIABEL UNTUK HITUNGAN
             let totalPT = 0, totalSudah = 0, totalBelum = 0;
-            let totalCV = 0, totalKop = 0; // Untuk status mitra
+            let totalCV = 0, totalKop = 0; 
             let chartBarMap = {}, chartPieMap = {};
             let summaryMap = {};
-            let listPtArray = []; // Untuk List Nama PT
+            let listPtArray = []; 
 
-            // PENCARIAN NAMA KOLOM RELATIF DARI REGIONAL
             let keyWil, keyJml, keySudah, keyBelum, keyPT, keyCV, keyKop, keyTahap, keyNamaPT, keyNamaMitra, keyStatus;
             
-            // Scan 10 baris pertama buat nyocokin headers spesifik di sekitar baseRegionalKey
+            // Scan 10 baris pertama untuk nyocokin headers spesifik di sekitar baseRegionalKey
             for(let i=0; i<Math.min(10, rawRekapData.length); i++) {
                 let row = rawRekapData[i];
-                for(let j=baseIdx; j < Math.min(baseIdx+10, allKeys.length); j++) {
+                for(let j=baseIdx; j < Math.min(baseIdx+12, allKeys.length); j++) {
                     let v = String(row[allKeys[j]]).trim().toLowerCase();
                     if(v === 'wilayah' && !keyWil) keyWil = allKeys[j];
                     if((v === 'jumlah pt' || v === 'jumlah') && !keyJml) keyJml = allKeys[j];
@@ -691,26 +686,26 @@
                     if(v === 'tahap' && !keyTahap) keyTahap = allKeys[j];
                     if(v === 'nama pt' && !keyNamaPT) keyNamaPT = allKeys[j];
                     if(v === 'nama mitra' && !keyNamaMitra) keyNamaMitra = allKeys[j];
-                    if(v === 'status' && !keyStatus && j > baseIdx) keyStatus = allKeys[j]; // Jaga2 jangan kecampur
+                    if(v === 'status' && !keyStatus && j > baseIdx) keyStatus = allKeys[j]; 
                 }
             }
 
             // ==========================================
-            // LOOPING DATA UTAMA
+            // LOOPING DATA UTAMA DARI BARIS KE-0 AGAR TIDAK ADA DATA YANG KE SKIP!
             // ==========================================
-            for(let i=3; i<rawRekapData.length; i++) {
+            for(let i=0; i<rawRekapData.length; i++) {
                 let row = rawRekapData[i];
                 let cro = String(row[baseRegionalKey] || "").replace(/^[+-]\s*/, '').trim();
                 let wil = String(row[keyWil] || "").trim();
 
-                // Bersihin dari sampah Excel
-                if(!cro || cro === "-" || cro.toLowerCase() === "regional") continue;
+                // PERATURAN FILTER SUPER KETAT: Abaikan baris judul dan total.
+                if(!cro || cro === "-" || cro.toLowerCase() === "regional" || cro.toLowerCase() === "no") continue;
                 if(cro.toLowerCase().includes("total") || cro.toLowerCase().includes("summary") || cro.toLowerCase().includes("grand")) continue;
 
                 if(cro.toLowerCase().startsWith('cro')) cro = cro.toUpperCase();
                 else cro = "CRO " + cro.toUpperCase(); 
 
-                // TAHAP 1-5 & TAHAP 1-7
+                // KALKULASI TAB TAHAP 1-5 & TAHAP 1-7
                 if (activeKemitraanTab === 'tahap1-5' || activeKemitraanTab === 'tahap1-7') {
                     let jml = parseInt(String(row[keyJml]).replace(/[^0-9]/g,'')) || 0;
                     let sudah = parseInt(String(row[keySudah]).replace(/[^0-9]/g,'')) || 0;
@@ -724,7 +719,7 @@
                     summaryMap[k].jml += jml; summaryMap[k].sdh += sudah; summaryMap[k].blm += belum;
                 }
                 
-                // STATUS MITRA
+                // KALKULASI TAB STATUS MITRA
                 if (activeKemitraanTab === 'status-mitra') {
                     let jml = parseInt(String(row[keyJml]).replace(/[^0-9]/g,'')) || 0;
                     let pt = parseInt(String(row[keyPT]).replace(/[^0-9]/g,'')) || 0;
@@ -739,7 +734,7 @@
                     summaryMap[k].jml += jml; summaryMap[k].pt += pt; summaryMap[k].cv += cv; summaryMap[k].kop += kop;
                 }
 
-                // LIST NAMA PT
+                // TAB LIST NAMA PT
                 if (activeKemitraanTab === 'list-pt') {
                     let tahap = String(row[keyTahap] || "").trim();
                     let npt = String(row[keyNamaPT] || "").trim();
@@ -892,6 +887,7 @@
 
             const data = rawData[sheetName] || [];
             if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
+            
             if (data.length === 0) { 
                 $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
                 return; 
@@ -917,7 +913,10 @@
             });
 
             if (sheetName === 'INPUT ASTA') {
-                $('#asta-status-filter').on('change', function() { let val = $(this).val(); currentDataTable.search(val).draw(); });
+                $('#asta-status-filter').on('change', function() {
+                    let val = $(this).val();
+                    currentDataTable.search(val).draw();
+                });
             }
         }
 
@@ -929,7 +928,6 @@
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
 
-            // JIKA REKAP KEMITRAAN DIKLIK, TAMPILKAN DASHBOARD BARUNYA!
             if (sheetName === "Rekap Kemitraan") {
                 document.getElementById('evaluasi-table-area').classList.add('hidden');
                 document.getElementById('evaluasi-dashboard-area').classList.remove('hidden');
@@ -940,7 +938,7 @@
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
 
-            // FITUR PENCARIAN NAMA SHEET DINAMIS (ANTI SPASI TERSEMBUNYI DARI EXCEL)
+            // FITUR PENCARIAN NAMA SHEET DINAMIS (ANTI SPASI)
             let exactKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === sheetName.trim().toLowerCase());
             const data = rawData[exactKey] || [];
             
@@ -950,13 +948,13 @@
             }
             
             if (data.length === 0) { 
-                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Data belum tersedia / Sinkronisasi berjalan di belakang layar...</td></tr></tbody>`); 
+                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Sedang sinkronisasi data Viewer... Jika kosong, pastikan koneksi lancar.</td></tr></tbody>`); 
                 return; 
             }
 
             const columns = Object.keys(data[0]).map(key => {
                 let title = key;
-                if (title.includes('__EMPTY')) title = ''; // Bersihin header nyangkut dari excel
+                if (title.includes('__EMPTY')) title = ''; 
                 return { 
                     title: title, data: key, defaultContent: "-", 
                     render: function(val) {
@@ -987,10 +985,13 @@
         // INIT SAAT WEB DIBUKA
         // =========================================
         document.addEventListener("DOMContentLoaded", function() {
+            
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
-                if(themeIcon) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
+                if(themeIcon) {
+                    themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
+                }
             }
 
             renderNotifications();
@@ -1023,7 +1024,11 @@
             }
 
             const isLightInit = document.body.classList.contains('light-mode');
-            Highcharts.setOptions({ colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#6366f1'], credits: { enabled: false }, chart: { style: { fontFamily: 'Inter' } } });
+            Highcharts.setOptions({ 
+                colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#6366f1'], 
+                credits: { enabled: false }, 
+                chart: { style: { fontFamily: 'Inter' } } 
+            });
             updateChartTheme(isLightInit);
 
             // Tampilkan Dashboard & Tabel Awal
@@ -1031,14 +1036,13 @@
             loadTable("REKAPITULASI");
             loadEvaluasiTable("Sumber/Source Data");
             
-            // Re-adjust DataTables on window resize
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
                 if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND INSTANT FETCH (CEPAT)
+            // LOGIKA POLLING BACKGROUND INSTANT
             // ==========================================
             async function syncData() {
                 const syncText = document.getElementById('sync-text');
@@ -1074,7 +1078,14 @@
                                         if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
 
                                         if (oldVal !== newVal) {
-                                            detectedChanges.push({ sheet: sheet, waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), baris: i + 2, kolom: key, lama: oldVal === "" ? "(Kosong)" : oldVal, baru: newVal === "" ? "(Kosong)" : newVal });
+                                            detectedChanges.push({
+                                                sheet: sheet, 
+                                                waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
+                                                baris: i + 2, 
+                                                kolom: key, 
+                                                lama: oldVal === "" ? "(Kosong)" : oldVal, 
+                                                baru: newVal === "" ? "(Kosong)" : newVal
+                                            });
                                         }
                                     });
                                 }
@@ -1106,17 +1117,21 @@
                         if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
+                        
                         if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
                             renderKemitraanDashboard();
                         }
 
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
-                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); 
+                            syncText.classList.add('text-blue-500');
                             syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
                             
                             setTimeout(() => { 
-                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
+                                syncText.innerText = "LIVE SYSTEM"; 
+                                syncText.classList.add('text-emerald-500'); 
+                                syncText.classList.remove('text-blue-500');
                                 syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
                             }, 3000);
                         }
@@ -1124,20 +1139,17 @@
                 } catch (err) { 
                     console.error("Gagal sinkronisasi background:", err); 
                     if(syncText && syncDot) {
-                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
+                        syncText.innerText = "KONEKSI LAMBAT"; 
+                        syncText.classList.remove('text-blue-500', 'text-emerald-500'); 
+                        syncText.classList.add('text-red-500');
                         syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
                     }
                 }
             }
 
-            // Tembak data cepat tanpa jeda kalau data masih kosong
+            // Panggil API Vercel langsung kalau data kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
-                // Retri otomatis tiap 2 detik jika gagal di awal, sampai berhasil narik data
-                let retryInterval = setInterval(() => {
-                    if(Object.keys(rawData).length > 0) clearInterval(retryInterval);
-                    else syncData();
-                }, 2000);
             }
 
             setInterval(syncData, 10000); 
@@ -1147,12 +1159,18 @@
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
                     const result = await response.json();
+                    
                     if (JSON.stringify(emailsData) !== JSON.stringify(result.emails)) {
                         emailsData = result.emails;
                         renderEmailsUI();
+                        
                         const badge = document.getElementById('sidebar-email-badge');
                         if (result.unreadCount > 0 && badge) {
-                            badge.innerText = result.unreadCount; badge.classList.remove('hidden'); badge.classList.remove('badge-pop'); void badge.offsetWidth; badge.classList.add('badge-pop');
+                            badge.innerText = result.unreadCount;
+                            badge.classList.remove('hidden');
+                            badge.classList.remove('badge-pop');
+                            void badge.offsetWidth; 
+                            badge.classList.add('badge-pop');
                         }
                     }
                 } catch (err) {}
