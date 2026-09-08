@@ -29,14 +29,14 @@ let emailDatabase = [
 ];
 
 async function fetchGoogleSheets() {
-    if (isFetching) return; // Biar server gak tabrakan narik datanya
+    if (isFetching) return; 
     isFetching = true;
     
     try {
         const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
         const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
 
-        // TARIK 2 FILE SEKALIGUS SECARA PARALEL BIAR CEPAT
+        // TARIK 2 FILE SEKALIGUS SECARA PARALEL
         const [response1, response2] = await Promise.all([
             axios.get(url1, { responseType: 'arraybuffer' }),
             axios.get(url2, { responseType: 'arraybuffer' })
@@ -74,72 +74,7 @@ async function fetchGoogleSheets() {
                     if (cell.w) cell.w = cell.v;
                 }
             }
-            
-            // Simpan format aslinya
             allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
-
-            // ==========================================
-            // LOGIKA KHUSUS: REKAP KEMITRAAN (EXTRACTION TAHAP 1-7)
-            // ==========================================
-            if (sheetName === 'Rekap Kemitraan') {
-                let cleanData = [];
-                // Baca sheet sebagai array murni biar header gabungan (merge cells) gak bikin error
-                const rawArray = xlsx.utils.sheet_to_json(sheet, { header: 1, defval: "-" });
-                
-                if (rawArray.length > 2) {
-                    // Cari index kolom "Tahap 1-7" dengan melihat baris ke-3 (index 2)
-                    let headers = rawArray[2]; 
-                    let regionalCount = 0;
-                    let targetIdx = -1;
-                    
-                    for (let c = 0; c < headers.length; c++) {
-                        if (String(headers[c]).trim().toLowerCase() === 'regional') {
-                            regionalCount++;
-                            // Kita incer "Regional" yang KEDUA, karena itu punyanya tabel Tahap 1-7
-                            if (regionalCount === 2) { 
-                                targetIdx = c;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (targetIdx !== -1) {
-                        // Looping dari baris ke-4 (index 3) sampai data habis
-                        for (let r = 3; r < rawArray.length; r++) {
-                            let row = rawArray[r];
-                            let cro = String(row[targetIdx] || "").trim();
-                            let wilayah = String(row[targetIdx + 1] || "").trim();
-                            
-                            // Ambil angkanya saja
-                            let jmlPT = String(row[targetIdx + 2] || "0").replace(/[^0-9]/g,'');
-                            let sudah = String(row[targetIdx + 4] || "0").replace(/[^0-9]/g,'');
-                            let belum = String(row[targetIdx + 5] || "0").replace(/[^0-9]/g,'');
-
-                            // Buang baris kosong, header yang nyangkut, dan grand total
-                            if (!cro || cro === "-" || cro.toLowerCase() === "regional") continue;
-                            if (cro.toLowerCase().includes("total") || cro.toLowerCase().includes("summary") || cro.toLowerCase().includes("grand")) continue;
-
-                            // Rapikan tulisan CRO biar seragam
-                            if(cro.toLowerCase().startsWith('cro')) {
-                                cro = cro.toUpperCase();
-                            } else {
-                                cro = "CRO " + cro.toUpperCase(); 
-                            }
-
-                            // Masukkan ke array bersih
-                            cleanData.push({
-                                "Regional": cro,
-                                "Wilayah": wilayah,
-                                "Jumlah PT": parseInt(jmlPT) || 0,
-                                "Sudah Dikelola": parseInt(sudah) || 0,
-                                "Belum Dikelola": parseInt(belum) || 0
-                            });
-                        }
-                    }
-                }
-                // Simpan data bersih khusus ini dengan nama baru "Rekap_Kemitraan_Clean"
-                allSheets["Rekap_Kemitraan_Clean"] = cleanData;
-            }
         });
 
         cachedData = allSheets;
@@ -159,13 +94,12 @@ app.get('/', (req, res) => res.redirect('/login'));
 app.get('/login', (req, res) => res.render('login'));
 
 app.get('/dashboard', (req, res) => {
-    // INSTANT RENDER: Langsung kasih UI tanpa harus nunggu data (Anti Load Lama)
+    // INSTANT RENDER
     res.render('index', { 
         sheetData: JSON.stringify(cachedData), 
         logsData: JSON.stringify(changeLogs),
         emailsData: JSON.stringify(emailDatabase)
     });
-    // Kalo cache kosong (baru nyala), suruh server narik di background
     if (Object.keys(cachedData).length === 0) fetchGoogleSheets();
 });
 
@@ -173,10 +107,7 @@ app.get('/dashboard', (req, res) => {
 // ANTI-LOADING API (STALE-WHILE-REVALIDATE)
 // ==========================================
 app.get('/api/check-updates', (req, res) => {
-    // 1. Langsung kasih data yang ada (Instant Respon 0.1 detik)
     res.json({ logs: changeLogs, rawData: cachedData });
-    
-    // 2. Tapi secara diam-diam di background, dia ngecek data terbaru tiap 5 detik
     if (Date.now() - lastFetchTime > 5000) {
         fetchGoogleSheets(); 
     }
