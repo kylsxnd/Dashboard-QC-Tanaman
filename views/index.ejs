@@ -9,8 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-
-    <!-- ALAT PENYEDOT DATA CADANGAN (PAPAPARSE) KHUSUS REKAP KEMITRAAN -->
+    
+    <!-- ALAT PENYEDOT DATA CADANGAN (PAPAPARSE) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <!-- DataTables -->
@@ -51,330 +51,124 @@
         }
 
         /* CLASS KHUSUS UNTUK MENERAPKAN TEMA */
-        .theme-bg-main { 
-            background-color: var(--bg-main); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-bg-panel { 
-            background-color: var(--bg-panel); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-border { 
-            border-color: var(--border-color); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-text-main { 
-            color: var(--text-main); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-text-muted { 
-            color: var(--text-muted); 
-            transition: all 0.3s ease; 
-        }
+        .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
+        .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
+        .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
+        .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
+        .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
 
         /* =========================================
            BASE & LAYOUT
            ========================================= */
-        body { 
-            background-color: var(--bg-main); 
-            color: var(--text-main); 
-            font-family: 'Inter', sans-serif; 
-            overflow: hidden; 
-            transition: all 0.3s ease; 
-        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
         
         /* PREMIUM CARDS */
-        .premium-card { 
-            background: var(--bg-card); 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-            transition: all 0.3s ease; 
-        }
+        .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
 
         /* =========================================
            DROPDOWN NOTIFIKASI KHUSUS (ANTI TRANSPARAN)
            ========================================= */
-        .premium-dropdown {
-            background-color: var(--bg-dropdown);
-            backdrop-filter: blur(12px); 
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-drop);
-            z-index: 100 !important; 
-        }
-        
-        .premium-dropdown-header {
-            background-color: var(--bg-panel);
-            border-bottom: 1px solid var(--border-color);
-        }
+        .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
+        .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
         /* =========================================
            SIDEBAR LINKS
            ========================================= */
-        .sidebar-link {
-            padding: 10px 16px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            margin-bottom: 4px;
-            position: relative;
-        }
-
-        .sidebar-link:hover { 
-            color: var(--text-main); 
-            background: var(--hover-bg); 
-        }
-
-        .sidebar-link.active { 
-            color: var(--text-main); 
-            background: var(--hover-bg); 
-            border-left: 3px solid #83b765; 
-        }
+        .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
+        .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
+        .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
         /* ANIMASI BADGE KIRI */
-        @keyframes pop {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        .badge-pop {
-            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
         /* =========================================
            TABS NAVIGATION (Menu Sheet)
            ========================================= */
-        .tab-btn { 
-            padding: 8px 16px; 
-            font-size: 13px; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            transition: all 0.25s ease; 
-            border-radius: 6px; 
-            color: var(--text-muted); 
-            font-weight: 500; 
-            background: transparent; 
-            border: 1px solid transparent; 
-        }
-        
-        .tab-active { 
-            background: var(--hover-bg) !important; 
-            color: var(--text-main) !important; 
-            border-color: var(--border-color) !important; 
-        }
-        
-        .tab-btn:hover:not(.tab-active) { 
-            color: var(--text-main); 
-            background: var(--hover-bg); 
-        }
+        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
+        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
 
         /* =========================================
            DATATABLES CUSTOMIZATION
            ========================================= */
-        .dataTables_wrapper .dataTables_length, 
-        .dataTables_wrapper .dataTables_filter, 
-        .dataTables_wrapper .dataTables_info, 
-        .dataTables_wrapper .dataTables_paginate { 
-            color: var(--text-muted) !important; 
-            font-size: 12px; 
-            margin-top: 16px; 
-            margin-bottom: 24px; 
-        }
-        
-        .dataTables_wrapper select, 
-        .dataTables_wrapper .dataTables_filter input { 
-            background-color: var(--bg-main) !important; 
-            border: 1px solid var(--border-color) !important; 
-            color: var(--text-main) !important; 
-            padding: 6px 12px !important; 
-            border-radius: 6px !important; 
-            outline: none !important; 
-            transition: all 0.2s; 
-        }
-        
-        .dataTables_wrapper .dataTables_filter input:focus { 
-            border-color: #83b765 !important; 
-        }
+        .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
+        .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
+        .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
 
-        table.dataTable { 
-            border-collapse: collapse !important; 
-            border-spacing: 0 !important; 
-            margin-top: 12px !important; 
-            margin-bottom: 20px !important; 
-            width: 100% !important; 
-            border-bottom: 1px solid var(--border-color) !important; 
-        }
-        
-        table.dataTable thead th { 
-            background-color: var(--bg-card) !important; 
-            color: var(--text-muted) !important; 
-            border-bottom: 1px solid var(--border-color) !important; 
-            font-weight: 600; 
-            font-size: 11px; 
-            letter-spacing: 0.05em; 
-            padding: 14px 18px !important; 
-            text-transform: uppercase; 
-            white-space: nowrap !important; 
-        }
-        
-        table.dataTable tbody tr { 
-            background-color: transparent !important; 
-            transition: all 0.15s ease; 
-        }
-        
-        table.dataTable tbody tr:hover { 
-            background-color: var(--hover-bg) !important; 
-        }
-        
-        table.dataTable tbody td { 
-            border-bottom: 1px solid var(--border-color) !important; 
-            font-size: 13px; 
-            padding: 12px 18px !important; 
-            color: var(--text-main) !important; 
-            white-space: nowrap !important; 
-            vertical-align: middle !important; 
-        }
+        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
+        table.dataTable thead th { background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
+        table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
+        table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
+        table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
 
         /* PAGINATION BUTTONS */
-        .dataTables_wrapper .dataTables_paginate .paginate_button { 
-            background: transparent !important; 
-            border: 1px solid transparent !important; 
-            border-radius: 6px !important; 
-            color: var(--text-muted) !important; 
-            padding: 4px 10px !important; 
-            margin: 0 2px !important; 
-            transition: all 0.2s; 
-        }
-        
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { 
-            background: var(--hover-bg) !important; 
-            color: var(--text-main) !important; 
-        }
-        
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current { 
-            background: var(--hover-bg) !important; 
-            color: var(--text-main) !important; 
-            border-color: var(--border-color) !important; 
-            font-weight: 600; 
-        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
 
         /* =========================================
            ANIMATIONS & CUSTOM SCROLLBAR
            ========================================= */
-        .fade-in { 
-            animation: fadeIn 0.4s ease forwards; 
-        }
-        
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(4px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        ::-webkit-scrollbar { 
-            width: 6px; 
-            height: 8px; 
-        }
-        
-        ::-webkit-scrollbar-track { 
-            background: transparent; 
-        }
-        
-        ::-webkit-scrollbar-thumb { 
-            background: var(--border-color); 
-            border-radius: 4px; 
-        }
-        
-        ::-webkit-scrollbar-thumb:hover { 
-            background: var(--text-muted); 
-        }
+        ::-webkit-scrollbar { width: 6px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     </style>
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
 
-    <!-- =========================================
-         OVERLAY BACKDROP (UNTUK HP)
-         ========================================= -->
+    <!-- OVERLAY BACKDROP (UNTUK HP) -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
-    <!-- =========================================
-         SIDEBAR KIRI (Menu Navigasi)
-         ========================================= -->
+    <!-- SIDEBAR KIRI -->
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-        
-        <!-- Logo Sidebar -->
         <div class="h-16 flex items-center px-6 border-b theme-border">
             <div class="flex items-center gap-3">
-                <svg class="w-6 h-6 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                </svg>
+                <svg class="w-6 h-6 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                 <div class="flex flex-col">
                     <h1 class="text-sm font-bold theme-text-main tracking-wide leading-tight">AGRINAS OPS</h1>
                     <span class="text-[10px] theme-text-muted">PT Agrinas Nusantara</span>
                 </div>
             </div>
-            <!-- Tombol Close Sidebar (Mobile Only) -->
             <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400 hover:text-white focus:outline-none">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <!-- Menu Utama -->
         <div class="flex-1 overflow-y-auto py-5 px-3">
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">
-                Menu Utama
-            </div>
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 Dashboard On Farm
             </button>
             
             <button onclick="switchView('view-database', 'nav-database')" class="w-full sidebar-link" id="nav-database">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                 Master Data Kebun
             </button>
 
             <!-- MENU EVALUASI KINERJA -->
             <button onclick="switchView('view-evaluasi', 'nav-evaluasi')" class="w-full sidebar-link" id="nav-evaluasi">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 Evaluasi Kinerja
             </button>
 
             <!-- MENU INBOX EMAIL -->
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 Inbox Email
-                
-                <!-- BADGE NOTIFIKASI KIRI -->
-                <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">
-                    0
-                </span>
+                <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
         </div>
 
-        <!-- Profil User Bawah -->
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold theme-text-main" style="background-color: var(--hover-bg);">
-                    PIC
-                </div>
+                <div class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold theme-text-main" style="background-color: var(--hover-bg);">PIC</div>
                 <div class="flex flex-col overflow-hidden">
                     <span class="text-xs font-semibold theme-text-main truncate">Staf PIC HO</span>
                     <span class="text-[10px] theme-text-muted truncate">staf.pic.ho@agrinas.id</span>
@@ -383,71 +177,45 @@
         </div>
     </aside>
 
-    <!-- =========================================
-         AREA KONTEN KANAN (Header + Main)
-         ========================================= -->
+    <!-- AREA KONTEN KANAN -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         
         <!-- HEADER ATAS KANAN -->
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
-            
-            <!-- Bagian Kiri Header (Hamburger + Judul) -->
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
-                <!-- Tombol Menu Hamburger (Khusus Layar HP) -->
                 <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 -ml-2 rounded-lg theme-text-muted hover:bg-[var(--hover-bg)] focus:outline-none shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                
-                <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <!-- Dikasih max-width biar teks panjang di HP otomatis dipotong pakai titik-titik (...) -->
+                <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard</span>
             </div>
 
-            <!-- Panel Kanan Atas -->
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
-                
-                <!-- TOMBOL GANTI TEMA -->
                 <button onclick="toggleTheme()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none" title="Ganti Tema">
-                    <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
+                    <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
 
                 <div class="w-px h-5 theme-border border-l"></div>
 
-                <!-- Live System Indicator -->
                 <div class="flex items-center gap-2 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 md:px-3 rounded-full border border-emerald-500/20">
-                    <span id="sync-dot" class="relative flex h-1.5 w-1.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                    </span>
+                    <span id="sync-dot" class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span></span>
                     <span id="sync-text" class="hidden sm:inline">LIVE SYSTEM</span>
                 </div>
                 
                 <div class="w-px h-5 theme-border border-l hidden sm:block"></div>
                 
-                <!-- Lonceng Notifikasi Update Database -->
                 <div class="relative group">
                     <button onclick="markAsRead()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none z-50">
                         <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                        </svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                     </button>
-                    
-                    <!-- Dropdown Notifikasi -->
                     <div class="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 premium-dropdown rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col max-h-[450px]">
                         <div class="px-5 py-3 premium-dropdown-header rounded-t-xl flex justify-between items-center">
                             <span class="text-[11px] font-bold theme-text-muted uppercase tracking-widest">Audit Trail Database</span>
                         </div>
-                        <div id="notif-list" class="p-3 overflow-y-auto flex-grow text-left">
-                            <!-- Nanti list notifikasi database disuntik ke sini -->
-                        </div>
+                        <div id="notif-list" class="p-3 overflow-y-auto flex-grow text-left"></div>
                     </div>
                 </div>
-
             </div>
         </header>
 
@@ -456,33 +224,25 @@
             
             <!-- 1. HALAMAN DASHBOARD UTAMA PIVOT (DIKEMBALIKAN DAFTAR NAMA PT) -->
             <section id="view-dashboard" class="fade-in block">
-                
-                <!-- HEADER DASHBOARD DENGAN FILTER CRO -->
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             Data dikalkulasi akurat otomatis Vercel Auto-Sync.
                         </p>
                     </div>
                     
-                    <!-- FILTER CRO -->
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
                         <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter CRO:</span>
                         <select id="cro-filter" onchange="renderPivotDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer">
                             <option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>
-                            <!-- Daftar CRO akan disuntik otomatis dari Javascript -->
                         </select>
                     </div>
                 </div>
 
-                <!-- KPI BOXES DARI PIVOT -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
 
-                <!-- CHARTS DARI PIVOT -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Target Produksi (Ton) per CRO</h3>
@@ -496,10 +256,7 @@
 
                 <!-- DAFTAR PERUSAHAAN (PT) PER CRO (KEMBALI KE VERSI AWAL) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full">
-                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">
-                        Daftar Perusahaan (PT)
-                    </h3>
-                    <!-- Bungkus dengan overflow-x-auto supaya tabel bisa digeser kanan-kiri di HP -->
+                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Daftar Perusahaan (PT)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
@@ -510,59 +267,40 @@
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Target Produksi (Ton)</th>
                                 </tr>
                             </thead>
-                            <tbody id="pt-list-body">
-                                <!-- Daftar PT disuntik dari JS -->
-                            </tbody>
+                            <tbody id="pt-list-body"></tbody>
                         </table>
                     </div>
                 </div>
-
             </section>
 
             <!-- 2. HALAMAN MASTER DATA KEBUN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Master Data Repository</h2>
-                    <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat (Scroll ke Kanan).</p>
+                    <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
-
                 <div class="premium-card p-4 md:p-6 w-full">
-                    
-                    <!-- TAB NAVIGASI SHEET -->
                     <div id="tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
-                    
                     <div class="w-full overflow-hidden" id="data-wrapper">
-                        
-                        <!-- AREA TABEL NORMAL -->
                         <div id="table-area" class="w-full">
-                            <!-- FILTER SPESIFIK UNTUK "INPUT ASTA" -->
-                            <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit">
-                                <!-- Disuntik via JS -->
-                            </div>
-                            
+                            <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit"></div>
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
-                        
-                        <!-- AREA PIVOT TABLE (IFRAME) -->
                         <div id="pivot-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
                             <iframe src="https://docs.google.com/spreadsheets/d/1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY/edit?gid=2130529003#gid=2130529003&rm=minimal" class="w-full h-full border-none"></iframe>
                         </div>
                     </div>
-                    
                 </div>
             </section>
 
-            <!-- 3. HALAMAN BARU: EVALUASI KINERJA (SHEET KE-2) -->
+            <!-- 3. HALAMAN EVALUASI KINERJA (SHEET KE-2) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Evaluasi Kinerja Produksi</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan dari dokumen viewer.</p>
                 </div>
-
                 <div class="premium-card p-4 md:p-6 w-full">
-                    <!-- TABS KHUSUS EVALUASI KINERJA -->
                     <div id="evaluasi-tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
-                    
                     <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
                         
                         <!-- AREA TABEL NORMAL EVALUASI -->
@@ -624,138 +362,76 @@
             <section id="view-inbox" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight flex items-center gap-2">
-                            Inbox Email Terpusat
-                        </h2>
-                        <p class="text-xs md:text-sm theme-text-muted mt-1">
-                            Pusat penerimaan draft, review dokumen, dan notifikasi vendor.
-                        </p>
+                        <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight flex items-center gap-2">Inbox Email Terpusat</h2>
+                        <p class="text-xs md:text-sm theme-text-muted mt-1">Pusat penerimaan draft, review dokumen, dan notifikasi vendor.</p>
                     </div>
                 </div>
-
-                <!-- DAFTAR EMAIL -->
                 <div class="premium-card overflow-hidden w-full">
                     <div class="flex items-center justify-between px-4 md:px-6 py-4 border-b theme-border bg-black/10">
                         <span class="text-[10px] md:text-xs font-semibold theme-text-muted">Kotak Masuk (Gmail API Sync)</span>
                         <button class="text-[10px] md:text-xs text-blue-500 hover:underline font-medium">Tandai semua dibaca</button>
                     </div>
-                    <div id="email-list-container" class="divide-y theme-border flex flex-col max-h-[600px] overflow-y-auto">
-                        <!-- Email disuntik via Javascript disini -->
-                    </div>
+                    <div id="email-list-container" class="divide-y theme-border flex flex-col max-h-[600px] overflow-y-auto"></div>
                 </div>
             </section>
 
         </main>
     </div>
 
-    <!-- =========================================
-         MODAL DOKUMEN PREVIEW
-         ========================================= -->
+    <!-- MODAL DOKUMEN PREVIEW -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
-            
             <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
                 <h3 class="theme-text-main font-medium text-xs md:text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     Live Document Viewer
                 </h3>
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <a id="modalExternalLink" href="#" target="_blank" class="text-[10px] md:text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors flex items-center gap-1.5">
-                        Open in Drive
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
+                        Open in Drive <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </a>
                     <div class="w-px h-4 bg-gray-500"></div>
-                    <button onclick="closePreview()" class="theme-text-muted hover:text-red-500 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                    <button onclick="closePreview()" class="theme-text-muted hover:text-red-500 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 </div>
             </div>
-            
-            <div class="flex-grow bg-white rounded-b-xl overflow-hidden">
-                <iframe id="documentIframe" src="" class="w-full h-full border-none"></iframe>
-            </div>
-            
+            <div class="flex-grow bg-white rounded-b-xl overflow-hidden"><iframe id="documentIframe" src="" class="w-full h-full border-none"></iframe></div>
         </div>
     </div>
 
-    <!-- =========================================
-         JAVASCRIPT LOGIC
-         ========================================= -->
+    <!-- SCRIPT LOGIC -->
     <script>
-        // Data dari backend server.js
         let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // Daftar Sheet untuk Halaman "Master Data Kebun" (Sheet 1)
-        const listSheets = [
-            "REKAPITULASI", 
-            "Pivot Table", 
-            "Pembayaran Vendor", 
-            "Draft Surat Penugasan", 
-            "INPUT ASTA", 
-            "Acuan Nama Kebun", 
-            "Acuan Nama CRO & Region", 
-            "Perubahan CV ke PT", 
-            "Rekap Vendor"
-        ];
-        
-        // Daftar Sheet untuk Halaman "Evaluasi Kinerja" (Sheet 2)
-        const listEvaluasiSheets = [
-            "Sumber/Source Data", 
-            "Kinerja Prod", 
-            "Rekap Kemitraan", 
-            "Rekapan", 
-            "Executive Summary"
-        ];
+        const listSheets = ["REKAPITULASI", "Pivot Table", "Pembayaran Vendor", "Draft Surat Penugasan", "INPUT ASTA", "Acuan Nama Kebun", "Acuan Nama CRO & Region", "Perubahan CV ke PT", "Rekap Vendor"];
+        const listEvaluasiSheets = ["Sumber/Source Data", "Kinerja Prod", "Rekap Kemitraan", "Rekapan", "Executive Summary"];
         
         let currentDataTable = null;
         let evaluasiDataTable = null;
         let isUnread = false; 
 
-        // =========================================
-        // FUNGSI TOGGLE SIDEBAR UNTUK HP
-        // =========================================
         function toggleSidebar() {
             const sidebar = document.getElementById('mobile-sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            
             if (sidebar.classList.contains('-translate-x-full')) {
-                // Buka Sidebar
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             } else {
-                // Tutup Sidebar
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
 
-        // =========================================
-        // FUNGSI GANTI TEMA (LIGHT / DARK)
-        // =========================================
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            
             const themeIcon = document.getElementById('theme-icon');
-            if (isLight) {
-                themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
-            } else {
-                themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
-            }
-            
+            if (isLight) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
+            else themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
             updateChartTheme(isLight);
         }
 
@@ -764,7 +440,6 @@
             const gridColor = isLight ? '#e5e7eb' : '#262626';
             const tooltipBg = isLight ? '#ffffff' : '#151515';
             const tooltipText = isLight ? '#1f2937' : '#f8fafc';
-            
             Highcharts.charts.forEach(chart => {
                 if (chart) {
                     chart.update({
@@ -778,36 +453,23 @@
             });
         }
 
-        // =========================================
-        // FUNGSI NAVIGASI MENU SIDEBAR KIRI
-        // =========================================
         function switchView(viewId, elementId) {
-            // Sembunyikan semua halaman
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
             document.getElementById('view-evaluasi').classList.add('hidden');
             document.getElementById('view-inbox').classList.add('hidden');
             
-            // Tampilkan halaman yang dipilih
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
-            if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard";
-            } else if(viewId === 'view-database') {
-                headerTitle.innerText = "Executive On-Farm > Master Data";
-            } else if(viewId === 'view-evaluasi') {
-                headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
-            } else if(viewId === 'view-inbox') {
+            if(viewId === 'view-dashboard') headerTitle.innerText = "Executive On-Farm > Dashboard";
+            else if(viewId === 'view-database') headerTitle.innerText = "Executive On-Farm > Master Data";
+            else if(viewId === 'view-evaluasi') headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
+            else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
-                
                 fetch('/api/read-emails?t=' + new Date().getTime(), { method: 'POST' }).then(() => {
                     const badge = document.getElementById('sidebar-email-badge');
-                    if(badge) { 
-                        badge.classList.add('hidden'); 
-                        badge.classList.remove('badge-pop'); 
-                    }
-                    
+                    if(badge) { badge.classList.add('hidden'); badge.classList.remove('badge-pop'); }
                     document.querySelectorAll('.email-row.bg-blue-500\\/5').forEach(el => {
                         el.classList.remove('bg-blue-500/5');
                         el.querySelector('.email-sender').classList.remove('font-bold', 'text-white');
@@ -822,154 +484,78 @@
             document.getElementById('nav-inbox').classList.remove('active');
             document.getElementById(elementId).classList.add('active');
             
-            // Auto close sidebar if on mobile screen
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            }
+            if (window.innerWidth < 768) toggleSidebar();
             
-            if(viewId === 'view-database' && currentDataTable) { 
-                setTimeout(() => {
-                    currentDataTable.columns.adjust(); 
-                }, 50);
-            }
+            if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
             
-            // Atur tabel evaluasi jika yang dibuka bukan tab khusus Rekap Kemitraan
             const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
             if(viewId === 'view-evaluasi' && evaluasiDataTable && activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") { 
-                setTimeout(() => {
-                    evaluasiDataTable.columns.adjust(); 
-                }, 50);
+                setTimeout(() => evaluasiDataTable.columns.adjust(), 50);
             }
         }
 
-        function markAsRead() { 
-            document.getElementById('notif-badge').classList.add('hidden'); 
-            isUnread = false; 
-        }
+        function markAsRead() { document.getElementById('notif-badge').classList.add('hidden'); isUnread = false; }
 
-        // =========================================
-        // FUNGSI UPDATE LABEL EMAIL
-        // =========================================
         async function changeEmailLabel(id, newLabel) {
             try {
-                const res = await fetch('/api/update-email-label?t=' + new Date().getTime(), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, label: newLabel })
-                });
+                const res = await fetch('/api/update-email-label?t=' + new Date().getTime(), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, label: newLabel }) });
                 const data = await res.json();
-                if(data.success) { 
-                    emailsData = data.emails; 
-                    renderEmailsUI(); 
-                }
-            } catch (err) { 
-                console.error(err); 
-            }
+                if(data.success) { emailsData = data.emails; renderEmailsUI(); }
+            } catch (err) { console.error(err); }
         }
 
-        // =========================================
-        // FUNGSI RENDER EMAIL UI KE HALAMAN INBOX
-        // =========================================
         function renderEmailsUI() {
             const container = document.getElementById('email-list-container');
             let html = '';
-            
             if(emailsData && emailsData.length > 0) {
                 emailsData.forEach(email => {
                     const bgClass = email.unread ? 'bg-blue-500/5' : 'hover:bg-[var(--hover-bg)]';
                     const textSenderClass = email.unread ? 'font-bold text-white' : 'font-medium theme-text-main';
                     const textSubjectClass = email.unread ? 'font-bold text-white' : 'font-medium theme-text-main';
                     const dotClass = email.unread ? '<div class="w-2 h-2 bg-blue-500 rounded-full mr-2 md:mr-3 shrink-0"></div>' : '<div class="w-2 h-2 mr-2 md:mr-3 shrink-0"></div>';
-                    
-                    let badgeColor = email.label === "SUDAH DI CRO" 
-                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                        : "bg-amber-500/10 text-amber-400 border-amber-500/20";
+                    let badgeColor = email.label === "SUDAH DI CRO" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border-amber-500/20";
 
                     html += `
                         <div class="email-row flex flex-col md:flex-row md:items-center justify-between px-4 md:px-6 py-4 cursor-pointer transition-colors border-b theme-border last:border-0 ${bgClass} gap-3 md:gap-0">
                             <div class="flex items-center gap-3 md:gap-4 min-w-0 pr-0 md:pr-4">
                                 ${dotClass}
-                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[var(--hover-bg)] border theme-border flex items-center justify-center text-xs font-bold theme-text-main shrink-0">
-                                    ${email.sender.charAt(0)}
-                                </div>
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[var(--hover-bg)] border theme-border flex items-center justify-center text-xs font-bold theme-text-main shrink-0">${email.sender.charAt(0)}</div>
                                 <div class="min-w-0">
-                                    <div class="flex items-center gap-2 mb-0.5 md:mb-1">
-                                        <span class="email-sender text-[11px] md:text-xs truncate ${textSenderClass}">${email.sender}</span>
-                                        <span class="text-[9px] md:text-[10px] theme-text-muted shrink-0">• ${email.time}</span>
-                                    </div>
+                                    <div class="flex items-center gap-2 mb-0.5 md:mb-1"><span class="email-sender text-[11px] md:text-xs truncate ${textSenderClass}">${email.sender}</span><span class="text-[9px] md:text-[10px] theme-text-muted shrink-0">• ${email.time}</span></div>
                                     <h4 class="email-subject text-xs md:text-sm truncate mb-0.5 ${textSubjectClass}">${email.subject}</h4>
                                     <p class="text-[10px] md:text-xs theme-text-muted truncate">${email.snippet}</p>
                                 </div>
                             </div>
-                            
-                            <div class="shrink-0 flex items-center pl-10 md:pl-0">
-                                <select onchange="changeEmailLabel(${email.id}, this.value)" class="text-[10px] md:text-xs font-semibold px-2 py-1 md:px-3 md:py-1.5 rounded-lg border cursor-pointer outline-none transition-all ${badgeColor}">
-                                    <option value="BELUM DI CRO" ${email.label === 'BELUM DI CRO' ? 'selected' : ''}>BELUM DI CRO</option>
-                                    <option value="SUDAH DI CRO" ${email.label === 'SUDAH DI CRO' ? 'selected' : ''}>SUDAH DI CRO</option>
-                                </select>
-                            </div>
-                        </div>
-                    `;
+                            <div class="shrink-0 flex items-center pl-10 md:pl-0"><select onchange="changeEmailLabel(${email.id}, this.value)" class="text-[10px] md:text-xs font-semibold px-2 py-1 md:px-3 md:py-1.5 rounded-lg border cursor-pointer outline-none transition-all ${badgeColor}"><option value="BELUM DI CRO" ${email.label === 'BELUM DI CRO' ? 'selected' : ''}>BELUM DI CRO</option><option value="SUDAH DI CRO" ${email.label === 'SUDAH DI CRO' ? 'selected' : ''}>SUDAH DI CRO</option></select></div>
+                        </div>`;
                 });
-            } else {
-                html = `<div class="p-8 text-center text-sm theme-text-muted">Tidak ada email masuk.</div>`;
-            }
-            if(container) {
-                container.innerHTML = html;
-            }
+            } else { html = `<div class="p-8 text-center text-sm theme-text-muted">Tidak ada email masuk.</div>`; }
+            if(container) container.innerHTML = html;
         }
 
-        // =========================================
-        // FUNGSI RENDER NOTIFIKASI LOG PERUBAHAN
-        // =========================================
         function renderNotifications() {
             const listContainer = document.getElementById('notif-list');
             const badge = document.getElementById('notif-badge');
-            
             if (logsData && logsData.length > 0) {
-                if (isUnread && badge) {
-                    badge.classList.remove('hidden'); 
-                }
-                
+                if (isUnread && badge) badge.classList.remove('hidden'); 
                 let html = '';
                 logsData.forEach(log => {
                     html += `
                         <div class="mb-3 pb-3 border-b theme-border last:border-0 last:mb-0 last:pb-0">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[10px] font-semibold text-blue-500 uppercase tracking-wider">${log.sheet}</span>
-                                <div class="flex items-center gap-1 text-[10px] theme-text-muted">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    ${log.waktu}
-                                </div>
+                                <div class="flex items-center gap-1 text-[10px] theme-text-muted"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${log.waktu}</div>
                             </div>
-                            <div class="text-xs theme-text-muted mb-2">
-                                Row <span class="theme-text-main font-medium">${log.baris}</span>, Col <span class="theme-text-main font-medium">${log.kolom}</span>
-                            </div>
+                            <div class="text-xs theme-text-muted mb-2">Row <span class="theme-text-main font-medium">${log.baris}</span>, Col <span class="theme-text-main font-medium">${log.kolom}</span></div>
                             <div class="text-xs theme-bg-main border theme-border rounded py-1.5 px-2">
-                                <div class="flex items-center gap-2 theme-text-muted line-through mb-1">
-                                    <svg class="w-3 h-3 text-red-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                                    <span class="truncate">${log.lama}</span>
-                                </div>
-                                <div class="flex items-center gap-2 text-emerald-500">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                    <span class="truncate">${log.baru}</span>
-                                </div>
+                                <div class="flex items-center gap-2 theme-text-muted line-through mb-1"><svg class="w-3 h-3 text-red-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg><span class="truncate">${log.lama}</span></div>
+                                <div class="flex items-center gap-2 text-emerald-500"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg><span class="truncate">${log.baru}</span></div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
-                if(listContainer) {
-                    listContainer.innerHTML = html;
-                }
+                if(listContainer) listContainer.innerHTML = html;
             } else {
-                if(listContainer) {
-                    listContainer.innerHTML = `
-                        <div class="flex flex-col items-center justify-center py-8 text-center">
-                            <svg class="w-8 h-8 theme-text-muted mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            <p class="text-xs theme-text-muted font-medium">Belum ada perubahan data.</p>
-                        </div>
-                    `;
-                }
+                if(listContainer) listContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-8 text-center"><svg class="w-8 h-8 theme-text-muted mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><p class="text-xs theme-text-muted font-medium">Belum ada perubahan data.</p></div>`;
             }
         }
 
@@ -979,47 +565,27 @@
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
-            
-            // Mengambil langsung dari sumber mentah (REKAPITULASI)
             const rawRekapData = rawData["REKAPITULASI"] || [];
             
             let croList = new Set();
-            let totalLuas = 0;
-            let totalLuasTM = 0;
-            let totalTarget = 0;
-            let totalPtCount = 0;
-            
+            let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {};
             let chartPieDataMap = {};
-            let ptDataMap = {}; 
+            let ptDataMap = {};
 
-            // Fungsi helper pembersih format angka dari Excel
             const parseNum = (val) => {
                 if (typeof val === 'number') return val;
                 if (!val || val === '-' || String(val).trim() === '') return 0;
                 let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
-
                 if (s.includes(',') && s.includes('.')) {
-                    let lastComma = s.lastIndexOf(',');
-                    let lastDot = s.lastIndexOf('.');
-                    if (lastComma > lastDot) {
-                        s = s.replace(/\./g, '').replace(',', '.'); 
-                    } else {
-                        s = s.replace(/,/g, ''); 
-                    }
+                    let lastComma = s.lastIndexOf(','); let lastDot = s.lastIndexOf('.');
+                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, '');
                 } else if (s.includes(',')) {
-                    if ((s.match(/,/g) || []).length > 1) {
-                        s = s.replace(/,/g, ''); 
-                    } else if (s.length - s.lastIndexOf(',') <= 3) {
-                        s = s.replace(',', '.'); 
-                    } else {
-                        s = s.replace(/,/g, '');
-                    }
+                    if ((s.match(/,/g) || []).length > 1) s = s.replace(/,/g, ''); else if (s.length - s.lastIndexOf(',') <= 3) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
                 }
                 return parseFloat(s) || 0;
             };
 
-            // Pelacak Kolom Otomatis (Dynamic Header Detection)
             let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)";
             if (rawRekapData.length > 0) {
                 const sampleKeys = Object.keys(rawRekapData[0]);
@@ -1030,55 +596,35 @@
                 keyTarget = sampleKeys.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || "Target Produksi (Ton)";
             }
 
-            // Loop untuk kalkulasi data
             rawRekapData.forEach(row => {
                 let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
                 let namaPt = String(row[keyPT] || "").trim();
 
-                // Skip baris kosong atau baris "Total" bawaan dari pivot/rekap agar tidak dobel hitung
                 if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary")) return;
                 if (!namaPt || namaPt === "-" || namaPt.toLowerCase().includes("total") || namaPt.toLowerCase().includes("summary")) return;
 
                 croList.add(rowCRO);
-
-                // Filter CRO Dropdown
                 if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
 
+                let targetProd = parseNum(row[keyTarget]);
                 let luasKebun = parseNum(row[keyLuas]);
                 let luasTM = parseNum(row[keyLuasTM]);
-                let targetProd = parseNum(row[keyTarget]);
 
-                totalLuas += luasKebun;
-                totalLuasTM += luasTM;
-                totalTarget += targetProd;
-                
-                totalPtCount++; 
+                totalLuas += luasKebun; totalLuasTM += luasTM; totalTarget += targetProd; totalPtCount++;
 
-                // Agregasi per PT untuk ditampilkan di Tabel Daftar Perusahaan
-                if (!ptDataMap[namaPt]) {
-                    ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
-                }
-                ptDataMap[namaPt].luas += luasKebun;
-                ptDataMap[namaPt].luasTM += luasTM;
-                ptDataMap[namaPt].target += targetProd;
+                if (!ptDataMap[namaPt]) ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
+                ptDataMap[namaPt].luas += luasKebun; ptDataMap[namaPt].luasTM += luasTM; ptDataMap[namaPt].target += targetProd;
 
-                // Agregasi untuk Grafik 
                 chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + targetProd;
                 chartPieDataMap[rowCRO] = (chartPieDataMap[rowCRO] || 0) + luasKebun;
             });
 
-            // Update List Dropdown Kalau Masih Kosong
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
-                    let opt = document.createElement('option');
-                    opt.value = c;
-                    opt.innerText = c;
-                    opt.className = "bg-[#111111] text-white";
-                    filterDropdown.appendChild(opt);
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; filterDropdown.appendChild(opt);
                 });
             }
 
-            // Render KPI Boxes
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
                 kpiContainer.innerHTML = `
@@ -1087,97 +633,72 @@
                         <div class="text-2xl md:text-3xl font-bold theme-text-main mb-1">${totalTarget.toLocaleString('id-ID', {maximumFractionDigits: 2})} Ton</div>
                         <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">(Data Kalkulasi Akurat)</div>
                     </div>
-                    
                     <div class="premium-card p-4 md:p-5 border-t-4 border-t-purple-500 relative group">
                         <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Luas Kebun / Luas TM</div>
-                        <div class="flex items-baseline gap-1 md:gap-2 mb-1">
-                            <div class="text-2xl md:text-3xl font-bold theme-text-main">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits: 2})} <span class="text-sm md:text-lg">Ha</span></div>
-                        </div>
+                        <div class="flex items-baseline gap-1 md:gap-2 mb-1"><div class="text-2xl md:text-3xl font-bold theme-text-main">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits: 2})} <span class="text-sm md:text-lg">Ha</span></div></div>
                         <div class="text-[9px] md:text-[10px] font-medium text-purple-400 italic">Luas TM: ${totalLuasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})} Ha</div>
                     </div>
-                    
                     <div class="premium-card p-4 md:p-5 border-t-4 border-t-orange-500 relative group">
                         <div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Kemitraan PT</div>
                         <div class="text-2xl md:text-3xl font-bold theme-text-main mb-1">${totalPtCount} PT</div>
                         <div class="text-[9px] md:text-[10px] theme-text-muted italic opacity-60">(Data Kalkulasi Akurat)</div>
-                    </div>
-                `;
+                    </div>`;
             }
 
-            // Atur Judul Grafik berdasarkan filter
             const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
-            if(document.getElementById('chart-title-bar')) {
-                document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
-            }
-            if(document.getElementById('chart-title-pie')) {
-                document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
-            }
-            if(document.getElementById('pt-list-title')) {
-                document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
-            }
+            if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
+            if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
+            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
-            // Render Bar Chart
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
-                    chart: { type: 'column', backgroundColor: 'transparent' },
-                    title: { text: null },
+                    chart: { type: 'column', backgroundColor: 'transparent' }, title: { text: null },
                     tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
                     xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: 'var(--text-muted)' } }, lineWidth: 0, tickWidth: 0 },
                     yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } },
                     series: [{ name: 'Target Produksi (Ton)', data: Object.values(chartBarDataMap), color: '#3b82f6' }],
-                    plotOptions: { column: { borderRadius: 4, borderWidth: 0 } },
-                    credits: { enabled: false }
+                    plotOptions: { column: { borderRadius: 4, borderWidth: 0 } }, credits: { enabled: false }
                 });
             }
 
-            // Render Pie Chart
             if(document.getElementById('pivot-pie-chart')) {
                 Highcharts.chart('pivot-pie-chart', {
-                    chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: null },
+                    chart: { type: 'pie', backgroundColor: 'transparent' }, title: { text: null },
                     tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '65%', borderWidth: 0, dataLabels: { enabled: true, color: 'var(--text-muted)', connectorColor: 'var(--border-color)', style: { textOutline: 'none', fontWeight: 'normal' } } } },
-                    series: [{ name: 'Luas Kebun (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }],
-                    credits: { enabled: false }
+                    series: [{ name: 'Luas Kebun (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }], credits: { enabled: false }
                 });
             }
             
-            // RENDER TABEL RINCIAN NAMA PT (KEMBALI KE NAMA PT SEPERTI SEMULA)
             let ptHtml = '';
             let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
-            
             if (sortedPTs.length > 0) {
                 sortedPTs.forEach(pt => {
                     ptHtml += `
                         <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border last:border-0">
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">
-                                ${pt.name}
-                                ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span>` : ''}
-                            </td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name}${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span>` : ''}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-purple-400 text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        </tr>
-                    `;
+                        </tr>`;
                 });
-            } else {
-                ptHtml = `<tr><td colspan="4" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan untuk pilihan ini.</td></tr>`;
-            }
+            } else { ptHtml = `<tr><td colspan="4" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan untuk pilihan ini.</td></tr>`; }
             
-            if(document.getElementById('pt-list-body')) {
-                document.getElementById('pt-list-body').innerHTML = ptHtml;
-            }
-            
-            const isLightNow = document.body.classList.contains('light-mode');
-            updateChartTheme(isLightNow);
+            if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
+            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
         // =========================================
-        // FUNGSI BARU KHUSUS: DASHBOARD REKAP KEMITRAAN DI HALAMAN EVALUASI
+        // FUNGSI KHUSUS: DASHBOARD REKAP KEMITRAAN DARI TABEL "TAHAP 1-7"
         // =========================================
         async function renderKemitraanDashboard() {
+            const kpiContainer = document.getElementById('kemitraan-kpi-container');
+            if(kpiContainer) {
+                kpiContainer.innerHTML = `<div class="p-5 text-yellow-500 font-bold animate-pulse text-sm">Sedang menarik data murni dari Sheet Rekap Kemitraan...</div>`;
+            }
+
             try {
-                // Gunakan PapaParse untuk menarik data murni dari Google Sheets Evaluasi (Bebas dari limit server)
+                // Tembak langsung API Google Sheets dari Browser pake format CSV biar nembus murni tanpa error server
                 const res = await fetch('https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/gviz/tq?tqx=out:csv&sheet=Rekap+Kemitraan');
                 const csvText = await res.text();
                 
@@ -1192,79 +713,52 @@
                         let chartBarDataMap = {};
                         let summaryMap = {}; 
 
-                        let colRegional = -1, colWilayah = -1, colJumlah = -1, colSudah = -1, colBelum = -1;
-                        let startRow = -1;
+                        // Index Kolom PASTI untuk tabel "Tahap 1 - 7" berdasarkan Screenshot lu
+                        // Kolom L (Index 11) = Regional
+                        // Kolom M (Index 12) = Wilayah
+                        // Kolom N (Index 13) = Jumlah PT
+                        // Kolom P (Index 15) = Sudah Dikelola
+                        // Kolom Q (Index 16) = Belum Dikelola
 
-                        // Scan 15 baris pertama untuk mencari Header Tahap 1 - 7
-                        for (let i = 0; i < Math.min(15, rows.length); i++) {
-                            let row = rows[i];
-                            let regionalIndexes = [];
+                        // Mulai dari baris ke-3 (karena 0, 1, 2 itu judul/header merged)
+                        for(let i = 3; i < rows.length; i++) {
+                            let r = rows[i];
+                            if(r.length < 17) continue; 
                             
-                            row.forEach((val, idx) => {
-                                if(String(val).trim().toLowerCase() === 'regional') regionalIndexes.push(idx);
-                            });
+                            let rowCRO = String(r[11] || "").trim();
+                            let rowWilayah = String(r[12] || "").trim();
+                            let rowJumlah = parseInt(String(r[13]).replace(/[^0-9]/g,'')) || 0;
+                            let rowSudah = parseInt(String(r[15]).replace(/[^0-9]/g,'')) || 0;
+                            let rowBelum = parseInt(String(r[16]).replace(/[^0-9]/g,'')) || 0;
 
-                            // Tabel Tahap 1-7 adalah tabel kedua (index ke-1)
-                            if (regionalIndexes.length >= 2) {
-                                colRegional = regionalIndexes[1];
-                                
-                                for(let j = colRegional; j < row.length; j++) {
-                                    let v = String(row[j]).toLowerCase().trim();
-                                    if (v === 'wilayah' && colWilayah === -1) colWilayah = j;
-                                    if ((v === 'jumlah pt' || v === 'jumlah') && colJumlah === -1) colJumlah = j;
-                                    if (v === 'sudah dikelola' && colSudah === -1) colSudah = j;
-                                    if (v === 'belum dikelola' && colBelum === -1) colBelum = j;
-                                }
-                                
-                                if(colRegional !== -1 && colSudah !== -1) {
-                                    startRow = i + 1; // Baris setelah header
-                                    break;
-                                }
+                            // Filter anti-nyangkut (Buang baris total dan string kosong)
+                            if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
+                            if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
+
+                            if(rowCRO.toLowerCase().startsWith('cro')) {
+                                rowCRO = rowCRO.toUpperCase();
+                            } else {
+                                rowCRO = "CRO " + rowCRO.toUpperCase(); 
                             }
+
+                            totalPtCount += rowJumlah;
+                            totalSudah += rowSudah;
+                            totalBelum += rowBelum;
+
+                            chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
+
+                            let sumKey = rowCRO + "_" + rowWilayah;
+                            if (!summaryMap[sumKey]) {
+                                summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
+                            }
+                            summaryMap[sumKey].jumlahPT += rowJumlah;
+                            summaryMap[sumKey].sudah += rowSudah;
+                            summaryMap[sumKey].belum += rowBelum;
                         }
 
-                        if (startRow !== -1) {
-                            for (let i = startRow; i < rows.length; i++) {
-                                let row = rows[i];
-                                let rowCRO = String(row[colRegional] || "").replace(/^[+-]\s*/, '').trim();
-                                let rowWilayah = String(row[colWilayah] || "").trim();
-                                
-                                // Bersihin angka dari text
-                                let rowJumlah = parseInt(String(row[colJumlah]).replace(/[^0-9]/g,'')) || 0;
-                                let rowSudah = parseInt(String(row[colSudah]).replace(/[^0-9]/g,'')) || 0;
-                                let rowBelum = parseInt(String(row[colBelum]).replace(/[^0-9]/g,'')) || 0;
-
-                                // Filter Buang baris kosong atau baris judul
-                                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
-                                if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
-
-                                // Seragamkan nama CRO
-                                if(rowCRO.toLowerCase().startsWith('cro')) {
-                                    rowCRO = rowCRO.toUpperCase();
-                                } else {
-                                    rowCRO = "CRO " + rowCRO.toUpperCase(); 
-                                }
-
-                                totalPtCount += rowJumlah;
-                                totalSudah += rowSudah;
-                                totalBelum += rowBelum;
-
-                                // Agregasi Bar Chart
-                                chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
-
-                                // Agregasi Summary Per Wilayah
-                                let sumKey = rowCRO + "_" + rowWilayah;
-                                if (!summaryMap[sumKey]) {
-                                    summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
-                                }
-                                summaryMap[sumKey].jumlahPT += rowJumlah;
-                                summaryMap[sumKey].sudah += rowSudah;
-                                summaryMap[sumKey].belum += rowBelum;
-                            }
-                        }
-
-                        // Render KPI Boxes Rekap Kemitraan
-                        const kpiContainer = document.getElementById('kemitraan-kpi-container');
+                        // ===================================
+                        // RENDER TAMPILAN KE LAYAR
+                        // ===================================
                         if(kpiContainer) {
                             kpiContainer.innerHTML = `
                                 <div class="premium-card p-4 md:p-5 border-t-4 border-t-yellow-500 relative group">
@@ -1287,7 +781,6 @@
                             `;
                         }
 
-                        // Render Bar Chart (Sebaran PT)
                         if(document.getElementById('kemitraan-bar-chart')) {
                             Highcharts.chart('kemitraan-bar-chart', {
                                 chart: { type: 'column', backgroundColor: 'transparent' },
@@ -1301,7 +794,6 @@
                             });
                         }
 
-                        // Render Pie Chart (Sudah vs Belum)
                         if(document.getElementById('kemitraan-pie-chart')) {
                             Highcharts.chart('kemitraan-pie-chart', {
                                 chart: { type: 'pie', backgroundColor: 'transparent' },
@@ -1319,22 +811,14 @@
                             });
                         }
                         
-                        // RENDER TABEL SUMMARY PER WILAYAH
                         let ptHtml = '';
-                        let sumSudah = 0;
-                        let sumBelum = 0;
-                        let sumPT = 0;
-                        let no = 1;
+                        let sumSudah = 0, sumBelum = 0, sumPT = 0, no = 1;
                         
-                        // Urutkan berdasarkan CRO lalu Wilayah
                         let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
                         
                         if (sortedSummaries.length > 0) {
                             sortedSummaries.forEach(item => {
-                                sumSudah += item.sudah;
-                                sumBelum += item.belum;
-                                sumPT += item.jumlahPT;
-                                
+                                sumSudah += item.sudah; sumBelum += item.belum; sumPT += item.jumlahPT;
                                 let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
                                 let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
                                 
@@ -1352,7 +836,6 @@
                                 `;
                             });
                             
-                            // Baris Grand Total di paling bawah
                             let pctTotSudah = sumPT > 0 ? Math.round((sumSudah / sumPT) * 100) : 0;
                             let pctTotBelum = sumPT > 0 ? Math.round((sumBelum / sumPT) * 100) : 0;
                             
@@ -1370,47 +853,29 @@
                             ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap.</td></tr>`;
                         }
                         
-                        if(document.getElementById('kemitraan-list-body')) {
-                            document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
-                        }
-                        const isLightNow = document.body.classList.contains('light-mode');
-                        updateChartTheme(isLightNow);
+                        if(document.getElementById('kemitraan-list-body')) document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
+                        const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
                     }
                 });
             } catch (e) {
-                console.error("Gagal mengambil data kemitraan:", e);
+                console.error("Gagal menarik data via Browser:", e);
+                if(kpiContainer) kpiContainer.innerHTML = `<div class="p-5 text-red-500 font-bold">Gagal koneksi ke Google Sheets. Coba muat ulang halaman.</div>`;
             }
         }
 
         // FUNGSI MENDAPATKAN IKON FILE
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
-            if (ext.includes('.pdf')) {
-                return `
-                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>`; 
-            } else if (ext.includes('.doc') || ext.includes('.docx')) {
-                return `
-                <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>`; 
-            } else {
-                return `
-                <svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                </svg>`; 
-            }
+            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
+            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
+            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
         }
 
         // BUKA MODAL PREVIEW
         function openPreview(rawUrl) {
             let previewUrl = rawUrl.trim();
-            if (previewUrl.includes("drive.google.com/file/d/")) {
-                previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
-            } else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) {
-                previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
-            }
+            if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
+            else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
             
             document.getElementById('documentIframe').src = previewUrl;
             document.getElementById('modalExternalLink').href = rawUrl;
@@ -1419,24 +884,14 @@
             const content = document.getElementById('modalContent');
             
             modal.classList.remove('hidden');
-            setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('scale-95'); 
-            }, 10);
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
         }
 
-        // TUTUP MODAL PREVIEW
         function closePreview() {
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('modalContent');
-            
-            modal.classList.add('opacity-0'); 
-            content.classList.add('scale-95');
-            
-            setTimeout(() => { 
-                modal.classList.add('hidden'); 
-                document.getElementById('documentIframe').src = ""; 
-            }, 300);
+            modal.classList.add('opacity-0'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
         }
 
         // =========================================
@@ -1487,48 +942,24 @@
 
             const columns = Object.keys(data[0]).map(key => {
                 return { 
-                    title: key, 
-                    data: key, 
-                    defaultContent: "-", 
+                    title: key, data: key, defaultContent: "-", 
                     render: function(val) {
                         if (typeof val === 'string' && val.includes('|||')) {
                             const parts = val.split('|||');
-                            return `
-                            <a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">
-                                ${getFileIcon(parts[0])} 
-                                <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span>
-                            </a>`;
+                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
                         }
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `
-                            <a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                </svg>
-                                <span class="group-hover:underline">Buka Link</span>
-                            </a>`;
+                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) {
-                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
                         return val;
                     }
                 };
             });
 
             currentDataTable = $('#mainTable').DataTable({
-                data: data, 
-                columns: columns, 
-                scrollX: true, 
-                pageLength: 10, 
-                ordering: false,
-                language: { 
-                    search: "", 
-                    searchPlaceholder: "Cari Data...", 
-                    lengthMenu: "Tampil _MENU_ baris", 
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", 
-                    paginate: { previous: "Prev", next: "Next" } 
-                }
+                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
+                language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
 
             if (sheetName === 'INPUT ASTA') {
@@ -1542,12 +973,11 @@
         // =========================================
         // FUNGSI RENDER EVALUASI KINERJA
         // =========================================
-        function loadEvaluasiTable(sheetName) {
+        async function loadEvaluasiTable(sheetName) {
             document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
 
-            // JIKA REKAP KEMITRAAN DIKLIK, TAMPILKAN DASHBOARD BARUNYA!
             if (sheetName === "Rekap Kemitraan") {
                 document.getElementById('evaluasi-table-area').classList.add('hidden');
                 document.getElementById('evaluasi-dashboard-area').classList.remove('hidden');
@@ -1558,8 +988,25 @@
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
 
-            const data = rawData[sheetName] || [];
-            
+            let data = rawData[sheetName] || [];
+
+            // Bypass Fetch API dari Browser kalo dari Server kosong
+            if (data.length === 0) {
+                document.getElementById('evaluasiTable').innerHTML = `<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Menarik data dari server...<br><span class="text-[10px] animate-pulse">Mohon tunggu sebentar</span></td></tr></tbody>`;
+                try {
+                    const res = await fetch(`https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`);
+                    const csvText = await res.text();
+                    const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+                    
+                    if (parsed.data && parsed.data.length > 0) {
+                        data = parsed.data;
+                        rawData[sheetName] = data; 
+                    }
+                } catch(e) {
+                    console.error("Gagal bypass fetch:", e);
+                }
+            }
+
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
                 $('#evaluasiTable').DataTable().destroy(); 
                 $('#evaluasiTable').empty(); 
@@ -1572,7 +1019,7 @@
 
             const columns = Object.keys(data[0]).map(key => {
                 let title = key;
-                if (title.includes('__EMPTY')) title = ''; // Bersihin header nyangkut dari excel
+                if (title.includes('__EMPTY')) title = ''; 
                 return { 
                     title: title, data: key, defaultContent: "-", 
                     render: function(val) {
@@ -1587,9 +1034,7 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) {
-                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
                         return val;
                     }
                 };
@@ -1617,7 +1062,7 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            // Bangun tombol Tab Master Data (Sheet 1)
+            // Bangun tombol Tab Master Data
             const tabContainer = document.getElementById('tab-container');
             if(tabContainer) {
                 listSheets.forEach(sheet => {
@@ -1630,7 +1075,7 @@
                 });
             }
 
-            // Bangun tombol Tab Evaluasi Kinerja (Sheet 2)
+            // Bangun tombol Tab Evaluasi Kinerja
             const evaluasiTabContainer = document.getElementById('evaluasi-tab-container');
             if(evaluasiTabContainer) {
                 listEvaluasiSheets.forEach(sheet => {
@@ -1675,7 +1120,6 @@
                     
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
                         
-                        // JANGAN bikin notif spam kalau rawData awalnya emang kosong
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
                             const allSheetNames = [...listSheets, ...listEvaluasiSheets];
@@ -1691,25 +1135,19 @@
                                     let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
 
                                     allKeys.forEach(key => {
-                                        // Abaikan metadata link dan baris kosong internal dari Excel
                                         if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
 
                                         let oldVal = String(oldRow[key] || "").trim();
                                         let newVal = String(newRow[key] || "").trim();
 
-                                        // Hilangkan URL kalau ada fitur "|||" supaya rapi di notifikasi
-                                        if(oldVal.includes('|||')) {
-                                            oldVal = oldVal.split('|||')[0];
-                                        }
-                                        if(newVal.includes('|||')) {
-                                            newVal = newVal.split('|||')[0];
-                                        }
+                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
 
                                         if (oldVal !== newVal) {
                                             detectedChanges.push({
                                                 sheet: sheet, 
                                                 waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
-                                                baris: i + 2, // Excel baris 1 itu header, jadi index 0 = baris 2
+                                                baris: i + 2, 
                                                 kolom: key, 
                                                 lama: oldVal === "" ? "(Kosong)" : oldVal, 
                                                 baru: newVal === "" ? "(Kosong)" : newVal
@@ -1719,50 +1157,37 @@
                                 }
                             });
 
-                            // Masukkan log baru ke urutan teratas (Max 50 riwayat)
                             if(detectedChanges.length > 0) {
                                 logsData = [...detectedChanges, ...logsData];
-                                if (logsData.length > 50) {
-                                    logsData = logsData.slice(0, 50); 
-                                }
+                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
                             }
                             isUnread = true; 
                         }
 
-                        // Terapkan data baru ke aplikasi
                         rawData = result.rawData;
-                        
                         renderNotifications();
                         renderPivotDashboard(); 
                         
-                        // Reload Tabel Master Data jika sedang dibuka
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
-                                currentFilter = $('#asta-status-filter').val() || '';
-                            }
-                            
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
                             loadTable(activeTab.dataset.sheet);
-                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
                             }
                         }
 
-                        // Reload Tabel Evaluasi Kinerja jika sedang dibuka
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
                         if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
                         
-                        // Kalo pas ngetab Rekap Kemitraan lagi aktif pas background narik data, refresh chartnya!
                         if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
                             renderKemitraanDashboard();
                         }
 
-                        // Animasi tombol LIVE
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); 
@@ -1788,7 +1213,6 @@
                 }
             }
 
-            // Fetch langsung kalau cache kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
             }
