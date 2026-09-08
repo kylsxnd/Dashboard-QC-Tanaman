@@ -5,7 +5,12 @@ const path = require('path'); // Wajib ada untuk Vercel
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Penting untuk Vercel
-const SHEET_ID = '1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY';
+
+// ==========================================
+// MASUKKAN 2 ID GOOGLE SHEETS DI SINI
+// ==========================================
+const SHEET_ID_1 = '1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY'; // Master Data (Sheet 1)
+const SHEET_ID_2 = '1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg'; // Evaluasi Kinerja (Sheet 2 - Hanya Lihat)
 
 // Wajib biar Vercel nggak nyasar nyari EJS
 app.set('views', path.join(__dirname, 'views'));
@@ -25,17 +30,22 @@ let emailDatabase = [
 
 async function fetchGoogleSheets() {
     if (cachedData && (Date.now() - lastFetchTime < 10000)) return cachedData;
+    
+    let allSheets = {};
+    
     try {
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=xlsx`;
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
-        const workbook = xlsx.read(response.data, { type: 'buffer' });
+        // ==========================================
+        // 1. TARIK DATA DARI SHEET 1 (MASTER DATA)
+        // ==========================================
+        const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
+        const response1 = await axios.get(url1, { responseType: 'arraybuffer' });
+        const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
         
-        let allSheets = {};
-        workbook.SheetNames.forEach(sheetName => {
+        workbook1.SheetNames.forEach(sheetName => {
             let options = { defval: "-" };
             if (sheetName === 'Pembayaran Vendor' || sheetName === 'Pivot Table') options.range = 1;
             
-            const sheet = workbook.Sheets[sheetName];
+            const sheet = workbook1.Sheets[sheetName];
             for (let cellAddress in sheet) {
                 if (cellAddress.startsWith('!')) continue;
                 const cell = sheet[cellAddress];
@@ -47,18 +57,47 @@ async function fetchGoogleSheets() {
             allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
         });
 
+        // ==========================================
+        // 2. TARIK DATA DARI SHEET 2 (EVALUASI KINERJA)
+        // ==========================================
+        const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
+        const response2 = await axios.get(url2, { responseType: 'arraybuffer' });
+        const workbook2 = xlsx.read(response2.data, { type: 'buffer' });
+        
+        workbook2.SheetNames.forEach(sheetName => {
+            let options = { defval: "-" };
+            
+            const sheet = workbook2.Sheets[sheetName];
+            for (let cellAddress in sheet) {
+                if (cellAddress.startsWith('!')) continue;
+                const cell = sheet[cellAddress];
+                if (cell && cell.l && cell.l.Target) {
+                    cell.v = cell.v + "|||" + cell.l.Target;
+                    if (cell.w) cell.w = cell.v;
+                }
+            }
+            // Gabungkan data dari Sheet 2 ke object allSheets
+            allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
+        });
+
         cachedData = allSheets;
         lastFetchTime = Date.now();
         return allSheets;
+        
     } catch (error) {
         console.error("Gagal menarik data:", error.message);
-        return null;
+        // Tetap kembalikan data lama jika gagal narik, biar web nggak langsung crash
+        return cachedData || null; 
     }
 }
 
+// ==========================================
+// JALUR (ROUTES) HALAMAN WEB
+// ==========================================
 app.get('/', (req, res) => res.redirect('/login'));
 app.get('/login', (req, res) => res.render('login'));
 
+// Halaman 1: Dashboard Utama
 app.get('/dashboard', async (req, res) => {
     const data = await fetchGoogleSheets();
     if (!data) return res.send("Gagal memuat data dari Google Sheets.");
@@ -69,6 +108,20 @@ app.get('/dashboard', async (req, res) => {
     });
 });
 
+// Halaman 2: Evaluasi Kinerja (File evaluasi.ejs harus ada di folder views)
+app.get('/evaluasi', async (req, res) => {
+    const data = await fetchGoogleSheets();
+    if (!data) return res.send("Gagal memuat data dari Google Sheets.");
+    res.render('evaluasi', { 
+        sheetData: JSON.stringify(data), 
+        logsData: JSON.stringify(changeLogs),
+        emailsData: JSON.stringify(emailDatabase)
+    });
+});
+
+// ==========================================
+// JALUR API UNTUK AUTO-UPDATE BACKGROUND
+// ==========================================
 app.get('/api/check-updates', async (req, res) => {
     const data = await fetchGoogleSheets();
     res.json({ logs: changeLogs, rawData: data });
