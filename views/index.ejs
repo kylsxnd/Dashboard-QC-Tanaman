@@ -9,8 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    
-    <!-- ALAT PENYEDOT DATA CADANGAN (PAPAPARSE) -->
+
+    <!-- ALAT PENYEDOT DATA CADANGAN (PAPAPARSE) KHUSUS REKAP KEMITRAAN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <!-- DataTables -->
@@ -1177,7 +1177,7 @@
         // =========================================
         async function renderKemitraanDashboard() {
             try {
-                // Tembak langsung API Google Sheets dari Browser pake format CSV biar nembus murni tanpa error server
+                // Gunakan PapaParse untuk menarik data murni dari Google Sheets Evaluasi (Bebas dari limit server)
                 const res = await fetch('https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/gviz/tq?tqx=out:csv&sheet=Rekap+Kemitraan');
                 const csvText = await res.text();
                 
@@ -1192,64 +1192,78 @@
                         let chartBarDataMap = {};
                         let summaryMap = {}; 
 
-                        // ==========================================
-                        // HARDCODE TARGET KOLOM BERDASARKAN SCREENSHOT LU:
-                        // Kolom L = Index 11 (Regional Tahap 1-7)
-                        // Kolom M = Index 12 (Wilayah Tahap 1-7)
-                        // Kolom N = Index 13 (Jumlah PT)
-                        // Kolom P = Index 15 (Sudah Dikelola)
-                        // Kolom Q = Index 16 (Belum Dikelola)
-                        // ==========================================
-                        
-                        // Mulai dari baris ke-4 di excel (Index 3 di array) karena baris 1-3 itu judul dan kosong
-                        for(let i = 3; i < rows.length; i++) {
-                            let r = rows[i];
-                            
-                            // Kalo barisnya pendek banget sampe gak nyentuh kolom ke 16, lewatin aja
-                            if(r.length < 17) continue; 
-                            
-                            let rowCRO = String(r[11] || "").trim();
-                            let rowWilayah = String(r[12] || "").trim();
-                            
-                            // Bersihin koma/titik biar murni angka integer aja
-                            let rowJumlah = parseInt(String(r[13]).replace(/[^0-9]/g,'')) || 0;
-                            let rowSudah = parseInt(String(r[15]).replace(/[^0-9]/g,'')) || 0;
-                            let rowBelum = parseInt(String(r[16]).replace(/[^0-9]/g,'')) || 0;
+                        let colRegional = -1, colWilayah = -1, colJumlah = -1, colSudah = -1, colBelum = -1;
+                        let startRow = -1;
 
-                            // Filter anti-nyangkut (Buang baris kosong, header yg kepanggil, dll)
-                            if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
+                        // Scan 15 baris pertama untuk mencari Header Tahap 1 - 7
+                        for (let i = 0; i < Math.min(15, rows.length); i++) {
+                            let row = rows[i];
+                            let regionalIndexes = [];
                             
-                            // JANGAN HITUNG BARIS GRAND TOTAL. Komputer aja yang ngitung total akhirnya!
-                            if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
+                            row.forEach((val, idx) => {
+                                if(String(val).trim().toLowerCase() === 'regional') regionalIndexes.push(idx);
+                            });
 
-                            // Rapikan nama CRO (misal tertulis 'I', kita ganti jadi 'CRO I')
-                            if(rowCRO.toLowerCase().startsWith('cro')) {
-                                rowCRO = rowCRO.toUpperCase();
-                            } else {
-                                rowCRO = "CRO " + rowCRO.toUpperCase(); 
+                            // Tabel Tahap 1-7 adalah tabel kedua (index ke-1)
+                            if (regionalIndexes.length >= 2) {
+                                colRegional = regionalIndexes[1];
+                                
+                                for(let j = colRegional; j < row.length; j++) {
+                                    let v = String(row[j]).toLowerCase().trim();
+                                    if (v === 'wilayah' && colWilayah === -1) colWilayah = j;
+                                    if ((v === 'jumlah pt' || v === 'jumlah') && colJumlah === -1) colJumlah = j;
+                                    if (v === 'sudah dikelola' && colSudah === -1) colSudah = j;
+                                    if (v === 'belum dikelola' && colBelum === -1) colBelum = j;
+                                }
+                                
+                                if(colRegional !== -1 && colSudah !== -1) {
+                                    startRow = i + 1; // Baris setelah header
+                                    break;
+                                }
                             }
-
-                            // JUMLAHIN KE VARIABEL GLOBAL
-                            totalPtCount += rowJumlah;
-                            totalSudah += rowSudah;
-                            totalBelum += rowBelum;
-
-                            // MASUKIN KE GRAFIK BAR
-                            chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
-
-                            // MASUKIN KE TABEL SUMMARY PER WILAYAH
-                            let sumKey = rowCRO + "_" + rowWilayah;
-                            if (!summaryMap[sumKey]) {
-                                summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
-                            }
-                            summaryMap[sumKey].jumlahPT += rowJumlah;
-                            summaryMap[sumKey].sudah += rowSudah;
-                            summaryMap[sumKey].belum += rowBelum;
                         }
 
-                        // ===================================
-                        // RENDER TAMPILAN KE LAYAR
-                        // ===================================
+                        if (startRow !== -1) {
+                            for (let i = startRow; i < rows.length; i++) {
+                                let row = rows[i];
+                                let rowCRO = String(row[colRegional] || "").replace(/^[+-]\s*/, '').trim();
+                                let rowWilayah = String(row[colWilayah] || "").trim();
+                                
+                                // Bersihin angka dari text
+                                let rowJumlah = parseInt(String(row[colJumlah]).replace(/[^0-9]/g,'')) || 0;
+                                let rowSudah = parseInt(String(row[colSudah]).replace(/[^0-9]/g,'')) || 0;
+                                let rowBelum = parseInt(String(row[colBelum]).replace(/[^0-9]/g,'')) || 0;
+
+                                // Filter Buang baris kosong atau baris judul
+                                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
+                                if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
+
+                                // Seragamkan nama CRO
+                                if(rowCRO.toLowerCase().startsWith('cro')) {
+                                    rowCRO = rowCRO.toUpperCase();
+                                } else {
+                                    rowCRO = "CRO " + rowCRO.toUpperCase(); 
+                                }
+
+                                totalPtCount += rowJumlah;
+                                totalSudah += rowSudah;
+                                totalBelum += rowBelum;
+
+                                // Agregasi Bar Chart
+                                chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
+
+                                // Agregasi Summary Per Wilayah
+                                let sumKey = rowCRO + "_" + rowWilayah;
+                                if (!summaryMap[sumKey]) {
+                                    summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
+                                }
+                                summaryMap[sumKey].jumlahPT += rowJumlah;
+                                summaryMap[sumKey].sudah += rowSudah;
+                                summaryMap[sumKey].belum += rowBelum;
+                            }
+                        }
+
+                        // Render KPI Boxes Rekap Kemitraan
                         const kpiContainer = document.getElementById('kemitraan-kpi-container');
                         if(kpiContainer) {
                             kpiContainer.innerHTML = `
@@ -1273,6 +1287,7 @@
                             `;
                         }
 
+                        // Render Bar Chart (Sebaran PT)
                         if(document.getElementById('kemitraan-bar-chart')) {
                             Highcharts.chart('kemitraan-bar-chart', {
                                 chart: { type: 'column', backgroundColor: 'transparent' },
@@ -1286,6 +1301,7 @@
                             });
                         }
 
+                        // Render Pie Chart (Sudah vs Belum)
                         if(document.getElementById('kemitraan-pie-chart')) {
                             Highcharts.chart('kemitraan-pie-chart', {
                                 chart: { type: 'pie', backgroundColor: 'transparent' },
@@ -1303,14 +1319,22 @@
                             });
                         }
                         
+                        // RENDER TABEL SUMMARY PER WILAYAH
                         let ptHtml = '';
-                        let sumSudah = 0, sumBelum = 0, sumPT = 0, no = 1;
+                        let sumSudah = 0;
+                        let sumBelum = 0;
+                        let sumPT = 0;
+                        let no = 1;
                         
+                        // Urutkan berdasarkan CRO lalu Wilayah
                         let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
                         
                         if (sortedSummaries.length > 0) {
                             sortedSummaries.forEach(item => {
-                                sumSudah += item.sudah; sumBelum += item.belum; sumPT += item.jumlahPT;
+                                sumSudah += item.sudah;
+                                sumBelum += item.belum;
+                                sumPT += item.jumlahPT;
+                                
                                 let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
                                 let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
                                 
@@ -1328,6 +1352,7 @@
                                 `;
                             });
                             
+                            // Baris Grand Total di paling bawah
                             let pctTotSudah = sumPT > 0 ? Math.round((sumSudah / sumPT) * 100) : 0;
                             let pctTotBelum = sumPT > 0 ? Math.round((sumBelum / sumPT) * 100) : 0;
                             
@@ -1345,14 +1370,15 @@
                             ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap.</td></tr>`;
                         }
                         
-                        if(document.getElementById('kemitraan-list-body')) document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
-                        const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
+                        if(document.getElementById('kemitraan-list-body')) {
+                            document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
+                        }
+                        const isLightNow = document.body.classList.contains('light-mode');
+                        updateChartTheme(isLightNow);
                     }
                 });
             } catch (e) {
-                console.error("Gagal menarik data via Browser:", e);
-                const kpiContainer = document.getElementById('kemitraan-kpi-container');
-                if(kpiContainer) kpiContainer.innerHTML = `<div class="p-5 text-red-500 font-bold">Gagal koneksi ke Google Sheets. Coba muat ulang halaman.</div>`;
+                console.error("Gagal mengambil data kemitraan:", e);
             }
         }
 
@@ -1516,7 +1542,7 @@
         // =========================================
         // FUNGSI RENDER EVALUASI KINERJA
         // =========================================
-        async function loadEvaluasiTable(sheetName) {
+        function loadEvaluasiTable(sheetName) {
             document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
@@ -1532,25 +1558,8 @@
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
 
-            let data = rawData[sheetName] || [];
-
-            // Bypass Fetch API dari Browser kalo dari Server kosong (Anti Layar Blank)
-            if (data.length === 0) {
-                document.getElementById('evaluasiTable').innerHTML = `<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Menarik data dari server...<br><span class="text-[10px] animate-pulse">Mohon tunggu sebentar</span></td></tr></tbody>`;
-                try {
-                    const res = await fetch(`https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`);
-                    const csvText = await res.text();
-                    const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
-                    
-                    if (parsed.data && parsed.data.length > 0) {
-                        data = parsed.data;
-                        rawData[sheetName] = data; 
-                    }
-                } catch(e) {
-                    console.error("Gagal bypass fetch:", e);
-                }
-            }
-
+            const data = rawData[sheetName] || [];
+            
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
                 $('#evaluasiTable').DataTable().destroy(); 
                 $('#evaluasiTable').empty(); 
@@ -1563,7 +1572,7 @@
 
             const columns = Object.keys(data[0]).map(key => {
                 let title = key;
-                if (title.includes('__EMPTY')) title = ''; 
+                if (title.includes('__EMPTY')) title = ''; // Bersihin header nyangkut dari excel
                 return { 
                     title: title, data: key, defaultContent: "-", 
                     render: function(val) {
@@ -1578,7 +1587,9 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        if (typeof val === 'string' && val.includes('\n')) {
+                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        }
                         return val;
                     }
                 };
@@ -1606,7 +1617,7 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            // Bangun tombol Tab Master Data
+            // Bangun tombol Tab Master Data (Sheet 1)
             const tabContainer = document.getElementById('tab-container');
             if(tabContainer) {
                 listSheets.forEach(sheet => {
@@ -1619,7 +1630,7 @@
                 });
             }
 
-            // Bangun tombol Tab Evaluasi Kinerja
+            // Bangun tombol Tab Evaluasi Kinerja (Sheet 2)
             const evaluasiTabContainer = document.getElementById('evaluasi-tab-container');
             if(evaluasiTabContainer) {
                 listEvaluasiSheets.forEach(sheet => {
@@ -1680,19 +1691,25 @@
                                     let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
 
                                     allKeys.forEach(key => {
+                                        // Abaikan metadata link dan baris kosong internal dari Excel
                                         if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
 
                                         let oldVal = String(oldRow[key] || "").trim();
                                         let newVal = String(newRow[key] || "").trim();
 
-                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
-                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
+                                        // Hilangkan URL kalau ada fitur "|||" supaya rapi di notifikasi
+                                        if(oldVal.includes('|||')) {
+                                            oldVal = oldVal.split('|||')[0];
+                                        }
+                                        if(newVal.includes('|||')) {
+                                            newVal = newVal.split('|||')[0];
+                                        }
 
                                         if (oldVal !== newVal) {
                                             detectedChanges.push({
                                                 sheet: sheet, 
                                                 waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
-                                                baris: i + 2, 
+                                                baris: i + 2, // Excel baris 1 itu header, jadi index 0 = baris 2
                                                 kolom: key, 
                                                 lama: oldVal === "" ? "(Kosong)" : oldVal, 
                                                 baru: newVal === "" ? "(Kosong)" : newVal
@@ -1702,37 +1719,50 @@
                                 }
                             });
 
+                            // Masukkan log baru ke urutan teratas (Max 50 riwayat)
                             if(detectedChanges.length > 0) {
                                 logsData = [...detectedChanges, ...logsData];
-                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
+                                if (logsData.length > 50) {
+                                    logsData = logsData.slice(0, 50); 
+                                }
                             }
                             isUnread = true; 
                         }
 
+                        // Terapkan data baru ke aplikasi
                         rawData = result.rawData;
+                        
                         renderNotifications();
                         renderPivotDashboard(); 
                         
+                        // Reload Tabel Master Data jika sedang dibuka
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
+                                currentFilter = $('#asta-status-filter').val() || '';
+                            }
+                            
                             loadTable(activeTab.dataset.sheet);
+                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
                             }
                         }
 
+                        // Reload Tabel Evaluasi Kinerja jika sedang dibuka
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
                         if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
                         
+                        // Kalo pas ngetab Rekap Kemitraan lagi aktif pas background narik data, refresh chartnya!
                         if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
                             renderKemitraanDashboard();
                         }
 
+                        // Animasi tombol LIVE
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); 
@@ -1758,13 +1788,14 @@
                 }
             }
 
+            // Fetch langsung kalau cache kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
             }
 
             setInterval(syncData, 10000); 
 
-            // Cek Email Baru Tiap 5 Detik
+            // Cek Email Baru Tiap 5 Detik (Anti Cache)
             setInterval(async () => {
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
