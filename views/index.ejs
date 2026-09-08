@@ -10,6 +10,9 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
+    <!-- ALAT PENYEDOT DATA CADANGAN (PAPAPARSE) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
     <!-- DataTables -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -549,7 +552,7 @@
                 </div>
             </section>
 
-            <!-- 3. HALAMAN BARU: EVALUASI KINERJA (SHEET KE-2) -->
+            <!-- 3. HALAMAN EVALUASI KINERJA (DENGAN DASHBOARD REKAP KEMITRAAN MURNI) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Evaluasi Kinerja Produksi</h2>
@@ -567,7 +570,7 @@
                             <table id="evaluasiTable" class="w-full text-left"></table>
                         </div>
                         
-                        <!-- AREA DASHBOARD KHUSUS REKAP KEMITRAAN -->
+                        <!-- AREA DASHBOARD KHUSUS REKAP KEMITRAAN (MEMBACA SHEET EXCEL SECARA FISIK) -->
                         <div id="evaluasi-dashboard-area" class="hidden w-full">
                             
                             <!-- KPI Rekap Kemitraan -->
@@ -686,7 +689,7 @@
          JAVASCRIPT LOGIC
          ========================================= -->
     <script>
-        // Data dari backend server.js (Akurat dari Server tanpa fetch ulang di browser)
+        // Data dari backend server.js (Murni tanpa download ulang dari browser)
         let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
@@ -725,10 +728,12 @@
             const overlay = document.getElementById('sidebar-overlay');
             
             if (sidebar.classList.contains('-translate-x-full')) {
+                // Buka Sidebar
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             } else {
+                // Tutup Sidebar
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
@@ -777,11 +782,13 @@
         // FUNGSI NAVIGASI MENU SIDEBAR KIRI
         // =========================================
         function switchView(viewId, elementId) {
+            // Sembunyikan semua halaman
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
             document.getElementById('view-evaluasi').classList.add('hidden');
             document.getElementById('view-inbox').classList.add('hidden');
             
+            // Tampilkan halaman yang dipilih
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
@@ -793,12 +800,14 @@
                 headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
             } else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
+                
                 fetch('/api/read-emails?t=' + new Date().getTime(), { method: 'POST' }).then(() => {
                     const badge = document.getElementById('sidebar-email-badge');
                     if(badge) { 
                         badge.classList.add('hidden'); 
                         badge.classList.remove('badge-pop'); 
                     }
+                    
                     document.querySelectorAll('.email-row.bg-blue-500\\/5').forEach(el => {
                         el.classList.remove('bg-blue-500/5');
                         el.querySelector('.email-sender').classList.remove('font-bold', 'text-white');
@@ -813,6 +822,7 @@
             document.getElementById('nav-inbox').classList.remove('active');
             document.getElementById(elementId).classList.add('active');
             
+            // Auto close sidebar if on mobile screen
             if (window.innerWidth < 768) {
                 toggleSidebar();
             }
@@ -823,6 +833,7 @@
                 }, 50);
             }
             
+            // Atur tabel evaluasi jika yang dibuka bukan tab khusus Rekap Kemitraan
             const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
             if(viewId === 'view-evaluasi' && evaluasiDataTable && activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") { 
                 setTimeout(() => {
@@ -969,6 +980,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
+            // Mengambil langsung dari sumber mentah (REKAPITULASI)
             const rawRekapData = rawData["REKAPITULASI"] || [];
             
             let croList = new Set();
@@ -981,6 +993,7 @@
             let chartPieDataMap = {};
             let ptDataMap = {}; 
 
+            // Fungsi helper pembersih format angka dari Excel
             const parseNum = (val) => {
                 if (typeof val === 'number') return val;
                 if (!val || val === '-' || String(val).trim() === '') return 0;
@@ -1006,6 +1019,7 @@
                 return parseFloat(s) || 0;
             };
 
+            // Pelacak Kolom Otomatis (Dynamic Header Detection)
             let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)";
             if (rawRekapData.length > 0) {
                 const sampleKeys = Object.keys(rawRekapData[0]);
@@ -1016,15 +1030,18 @@
                 keyTarget = sampleKeys.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || "Target Produksi (Ton)";
             }
 
+            // Loop untuk kalkulasi data
             rawRekapData.forEach(row => {
                 let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
                 let namaPt = String(row[keyPT] || "").trim();
 
+                // Skip baris kosong atau baris "Total" bawaan dari pivot/rekap agar tidak dobel hitung
                 if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary")) return;
                 if (!namaPt || namaPt === "-" || namaPt.toLowerCase().includes("total") || namaPt.toLowerCase().includes("summary")) return;
 
                 croList.add(rowCRO);
 
+                // Filter CRO Dropdown
                 if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
 
                 let luasKebun = parseNum(row[keyLuas]);
@@ -1034,8 +1051,10 @@
                 totalLuas += luasKebun;
                 totalLuasTM += luasTM;
                 totalTarget += targetProd;
+                
                 totalPtCount++; 
 
+                // Agregasi per PT untuk ditampilkan di Tabel Daftar Perusahaan
                 if (!ptDataMap[namaPt]) {
                     ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
                 }
@@ -1043,10 +1062,12 @@
                 ptDataMap[namaPt].luasTM += luasTM;
                 ptDataMap[namaPt].target += targetProd;
 
+                // Agregasi untuk Grafik 
                 chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + targetProd;
                 chartPieDataMap[rowCRO] = (chartPieDataMap[rowCRO] || 0) + luasKebun;
             });
 
+            // Update List Dropdown Kalau Masih Kosong
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
                     let opt = document.createElement('option');
@@ -1057,6 +1078,7 @@
                 });
             }
 
+            // Render KPI Boxes
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
                 kpiContainer.innerHTML = `
@@ -1082,6 +1104,7 @@
                 `;
             }
 
+            // Atur Judul Grafik berdasarkan filter
             const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) {
                 document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
@@ -1093,6 +1116,7 @@
                 document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
             }
 
+            // Render Bar Chart
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
                     chart: { type: 'column', backgroundColor: 'transparent' },
@@ -1106,6 +1130,7 @@
                 });
             }
 
+            // Render Pie Chart
             if(document.getElementById('pivot-pie-chart')) {
                 Highcharts.chart('pivot-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
@@ -1117,6 +1142,7 @@
                 });
             }
             
+            // RENDER TABEL RINCIAN NAMA PT (KEMBALI KE NAMA PT SEPERTI SEMULA)
             let ptHtml = '';
             let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
             
@@ -1152,7 +1178,9 @@
         // =========================================
         function renderKemitraanDashboard() {
             // Kita ambil mentahan JSON Murni hasil sedotan Server
-            const sheetData = rawData["Rekap_Kemitraan_Clean"] || rawData["Rekap Kemitraan"] || [];
+            // Solusi Spasi Tersembunyi: Cari kunci yang mengandung kata "Rekap Kemitraan"
+            let targetSheetName = Object.keys(rawData).find(k => k.trim() === "Rekap Kemitraan");
+            const rawRekapData = rawData[targetSheetName] || [];
             
             let totalSudah = 0;
             let totalBelum = 0;
@@ -1161,23 +1189,34 @@
             let chartBarDataMap = {};
             let summaryMap = {}; 
 
-            if (sheetData.length > 0) {
+            if (rawRekapData.length > 0) {
                 
-                sheetData.forEach(rowObj => {
-                    // JADIIN ARRAY BIAR BISA BACA INDEX KOLOM L, M, N, P, Q SESUAI EXCEL
-                    // Excel Index L = ke-11
-                    // Excel Index M = ke-12
-                    // Excel Index N = ke-13
-                    // Excel Index P = ke-15
-                    // Excel Index Q = ke-16
+                // Scan 15 baris pertama untuk mencari di baris mana data header Tabel "List Nama PT" berada
+                // Tabel "List Nama PT" ada di sebelah kanan tabel (Kolom ke-32 / AG di excel lu)
+                
+                // Gunakan mapping manual kolom sesuai posisi fisik Excel lu:
+                // Kolom AG (Index 32) = Regional
+                // Kolom AH (Index 33) = Wilayah
+                // Kolom AJ (Index 35) = Nama PT (Sebenarnya kalau mau aman kita gak butuh nama PT, cuma butuh angka Jumlah PT)
+                // Karena kita mau hitung rekap per wilayah, mari kita pakai kolom jumlah PT
+                
+                // Di Excel lu, Tahap 1-7 itu ada di kolom ke:
+                // Regional = Index 11 (Kolom L)
+                // Wilayah = Index 12 (Kolom M)
+                // Jumlah PT = Index 13 (Kolom N)
+                // Sudah Dikelola = Index 15 (Kolom P)
+                // Belum Dikelola = Index 16 (Kolom Q)
+
+                rawRekapData.forEach(rowObj => {
+                    // Jadikan object values supaya bisa diakses pakai index angka murni
                     let row = Object.values(rowObj);
 
-                    // Pastikan panjang datanya beneran nyampe tabel Tahap 1-7
+                    // Pastikan barisnya panjangnya cukup sampai kolom Q (index 16)
                     if (row.length >= 17) {
                         let cro = String(row[11] || "").replace(/^[+-]\s*/, '').trim();
                         let wilayah = String(row[12] || "").trim();
 
-                        // Ambil Angkanya aja (biar kalau ada simbol "%" gak bikin nyangkut ke "48485922")
+                        // Ambil Angkanya aja (biar kalau ada simbol "%" gak bikin nyangkut ke angka gede)
                         let jumlah = parseInt(String(row[13]).replace(/[^0-9]/g,'')) || 0;
                         let sudah = parseInt(String(row[15]).replace(/[^0-9]/g,'')) || 0;
                         let belum = parseInt(String(row[16]).replace(/[^0-9]/g,'')) || 0;
@@ -1318,7 +1357,6 @@
             if(document.getElementById('kemitraan-list-body')) {
                 document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
             }
-            
             const isLightNow = document.body.classList.contains('light-mode');
             updateChartTheme(isLightNow);
         }
@@ -1530,7 +1568,9 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        if (typeof val === 'string' && val.includes('\n')) {
+                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        }
                         return val;
                     }
                 };
@@ -1604,7 +1644,7 @@
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND INSTANT
+            // LOGIKA POLLING BACKGROUND (SHEETS DEEP-DIFF) INSTANT FETCH
             // ==========================================
             async function syncData() {
                 const syncText = document.getElementById('sync-text');
@@ -1644,7 +1684,7 @@
                                             detectedChanges.push({
                                                 sheet: sheet, 
                                                 waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
-                                                baris: i + 2, 
+                                                baris: i + 2, // Excel baris 1 itu header, jadi index 0 = baris 2
                                                 kolom: key, 
                                                 lama: oldVal === "" ? "(Kosong)" : oldVal, 
                                                 baru: newVal === "" ? "(Kosong)" : newVal
@@ -1668,8 +1708,12 @@
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
+                                currentFilter = $('#asta-status-filter').val() || '';
+                            }
+                            
                             loadTable(activeTab.dataset.sheet);
+                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
@@ -1681,10 +1725,12 @@
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
                         
+                        // Kalo pas ngetab Rekap Kemitraan lagi aktif pas background narik data, refresh chartnya!
                         if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
                             renderKemitraanDashboard();
                         }
 
+                        // Animasi tombol LIVE
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); 
@@ -1710,14 +1756,14 @@
                 }
             }
 
-            // Langsung panggil data kalau masih kosong biar ga nunggu 10 detik
+            // Panggil API Vercel langsung kalau data kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
             }
 
             setInterval(syncData, 10000); 
 
-            // Cek Email Baru Tiap 5 Detik
+            // Cek Email Baru Tiap 5 Detik (Anti Cache)
             setInterval(async () => {
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
