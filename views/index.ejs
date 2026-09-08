@@ -22,6 +22,7 @@
            SISTEM TEMA: DARK / LIGHT MODE
            ========================================= */
         :root {
+            /* Tema Gelap (Bawaan) */
             --bg-main: #0a0a0a; 
             --bg-panel: #111111;
             --bg-card: #151515;
@@ -34,6 +35,7 @@
         }
         
         body.light-mode {
+            /* Tema Terang */
             --bg-main: #f3f4f6; 
             --bg-panel: #ffffff;
             --bg-card: #ffffff;
@@ -45,6 +47,7 @@
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
 
+        /* CLASS KHUSUS UNTUK MENERAPKAN TEMA */
         .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
@@ -54,176 +57,56 @@
         /* =========================================
            BASE & LAYOUT
            ========================================= */
-        body { 
-            background-color: var(--bg-main); 
-            color: var(--text-main); 
-            font-family: 'Inter', sans-serif; 
-            overflow: hidden; 
-            transition: all 0.3s ease; 
-        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
         
-        .premium-card { 
-            background: var(--bg-card); 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-            transition: all 0.3s ease; 
-        }
+        /* PREMIUM CARDS */
+        .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
 
-        .premium-dropdown { 
-            background-color: var(--bg-dropdown); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid var(--border-color); 
-            box-shadow: var(--shadow-drop); 
-            z-index: 100 !important; 
-        }
-        
-        .premium-dropdown-header { 
-            background-color: var(--bg-panel); 
-            border-bottom: 1px solid var(--border-color); 
-        }
+        /* =========================================
+           DROPDOWN NOTIFIKASI KHUSUS (ANTI TRANSPARAN)
+           ========================================= */
+        .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
+        .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
-        .sidebar-link { 
-            padding: 10px 16px; 
-            font-size: 13px; 
-            font-weight: 500; 
-            color: var(--text-muted); 
-            border-radius: 8px; 
-            transition: all 0.2s ease; 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 4px; 
-            position: relative; 
-        }
-        
-        .sidebar-link:hover { 
-            color: var(--text-main); 
-            background: var(--hover-bg); 
-        }
-        
-        .sidebar-link.active { 
-            color: var(--text-main); 
-            background: var(--hover-bg); 
-            border-left: 3px solid #83b765; 
-        }
+        /* =========================================
+           SIDEBAR LINKS
+           ========================================= */
+        .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
+        .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
+        .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
-        @keyframes pop { 
-            0% { transform: scale(0.8); opacity: 0; } 
-            50% { transform: scale(1.2); opacity: 1; } 
-            100% { transform: scale(1); opacity: 1; } 
-        }
+        /* ANIMASI BADGE KIRI */
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        .tab-btn { 
-            padding: 8px 16px; 
-            font-size: 13px; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            transition: all 0.25s ease; 
-            border-radius: 6px; 
-            color: var(--text-muted); 
-            font-weight: 500; 
-            background: transparent; 
-            border: 1px solid transparent; 
-        }
-        
-        .tab-active { 
-            background: var(--hover-bg) !important; 
-            color: var(--text-main) !important; 
-            border-color: var(--border-color) !important; 
-        }
-        
-        .tab-btn:hover:not(.tab-active) { 
-            color: var(--text-main); 
-            background: var(--hover-bg); 
-        }
+        /* =========================================
+           TABS NAVIGATION (Menu Sheet)
+           ========================================= */
+        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
+        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
 
-        .dataTables_wrapper .dataTables_length, 
-        .dataTables_wrapper .dataTables_filter, 
-        .dataTables_wrapper .dataTables_info, 
-        .dataTables_wrapper .dataTables_paginate { 
-            color: var(--text-muted) !important; 
-            font-size: 12px; 
-            margin-top: 16px; 
-            margin-bottom: 24px; 
-        }
-        
-        .dataTables_wrapper select, 
-        .dataTables_wrapper .dataTables_filter input { 
-            background-color: var(--bg-main) !important; 
-            border: 1px solid var(--border-color) !important; 
-            color: var(--text-main) !important; 
-            padding: 6px 12px !important; 
-            border-radius: 6px !important; 
-            outline: none !important; 
-            transition: all 0.2s; 
-        }
-        
-        .dataTables_wrapper .dataTables_filter input:focus { 
-            border-color: #83b765 !important; 
-        }
+        /* =========================================
+           DATATABLES CUSTOMIZATION
+           ========================================= */
+        .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
+        .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
+        .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
 
-        table.dataTable { 
-            border-collapse: collapse !important; 
-            border-spacing: 0 !important; 
-            margin-top: 12px !important; 
-            margin-bottom: 20px !important; 
-            width: 100% !important; 
-            border-bottom: 1px solid var(--border-color) !important; 
-        }
-        
-        table.dataTable thead th { 
-            background-color: var(--bg-card) !important; 
-            color: var(--text-muted) !important; 
-            border-bottom: 1px solid var(--border-color) !important; 
-            font-weight: 600; 
-            font-size: 11px; 
-            letter-spacing: 0.05em; 
-            padding: 14px 18px !important; 
-            text-transform: uppercase; 
-            white-space: nowrap !important; 
-        }
-        
-        table.dataTable tbody tr { 
-            background-color: transparent !important; 
-            transition: all 0.15s ease; 
-        }
-        
-        table.dataTable tbody tr:hover { 
-            background-color: var(--hover-bg) !important; 
-        }
-        
-        table.dataTable tbody td { 
-            border-bottom: 1px solid var(--border-color) !important; 
-            font-size: 13px; 
-            padding: 12px 18px !important; 
-            color: var(--text-main) !important; 
-            white-space: nowrap !important; 
-            vertical-align: middle !important; 
-        }
+        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
+        table.dataTable thead th { background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
+        table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
+        table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
+        table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
 
-        .dataTables_wrapper .dataTables_paginate .paginate_button { 
-            background: transparent !important; 
-            border: 1px solid transparent !important; 
-            border-radius: 6px !important; 
-            color: var(--text-muted) !important; 
-            padding: 4px 10px !important; 
-            margin: 0 2px !important; 
-            transition: all 0.2s; 
-        }
-        
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { 
-            background: var(--hover-bg) !important; 
-            color: var(--text-main) !important; 
-        }
-        
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current { 
-            background: var(--hover-bg) !important; 
-            color: var(--text-main) !important; 
-            border-color: var(--border-color) !important; 
-            font-weight: 600; 
-        }
+        /* PAGINATION BUTTONS */
+        .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
 
+        /* =========================================
+           ANIMATIONS & CUSTOM SCROLLBAR
+           ========================================= */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -235,6 +118,7 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
 
+    <!-- OVERLAY BACKDROP (UNTUK HP) -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <!-- SIDEBAR KIRI -->
@@ -332,12 +216,10 @@
             </div>
         </header>
 
-        <!-- KONTEN UTAMA (Yang Bisa Di-Scroll) -->
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
             
             <!-- 1. HALAMAN DASHBOARD PIVOT -->
             <section id="view-dashboard" class="fade-in block">
-                
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
@@ -347,7 +229,6 @@
                         </p>
                     </div>
                     
-                    <!-- FILTER CRO -->
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
                         <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter CRO:</span>
                         <select id="cro-filter" onchange="renderPivotDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer">
@@ -356,10 +237,8 @@
                     </div>
                 </div>
 
-                <!-- KPI BOXES DARI PIVOT -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
 
-                <!-- CHARTS DARI PIVOT -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Target Produksi (Ton) per CRO</h3>
@@ -371,32 +250,22 @@
                     </div>
                 </div>
 
-                <!-- SUMMARY REKAP KEMITRAAN PER WILAYAH -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full">
-                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">
-                        Rekap Kemitraan per Wilayah (Status Pengelolaan)
-                    </h3>
+                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Daftar Perusahaan (PT)</h3>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[700px]">
+                        <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
                                 <tr>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">No</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Regional</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Wilayah</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">Jumlah PT</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] text-blue-500 font-bold uppercase text-center">Sudah Dikelola</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] text-red-500 font-bold uppercase text-center">Belum Dikelola</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] text-blue-500 font-bold uppercase text-center">% Sudah</th>
-                                    <th class="border-b theme-border py-3 px-4 text-[10px] text-red-500 font-bold uppercase text-center">% Belum</th>
+                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Nama Perusahaan (PT)</th>
+                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas Kebun (Ha)</th>
+                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas TM (Ha)</th>
+                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Target Produksi (Ton)</th>
                                 </tr>
                             </thead>
-                            <tbody id="pt-list-body">
-                                <!-- Daftar Summary Wilayah disuntik dari JS -->
-                            </tbody>
+                            <tbody id="pt-list-body"></tbody>
                         </table>
                     </div>
                 </div>
-
             </section>
 
             <!-- 2. HALAMAN MASTER DATA KEBUN -->
@@ -405,17 +274,18 @@
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Master Data Repository</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
-
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div id="tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
                     <div class="w-full overflow-hidden" id="data-wrapper">
-                        
                         <div id="table-area" class="w-full">
+                            
                             <!-- FILTER SPESIFIK UNTUK "INPUT ASTA" -->
-                            <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit"></div>
+                            <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit">
+                                <!-- Disuntik via JS -->
+                            </div>
+                            
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
-                        
                         <div id="pivot-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
                             <iframe src="https://docs.google.com/spreadsheets/d/1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY/edit?gid=2130529003#gid=2130529003&rm=minimal" class="w-full h-full border-none"></iframe>
                         </div>
@@ -423,19 +293,24 @@
                 </div>
             </section>
 
-            <!-- 3. HALAMAN EVALUASI KINERJA -->
+            <!-- 3. HALAMAN EVALUASI KINERJA (SHEET KE-2) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Evaluasi Kinerja Produksi</h2>
-                    <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan secara Native.</p>
+                    <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan dari dokumen viewer.</p>
                 </div>
-
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div id="evaluasi-tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
-                    
                     <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
+                        
+                        <!-- AREA TABEL NORMAL EVALUASI -->
                         <div id="evaluasi-table-area" class="w-full">
                             <table id="evaluasiTable" class="w-full text-left"></table>
+                        </div>
+                        
+                        <!-- AREA REKAP KEMITRAAN (IFRAME) -->
+                        <div id="evaluasi-iframe-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
+                            <iframe id="evaluasi-iframe" src="" class="w-full h-full border-none"></iframe>
                         </div>
                     </div>
                 </div>
@@ -449,7 +324,6 @@
                         <p class="text-xs md:text-sm theme-text-muted mt-1">Pusat penerimaan draft, review dokumen, dan notifikasi vendor.</p>
                     </div>
                 </div>
-
                 <div class="premium-card overflow-hidden w-full">
                     <div class="flex items-center justify-between px-4 md:px-6 py-4 border-b theme-border bg-black/10">
                         <span class="text-[10px] md:text-xs font-semibold theme-text-muted">Kotak Masuk (Gmail API Sync)</span>
@@ -640,7 +514,7 @@
         }
 
         // =========================================
-        // PENGATURAN DASHBOARD PIVOT DENGAN SUMMARY WILAYAH
+        // PENGATURAN DASHBOARD PIVOT (CERDAS & ANTI-ERROR)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -655,39 +529,26 @@
             
             let chartBarDataMap = {};
             let chartPieDataMap = {};
-            let summaryMap = {}; // Untuk menampung Summary per CRO + Wilayah
+            let ptDataMap = {}; 
 
             const parseNum = (val) => {
                 if (typeof val === 'number') return val;
                 if (!val || val === '-' || String(val).trim() === '') return 0;
                 let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
                 if (s.includes(',') && s.includes('.')) {
-                    let lastComma = s.lastIndexOf(','); 
-                    let lastDot = s.lastIndexOf('.');
-                    if (lastComma > lastDot) {
-                        s = s.replace(/\./g, '').replace(',', '.'); 
-                    } else {
-                        s = s.replace(/,/g, '');
-                    }
+                    let lastComma = s.lastIndexOf(','); let lastDot = s.lastIndexOf('.');
+                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, '');
                 } else if (s.includes(',')) {
-                    if ((s.match(/,/g) || []).length > 1) {
-                        s = s.replace(/,/g, ''); 
-                    } else if (s.length - s.lastIndexOf(',') <= 3) {
-                        s = s.replace(',', '.'); 
-                    } else {
-                        s = s.replace(/,/g, '');
-                    }
+                    if ((s.match(/,/g) || []).length > 1) s = s.replace(/,/g, ''); else if (s.length - s.lastIndexOf(',') <= 3) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
                 }
                 return parseFloat(s) || 0;
             };
 
-            let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)", keyWilayah = "Regional", keyStatus = "Status";
+            let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)";
             if (rawRekapData.length > 0) {
                 const sampleKeys = Object.keys(rawRekapData[0]);
                 keyCRO = sampleKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || "CRO";
                 keyPT = sampleKeys.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan')) || "Nama PT";
-                keyWilayah = sampleKeys.find(k => k.toLowerCase() === 'regional' || k.toLowerCase() === 'wilayah') || "Regional";
-                keyStatus = sampleKeys.find(k => k.toLowerCase() === 'status' || k.toLowerCase().includes('dikelola')) || "Status";
                 keyLuas = sampleKeys.find(k => k.toLowerCase().includes('luas kebun')) || "Luas Kebun (Ha)";
                 keyLuasTM = sampleKeys.find(k => k.toLowerCase().includes('luas tm')) || "Luas TM (Ha)";
                 keyTarget = sampleKeys.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || "Target Produksi (Ton)";
@@ -696,12 +557,9 @@
             rawRekapData.forEach(row => {
                 let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
                 let namaPt = String(row[keyPT] || "").trim();
-                let rowWilayah = String(row[keyWilayah] || "").trim();
-                let rowStatus = String(row[keyStatus] || "").trim().toLowerCase();
 
-                // Filter Anti-Bego: Buang semua baris yg bukan data asli
-                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase() === "cro") return;
-                if (!namaPt || namaPt === "-" || namaPt.toLowerCase().includes("total") || namaPt.toLowerCase().includes("summary") || namaPt.toLowerCase() === "nama pt") return;
+                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary")) return;
+                if (!namaPt || namaPt === "-" || namaPt.toLowerCase().includes("total") || namaPt.toLowerCase().includes("summary")) return;
 
                 croList.add(rowCRO);
                 if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
@@ -715,18 +573,12 @@
                 totalTarget += targetProd; 
                 totalPtCount++;
 
-                // Agregasi Summary Per Wilayah
-                let sumKey = rowCRO + "_" + rowWilayah;
-                if (!summaryMap[sumKey]) {
-                    summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
+                if (!ptDataMap[namaPt]) {
+                    ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
                 }
-                
-                summaryMap[sumKey].jumlahPT++;
-                if (rowStatus.includes("sudah")) {
-                    summaryMap[sumKey].sudah++;
-                } else {
-                    summaryMap[sumKey].belum++;
-                }
+                ptDataMap[namaPt].luas += luasKebun;
+                ptDataMap[namaPt].luasTM += luasTM;
+                ptDataMap[namaPt].target += targetProd;
 
                 chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + targetProd;
                 chartPieDataMap[rowCRO] = (chartPieDataMap[rowCRO] || 0) + luasKebun;
@@ -734,11 +586,7 @@
 
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
-                    let opt = document.createElement('option'); 
-                    opt.value = c; 
-                    opt.innerText = c; 
-                    opt.className = "bg-[#111111] text-white"; 
-                    filterDropdown.appendChild(opt);
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; filterDropdown.appendChild(opt);
                 });
             }
 
@@ -763,133 +611,80 @@
             }
 
             const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
-            if(document.getElementById('chart-title-bar')) {
-                document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
-            }
-            if(document.getElementById('chart-title-pie')) {
-                document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
-            }
+            if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
+            if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
+            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
-                    chart: { type: 'column', backgroundColor: 'transparent' }, 
-                    title: { text: null },
+                    chart: { type: 'column', backgroundColor: 'transparent' }, title: { text: null },
                     tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
                     xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: 'var(--text-muted)' } }, lineWidth: 0, tickWidth: 0 },
                     yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } },
                     series: [{ name: 'Target Produksi (Ton)', data: Object.values(chartBarDataMap), color: '#3b82f6' }],
-                    plotOptions: { column: { borderRadius: 4, borderWidth: 0 } }, 
-                    credits: { enabled: false }
+                    plotOptions: { column: { borderRadius: 4, borderWidth: 0 } }, credits: { enabled: false }
                 });
             }
 
             if(document.getElementById('pivot-pie-chart')) {
                 Highcharts.chart('pivot-pie-chart', {
-                    chart: { type: 'pie', backgroundColor: 'transparent' }, 
-                    title: { text: null },
+                    chart: { type: 'pie', backgroundColor: 'transparent' }, title: { text: null },
                     tooltip: { backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderWidth: 1, borderColor: 'var(--border-color)', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '65%', borderWidth: 0, dataLabels: { enabled: true, color: 'var(--text-muted)', connectorColor: 'var(--border-color)', style: { textOutline: 'none', fontWeight: 'normal' } } } },
-                    series: [{ name: 'Luas Kebun (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }], 
-                    credits: { enabled: false }
+                    series: [{ name: 'Luas Kebun (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }], credits: { enabled: false }
                 });
             }
             
-            // RENDER TABEL SUMMARY PER WILAYAH
+            // RENDER TABEL RINCIAN NAMA PT
             let ptHtml = '';
-            let totalSudah = 0;
-            let totalBelum = 0;
-            let totalPTTable = 0;
-            let no = 1;
+            let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
             
-            // Urutkan berdasarkan CRO lalu Wilayah
-            let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
-            
-            if (sortedSummaries.length > 0) {
-                sortedSummaries.forEach(item => {
-                    totalSudah += item.sudah;
-                    totalBelum += item.belum;
-                    totalPTTable += item.jumlahPT;
-                    
-                    let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
-                    let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
-                    
+            if (sortedPTs.length > 0) {
+                sortedPTs.forEach(pt => {
                     ptHtml += `
-                        <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border">
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-center">${no++}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-semibold">${item.cro}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main">${item.wilayah}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-center font-bold">${item.jumlahPT}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${item.sudah}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${item.belum}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${pctSudah}%</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${pctBelum}%</td>
+                        <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border last:border-0">
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">
+                                ${pt.name}
+                                ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span>` : ''}
+                            </td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-purple-400 text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                         </tr>
                     `;
                 });
-                
-                // Baris Grand Total di paling bawah
-                let pctTotSudah = totalPTTable > 0 ? Math.round((totalSudah / totalPTTable) * 100) : 0;
-                let pctTotBelum = totalPTTable > 0 ? Math.round((totalBelum / totalPTTable) * 100) : 0;
-                
-                ptHtml += `
-                    <tr class="bg-[var(--hover-bg)] border-t border-[#83b765]">
-                        <td colspan="3" class="py-3 px-4 text-[11px] md:text-sm theme-text-main font-bold text-center uppercase tracking-widest">Grand Total</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm theme-text-main text-center font-bold">${totalPTTable}</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${totalSudah}</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${totalBelum}</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-blue-400 text-center font-bold">${pctTotSudah}%</td>
-                        <td class="py-3 px-4 text-[11px] md:text-sm text-red-400 text-center font-bold">${pctTotBelum}%</td>
-                    </tr>
-                `;
             } else {
-                ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk pilihan ini.</td></tr>`;
+                ptHtml = `<tr><td colspan="4" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan untuk pilihan ini.</td></tr>`;
             }
             
-            if(document.getElementById('pt-list-body')) {
-                document.getElementById('pt-list-body').innerHTML = ptHtml;
-            }
-            const isLightNow = document.body.classList.contains('light-mode'); 
-            updateChartTheme(isLightNow);
+            if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
+            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
-            if (ext.includes('.pdf')) {
-                return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
-            } else if (ext.includes('.doc') || ext.includes('.docx')) {
-                return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
-            } else {
-                return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
-            }
+            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
+            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
+            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
         }
 
         function openPreview(rawUrl) {
             let previewUrl = rawUrl.trim();
-            if (previewUrl.includes("drive.google.com/file/d/")) {
-                previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
-            } else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) {
-                previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
-            }
+            if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
+            else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
             document.getElementById('documentIframe').src = previewUrl;
             document.getElementById('modalExternalLink').href = rawUrl;
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('modalContent');
             modal.classList.remove('hidden');
-            setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('scale-95'); 
-            }, 10);
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
         }
 
         function closePreview() {
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('modalContent');
-            modal.classList.add('opacity-0'); 
-            content.classList.add('scale-95');
-            setTimeout(() => { 
-                modal.classList.add('hidden'); 
-                document.getElementById('documentIframe').src = ""; 
-            }, 300);
+            modal.classList.add('opacity-0'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
         }
 
         // =========================================
@@ -927,10 +722,7 @@
             document.getElementById('pivot-area').classList.add('hidden');
 
             const data = rawData[sheetName] || [];
-            if ($.fn.DataTable.isDataTable('#mainTable')) { 
-                $('#mainTable').DataTable().destroy(); 
-                $('#mainTable').empty(); 
-            }
+            if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
             
             if (data.length === 0) { 
                 $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
@@ -938,39 +730,24 @@
             }
 
             const columns = Object.keys(data[0]).map(key => {
-                return { 
-                    title: key, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) {
-                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        }
-                        return val;
+                return { title: key, data: key, defaultContent: "-", render: function(val) {
+                    if (typeof val === 'string' && val.includes('|||')) {
+                        const parts = val.split('|||');
+                        return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
                     }
-                };
+                    else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                        return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                    }
+                    if (typeof val === 'string' && val.includes('\n')) {
+                        return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                    }
+                    return val;
+                }};
             });
 
             currentDataTable = $('#mainTable').DataTable({
-                data: data, 
-                columns: columns, 
-                scrollX: true, 
-                pageLength: 10, 
-                ordering: false,
-                language: { 
-                    search: "", 
-                    searchPlaceholder: "Cari Data...", 
-                    lengthMenu: "Tampil _MENU_ baris", 
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", 
-                    paginate: { previous: "Prev", next: "Next" } 
-                }
+                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
+                language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
 
             if (sheetName === 'INPUT ASTA') {
@@ -982,12 +759,22 @@
         }
 
         // =========================================
-        // FUNGSI RENDER TABEL EVALUASI KINERJA HTML NATIVE
+        // FUNGSI RENDER TABEL EVALUASI KINERJA
         // =========================================
         function loadEvaluasiTable(sheetName) {
             document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
+
+            if (sheetName === "Rekap Kemitraan") {
+                document.getElementById('evaluasi-table-area').classList.add('hidden');
+                document.getElementById('evaluasi-iframe-area').classList.remove('hidden');
+                document.getElementById('evaluasi-iframe').src = "https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/htmlembed?gid=1226301174&widget=false&chrome=false";
+                return; 
+            } 
+            
+            document.getElementById('evaluasi-table-area').classList.remove('hidden');
+            document.getElementById('evaluasi-iframe-area').classList.add('hidden');
 
             const data = rawData[sheetName] || [];
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
@@ -1001,16 +788,8 @@
             }
 
             const columns = Object.keys(data[0]).map(key => {
-                // Sembunyikan tulisan __EMPTY bawaan pembaca Excel
-                let title = key;
-                if (title.includes('__EMPTY')) {
-                    title = '';
-                }
-
                 return { 
-                    title: title, 
-                    data: key, 
-                    defaultContent: "-", 
+                    title: key, data: key, defaultContent: "-", 
                     render: function(val) {
                         if (typeof val === 'number') {
                             if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
@@ -1032,41 +811,12 @@
             });
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
-                data: data, 
-                columns: columns, 
-                scrollX: true, 
-                pageLength: 15, 
-                ordering: false,
-                language: { 
-                    search: "", 
-                    searchPlaceholder: "Cari Analisis...", 
-                    lengthMenu: "Tampil _MENU_ baris", 
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", 
-                    paginate: { previous: "Prev", next: "Next" } 
-                },
-                // MANIPULASI TAMPILAN KHUSUS REKAP KEMITRAAN (Highlight Baris Judul)
-                createdRow: function (row, data, dataIndex) {
-                    let values = Object.values(data).map(v => String(v).trim());
-                    
-                    // Deteksi Baris Judul Excel (Subheader)
-                    if (values.includes('No') || values.includes('Regional') || values.includes('Status') || values.includes('% tase') || values.includes('Tahap 1 - 5') || values.includes('Tahap 1 - 7')) {
-                        $(row).addClass('bg-[#1a1a1a] font-bold text-[#83b765] border-t border-b border-gray-600 shadow-md');
-                        $(row).find('td').addClass('uppercase tracking-wider text-[10px]');
-                    }
-                    
-                    // Deteksi Baris Grand Total
-                    if (values.includes('Grand Total') || values.includes('Total') || values.join(' ').toLowerCase().includes('total')) {
-                        $(row).addClass('bg-[#1a1a1a] font-bold text-yellow-500 border-t-2 border-gray-600');
-                    }
-                }
+                data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
+                language: { search: "", searchPlaceholder: "Cari Analisis...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
         }
 
-        // =========================================
-        // INIT SAAT WEB DIBUKA
-        // =========================================
         document.addEventListener("DOMContentLoaded", function() {
-            
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
@@ -1078,7 +828,6 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            // Bangun tombol Tab Master Data
             const tabContainer = document.getElementById('tab-container');
             if(tabContainer) {
                 listSheets.forEach(sheet => {
@@ -1091,7 +840,6 @@
                 });
             }
 
-            // Bangun tombol Tab Evaluasi Kinerja
             const evaluasiTabContainer = document.getElementById('evaluasi-tab-container');
             if(evaluasiTabContainer) {
                 listEvaluasiSheets.forEach(sheet => {
@@ -1112,19 +860,17 @@
             });
             updateChartTheme(isLightInit);
 
-            // Tampilkan Dashboard & Tabel Awal
             renderPivotDashboard();
             loadTable("REKAPITULASI");
             loadEvaluasiTable("Sumber/Source Data");
             
-            // Re-adjust DataTables on window resize
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
                 if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND (SHEETS DEEP-DIFF) INSTANT FETCH
+            // LOGIKA POLLING BACKGROUND INSTANT FETCH
             // ==========================================
             async function syncData() {
                 const syncText = document.getElementById('sync-text');
@@ -1136,7 +882,6 @@
                     
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
                         
-                        // JANGAN bikin notif spam kalau rawData awalnya emang kosong
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
                             const allSheetNames = [...listSheets, ...listEvaluasiSheets];
@@ -1187,8 +932,12 @@
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
+                                currentFilter = $('#asta-status-filter').val() || '';
+                            }
+                            
                             loadTable(activeTab.dataset.sheet);
+                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
@@ -1196,11 +945,14 @@
                         }
 
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
-                        if (activeEvalTab) {
+                        if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
                         
-                        // Animasi tombol LIVE
+                        if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
+                            document.getElementById('evaluasi-iframe').src = document.getElementById('evaluasi-iframe').src;
+                        }
+
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); 
@@ -1226,14 +978,12 @@
                 }
             }
 
-            // Fetch langsung kalau cache kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
             }
 
             setInterval(syncData, 10000); 
 
-            // Cek Email
             setInterval(async () => {
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
