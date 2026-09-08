@@ -1173,8 +1173,9 @@
         // FUNGSI BARU KHUSUS: DASHBOARD REKAP KEMITRAAN DI HALAMAN EVALUASI
         // =========================================
         function renderKemitraanDashboard() {
-            // Mengambil langsung dari sumber mentah SHEET "Rekap Kemitraan" (Sheet Evaluasi Kinerja)
-            const rawRekapData = rawData["Rekap Kemitraan"] || [];
+            // Murni ngambil data dari server hasil sedotan Vercel
+            let targetSheetName = Object.keys(rawData).find(k => k.trim() === "Rekap Kemitraan");
+            const rawRekapData = rawData[targetSheetName] || [];
             
             let totalSudah = 0;
             let totalBelum = 0;
@@ -1183,64 +1184,53 @@
             let chartBarDataMap = {};
             let summaryMap = {}; 
 
-            if (rawRekapData.length > 0) {
+            if (rawRekapData.length >= 2) {
                 // xlsx mem-parsing baris pertama sebagai keys
-                let allKeys = Object.keys(rawRekapData[0]); 
+                let row2 = rawRekapData[0]; // Baris 'No', 'Regional', 'Wilayah'
+                let row3 = rawRekapData[1]; // Baris 'Sudah Dikelola', 'Belum Dikelola'
                 
-                let colRegional, colWilayah, colJumlah, colSudah, colBelum;
-                let startIndex = 0;
+                let regionalKeys = [], wilayahKeys = [], jumlahKeys = [];
+                let sudahKeys = [], belumKeys = [];
                 
-                // Scan 15 baris pertama untuk mencari Header dari tabel "Tahap 1 - 7"
-                for (let i = 0; i < Math.min(15, rawRekapData.length); i++) {
-                    let row = rawRekapData[i];
-                    let regKeys = [];
-                    
-                    // Cari semua keys di mana valuenya adalah 'Regional'
-                    allKeys.forEach(key => {
-                        let val = String(row[key]).trim().toLowerCase();
-                        if (val === 'regional') regKeys.push(key);
-                    });
-
-                    // Tabel "Tahap 1 - 7" adalah tabel KEDUA di sheet, jadi kita ambil index regional yang ke-2 (index 1)
-                    if (regKeys.length >= 2) {
-                        colRegional = regKeys[1];
-                        let baseIdx = allKeys.indexOf(colRegional);
-                        
-                        // Cari key untuk kolom setelahnya di baris yang sama (Membaca kekanan dari Regional)
-                        for (let j = baseIdx; j < allKeys.length; j++) {
-                            let val = String(row[allKeys[j]]).trim().toLowerCase();
-                            if (val === 'wilayah' && !colWilayah) colWilayah = allKeys[j];
-                            if (val === 'jumlah pt' && !colJumlah) colJumlah = allKeys[j];
-                            if (val === 'sudah dikelola' && !colSudah) colSudah = allKeys[j];
-                            if (val === 'belum dikelola' && !colBelum) colBelum = allKeys[j];
-                        }
-                        
-                        if(colRegional && colSudah) {
-                            startIndex = i + 1; // Mulai dari baris setelah Header
-                            break;
-                        }
-                    }
+                // Cari Index Kolom (Dapat mendeteksi nama asli Vercel meskipun ter-merge misal __EMPTY_10)
+                for (let k in row2) {
+                    let v = String(row2[k]).trim().toLowerCase();
+                    if (v === 'regional') regionalKeys.push(k);
+                    if (v === 'wilayah') wilayahKeys.push(k);
+                    if (v === 'jumlah pt') jumlahKeys.push(k);
                 }
 
-                // Loop untuk narik data persis seperti yang tertulis di Excel Tahap 1-7
-                if (colRegional && colSudah) {
-                    // Potong array data biar header yg nyangkut ke filter
-                    let validData = rawRekapData.slice(startIndex);
+                for (let k in row3) {
+                    let v = String(row3[k]).trim().toLowerCase();
+                    if (v.includes('sudah dikelola')) sudahKeys.push(k);
+                    if (v.includes('belum dikelola')) belumKeys.push(k);
+                }
 
-                    validData.forEach(row => {
-                        let rowCRO = String(row[colRegional] || "").replace(/^[+-]\s*/, '').trim();
-                        let rowWilayah = String(row[colWilayah] || "").trim();
+                // Tabel Tahap 1-7 ada di urutan kedua dari kiri ke kanan.
+                let keyRegional = regionalKeys[1];
+                let keyWilayah = wilayahKeys[1];
+                let keyJumlah = jumlahKeys[1];
+                let keySudah = sudahKeys[1]; 
+                let keyBelum = belumKeys[1];
+
+                if (keyRegional && keyWilayah && keyJumlah && keySudah && keyBelum) {
+                    // Mulai dari data baris ke-4 di excel (index 2 di JSON)
+                    for (let i = 2; i < rawRekapData.length; i++) {
+                        let row = rawRekapData[i];
+                        
+                        let rowCRO = String(row[keyRegional] || "").replace(/^[+-]\s*/, '').trim();
+                        let rowWilayah = String(row[keyWilayah] || "").trim();
                         
                         // Bersihin angka dari text dan pastikan jadi Integer
-                        let rowJumlah = parseInt(String(row[colJumlah]).replace(/[^0-9]/g,'')) || 0;
-                        let rowSudah = parseInt(String(row[colSudah]).replace(/[^0-9]/g,'')) || 0;
-                        let rowBelum = parseInt(String(row[colBelum]).replace(/[^0-9]/g,'')) || 0;
+                        let rowJumlah = parseInt(String(row[keyJumlah]).replace(/[^0-9]/g,'')) || 0;
+                        let rowSudah = parseInt(String(row[keySudah]).replace(/[^0-9]/g,'')) || 0;
+                        let rowBelum = parseInt(String(row[keyBelum]).replace(/[^0-9]/g,'')) || 0;
 
                         // Filter Buang baris kosong atau baris judul
-                        if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") return;
+                        if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
                         
                         // Jangan hitung baris Grand Total (biar kita hitung manual dan validasi)
-                        if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) return;
+                        if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
 
                         // Seragamkan nama CRO (Misal: ketulis "I" -> jadi "CRO I")
                         if(rowCRO.toLowerCase().startsWith('cro')) {
@@ -1264,7 +1254,7 @@
                         summaryMap[sumKey].jumlahPT += rowJumlah;
                         summaryMap[sumKey].sudah += rowSudah;
                         summaryMap[sumKey].belum += rowBelum;
-                    });
+                    }
                 }
             }
 
@@ -1326,20 +1316,14 @@
             
             // RENDER TABEL SUMMARY PER WILAYAH
             let ptHtml = '';
-            let sumSudah = 0;
-            let sumBelum = 0;
-            let sumPT = 0;
-            let no = 1;
+            let sumSudah = 0, sumBelum = 0, sumPT = 0, no = 1;
             
             // Urutkan berdasarkan CRO lalu Wilayah
             let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
             
             if (sortedSummaries.length > 0) {
                 sortedSummaries.forEach(item => {
-                    sumSudah += item.sudah;
-                    sumBelum += item.belum;
-                    sumPT += item.jumlahPT;
-                    
+                    sumSudah += item.sudah; sumBelum += item.belum; sumPT += item.jumlahPT;
                     let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
                     let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
                     
@@ -1372,14 +1356,13 @@
                     </tr>
                 `;
             } else {
-                ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap.</td></tr>`;
+                ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Sedang mensinkronisasi data, mohon tunggu sebentar...</td></tr>`;
             }
             
             if(document.getElementById('kemitraan-list-body')) {
                 document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
             }
-            const isLightNow = document.body.classList.contains('light-mode');
-            updateChartTheme(isLightNow);
+            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
         // FUNGSI MENDAPATKAN IKON FILE
@@ -1558,7 +1541,9 @@
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
 
-            const data = rawData[sheetName] || [];
+            // FITUR PENCARIAN NAMA SHEET DINAMIS (ANTI SPASI TERSEMBUNYI)
+            let exactKey = Object.keys(rawData).find(k => k.trim() === sheetName.trim());
+            const data = rawData[exactKey] || [];
             
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
                 $('#evaluasiTable').DataTable().destroy(); 
@@ -1587,9 +1572,7 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) {
-                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
                         return val;
                     }
                 };
@@ -1663,7 +1646,7 @@
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND (SHEETS DEEP-DIFF) INSTANT FETCH
+            // LOGIKA POLLING BACKGROUND INSTANT FETCH
             // ==========================================
             async function syncData() {
                 const syncText = document.getElementById('sync-text');
@@ -1675,7 +1658,6 @@
                     
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
                         
-                        // JANGAN bikin notif spam kalau rawData awalnya emang kosong
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
                             const allSheetNames = [...listSheets, ...listEvaluasiSheets];
@@ -1691,25 +1673,19 @@
                                     let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
 
                                     allKeys.forEach(key => {
-                                        // Abaikan metadata link dan baris kosong internal dari Excel
                                         if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
 
                                         let oldVal = String(oldRow[key] || "").trim();
                                         let newVal = String(newRow[key] || "").trim();
 
-                                        // Hilangkan URL kalau ada fitur "|||" supaya rapi di notifikasi
-                                        if(oldVal.includes('|||')) {
-                                            oldVal = oldVal.split('|||')[0];
-                                        }
-                                        if(newVal.includes('|||')) {
-                                            newVal = newVal.split('|||')[0];
-                                        }
+                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
 
                                         if (oldVal !== newVal) {
                                             detectedChanges.push({
                                                 sheet: sheet, 
                                                 waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
-                                                baris: i + 2, // Excel baris 1 itu header, jadi index 0 = baris 2
+                                                baris: i + 2, 
                                                 kolom: key, 
                                                 lama: oldVal === "" ? "(Kosong)" : oldVal, 
                                                 baru: newVal === "" ? "(Kosong)" : newVal
@@ -1719,39 +1695,28 @@
                                 }
                             });
 
-                            // Masukkan log baru ke urutan teratas (Max 50 riwayat)
                             if(detectedChanges.length > 0) {
                                 logsData = [...detectedChanges, ...logsData];
-                                if (logsData.length > 50) {
-                                    logsData = logsData.slice(0, 50); 
-                                }
+                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
                             }
                             isUnread = true; 
                         }
 
-                        // Terapkan data baru ke aplikasi
                         rawData = result.rawData;
-                        
                         renderNotifications();
                         renderPivotDashboard(); 
                         
-                        // Reload Tabel Master Data jika sedang dibuka
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
-                                currentFilter = $('#asta-status-filter').val() || '';
-                            }
-                            
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
                             loadTable(activeTab.dataset.sheet);
-                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
                             }
                         }
 
-                        // Reload Tabel Evaluasi Kinerja jika sedang dibuka
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
                         if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
@@ -1762,7 +1727,6 @@
                             renderKemitraanDashboard();
                         }
 
-                        // Animasi tombol LIVE
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); 
@@ -1788,14 +1752,14 @@
                 }
             }
 
-            // Fetch langsung kalau cache kosong
-            if (Object.keys(rawData).length === 0) {
+            // Bikin dia langsung nyedot ulang kalau buka web pas cache masih kosong
+            if (Object.keys(rawData).length === 0 || !rawData["Sumber/Source Data"]) {
                 syncData();
             }
 
             setInterval(syncData, 10000); 
 
-            // Cek Email Baru Tiap 5 Detik (Anti Cache)
+            // Cek Email Baru Tiap 5 Detik
             setInterval(async () => {
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
