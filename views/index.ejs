@@ -1183,91 +1183,73 @@
             let chartBarDataMap = {};
             let summaryMap = {}; 
 
+            // ==========================================
+            // HARCODE TARGET KOLOM BERDASARKAN SCREENSHOT EXCEL LU (Tahap 1-7)
+            // ==========================================
             if (rawRekapData.length > 0) {
-                // xlsx mem-parsing baris pertama sebagai keys
+                // Semua keys dari baris pertama objek json yang disedot backend
                 let allKeys = Object.keys(rawRekapData[0]); 
                 
-                let colRegional, colWilayah, colJumlah, colSudah, colBelum;
-                let startIndex = 0;
+                // Berdasarkan Index Huruf Kolom Excel:
+                // Kolom L (Index array 11) = Regional
+                // Kolom M (Index array 12) = Wilayah
+                // Kolom N (Index array 13) = Jumlah PT
+                // Kolom P (Index array 15) = Sudah Dikelola
+                // Kolom Q (Index array 16) = Belum Dikelola
                 
-                // Scan 15 baris pertama untuk mencari Header dari tabel "Tahap 1 - 7"
-                for (let i = 0; i < Math.min(15, rawRekapData.length); i++) {
+                // Pastikan key-nya tersedia di array allKeys, pakai fallback jika beda parsernya
+                const keyRegional = allKeys[11] || Object.keys(rawRekapData[2] || {})[11];
+                const keyWilayah = allKeys[12] || Object.keys(rawRekapData[2] || {})[12];
+                const keyJumlah = allKeys[13] || Object.keys(rawRekapData[2] || {})[13];
+                const keySudah = allKeys[15] || Object.keys(rawRekapData[2] || {})[15];
+                const keyBelum = allKeys[16] || Object.keys(rawRekapData[2] || {})[16];
+
+                // Loop narik data (Mulai dari baris ke-3 karena 1-2 judul/merged cell)
+                for (let i = 2; i < rawRekapData.length; i++) {
                     let row = rawRekapData[i];
-                    let regKeys = [];
                     
-                    // Cari semua keys di mana valuenya adalah 'Regional'
-                    allKeys.forEach(key => {
-                        let val = String(row[key]).trim().toLowerCase();
-                        if (val === 'regional') regKeys.push(key);
-                    });
+                    let rowCRO = String(row[keyRegional] || "").replace(/^[+-]\s*/, '').trim();
+                    let rowWilayah = String(row[keyWilayah] || "").trim();
+                    
+                    // Bersihkan jadi pure Integer
+                    let rowJumlah = parseInt(String(row[keyJumlah]).replace(/[^0-9]/g,'')) || 0;
+                    let rowSudah = parseInt(String(row[keySudah]).replace(/[^0-9]/g,'')) || 0;
+                    let rowBelum = parseInt(String(row[keyBelum]).replace(/[^0-9]/g,'')) || 0;
 
-                    // Tabel "Tahap 1 - 7" adalah tabel KEDUA di sheet, jadi kita ambil index regional yang ke-2 (index 1)
-                    if (regKeys.length >= 2) {
-                        colRegional = regKeys[1];
-                        let baseIdx = allKeys.indexOf(colRegional);
-                        
-                        // Cari key untuk kolom setelahnya di baris yang sama (Membaca kekanan dari Regional)
-                        for (let j = baseIdx; j < allKeys.length; j++) {
-                            let val = String(row[allKeys[j]]).trim().toLowerCase();
-                            if (val === 'wilayah' && !colWilayah) colWilayah = allKeys[j];
-                            if (val === 'jumlah pt' && !colJumlah) colJumlah = allKeys[j];
-                            if (val === 'sudah dikelola' && !colSudah) colSudah = allKeys[j];
-                            if (val === 'belum dikelola' && !colBelum) colBelum = allKeys[j];
-                        }
-                        
-                        if(colRegional && colSudah) {
-                            startIndex = i + 1; // Mulai dari baris setelah Header
-                            break;
-                        }
+                    // Buang baris kosong, header yang nyangkut, dan grand total
+                    if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") continue;
+                    if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) continue;
+
+                    // Seragamkan nama CRO biar grafiknya nyatu
+                    if(rowCRO.toLowerCase().startsWith('cro')) {
+                        rowCRO = rowCRO.toUpperCase();
+                    } else {
+                        rowCRO = "CRO " + rowCRO.toUpperCase(); 
                     }
-                }
 
-                // Loop untuk narik data persis seperti yang tertulis di Excel Tahap 1-7
-                if (colRegional && colSudah) {
-                    // Potong array data biar header yg nyangkut ke filter
-                    let validData = rawRekapData.slice(startIndex);
+                    // Tembak masukin ke variabel global
+                    totalPtCount += rowJumlah;
+                    totalSudah += rowSudah;
+                    totalBelum += rowBelum;
 
-                    validData.forEach(row => {
-                        let rowCRO = String(row[colRegional] || "").replace(/^[+-]\s*/, '').trim();
-                        let rowWilayah = String(row[colWilayah] || "").trim();
-                        
-                        // Bersihin angka dari text dan pastikan jadi Integer
-                        let rowJumlah = parseInt(String(row[colJumlah]).replace(/[^0-9]/g,'')) || 0;
-                        let rowSudah = parseInt(String(row[colSudah]).replace(/[^0-9]/g,'')) || 0;
-                        let rowBelum = parseInt(String(row[colBelum]).replace(/[^0-9]/g,'')) || 0;
+                    // Masukin data buat Bar Chart
+                    chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
 
-                        // Filter Buang baris kosong atau baris judul
-                        if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "regional") return;
-                        
-                        // Jangan hitung baris Grand Total (biar kita hitung manual dan validasi)
-                        if (rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary") || rowCRO.toLowerCase().includes("grand")) return;
-
-                        // Seragamkan nama CRO (Misal: ketulis "I" -> jadi "CRO I")
-                        if(rowCRO.toLowerCase().startsWith('cro')) {
-                            rowCRO = rowCRO.toUpperCase();
-                        } else {
-                            rowCRO = "CRO " + rowCRO.toUpperCase(); 
-                        }
-
-                        totalPtCount += rowJumlah;
-                        totalSudah += rowSudah;
-                        totalBelum += rowBelum;
-
-                        // Agregasi untuk Bar Chart (Jumlah PT per CRO)
-                        chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + rowJumlah;
-
-                        // Agregasi Summary Per Wilayah untuk Tabel
-                        let sumKey = rowCRO + "_" + rowWilayah;
-                        if (!summaryMap[sumKey]) {
-                            summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
-                        }
-                        summaryMap[sumKey].jumlahPT += rowJumlah;
-                        summaryMap[sumKey].sudah += rowSudah;
-                        summaryMap[sumKey].belum += rowBelum;
-                    });
+                    // Masukin data buat Tabel Summary Wilayah
+                    let sumKey = rowCRO + "_" + rowWilayah;
+                    if (!summaryMap[sumKey]) {
+                        summaryMap[sumKey] = { cro: rowCRO, wilayah: rowWilayah, jumlahPT: 0, sudah: 0, belum: 0 };
+                    }
+                    summaryMap[sumKey].jumlahPT += rowJumlah;
+                    summaryMap[sumKey].sudah += rowSudah;
+                    summaryMap[sumKey].belum += rowBelum;
                 }
             }
 
+            // ===================================
+            // RENDER TAMPILAN KE LAYAR
+            // ===================================
+            
             // Render KPI Boxes Rekap Kemitraan
             const kpiContainer = document.getElementById('kemitraan-kpi-container');
             if(kpiContainer) {
@@ -1326,20 +1308,14 @@
             
             // RENDER TABEL SUMMARY PER WILAYAH
             let ptHtml = '';
-            let sumSudah = 0;
-            let sumBelum = 0;
-            let sumPT = 0;
-            let no = 1;
+            let sumSudah = 0, sumBelum = 0, sumPT = 0, no = 1;
             
             // Urutkan berdasarkan CRO lalu Wilayah
             let sortedSummaries = Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wilayah.localeCompare(b.wilayah));
             
             if (sortedSummaries.length > 0) {
                 sortedSummaries.forEach(item => {
-                    sumSudah += item.sudah;
-                    sumBelum += item.belum;
-                    sumPT += item.jumlahPT;
-                    
+                    sumSudah += item.sudah; sumBelum += item.belum; sumPT += item.jumlahPT;
                     let pctSudah = item.jumlahPT > 0 ? Math.round((item.sudah / item.jumlahPT) * 100) : 0;
                     let pctBelum = item.jumlahPT > 0 ? Math.round((item.belum / item.jumlahPT) * 100) : 0;
                     
@@ -1372,45 +1348,26 @@
                     </tr>
                 `;
             } else {
-                ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap.</td></tr>`;
+                ptHtml = `<tr><td colspan="8" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data untuk direkap. Silakan tunggu sinkronisasi.</td></tr>`;
             }
             
-            if(document.getElementById('kemitraan-list-body')) {
-                document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
-            }
-            const isLightNow = document.body.classList.contains('light-mode');
-            updateChartTheme(isLightNow);
+            if(document.getElementById('kemitraan-list-body')) document.getElementById('kemitraan-list-body').innerHTML = ptHtml;
+            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
         // FUNGSI MENDAPATKAN IKON FILE
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
-            if (ext.includes('.pdf')) {
-                return `
-                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>`; 
-            } else if (ext.includes('.doc') || ext.includes('.docx')) {
-                return `
-                <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>`; 
-            } else {
-                return `
-                <svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                </svg>`; 
-            }
+            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
+            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
+            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
         }
 
         // BUKA MODAL PREVIEW
         function openPreview(rawUrl) {
             let previewUrl = rawUrl.trim();
-            if (previewUrl.includes("drive.google.com/file/d/")) {
-                previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
-            } else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) {
-                previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
-            }
+            if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
+            else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
             
             document.getElementById('documentIframe').src = previewUrl;
             document.getElementById('modalExternalLink').href = rawUrl;
@@ -1419,24 +1376,14 @@
             const content = document.getElementById('modalContent');
             
             modal.classList.remove('hidden');
-            setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('scale-95'); 
-            }, 10);
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
         }
 
-        // TUTUP MODAL PREVIEW
         function closePreview() {
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('modalContent');
-            
-            modal.classList.add('opacity-0'); 
-            content.classList.add('scale-95');
-            
-            setTimeout(() => { 
-                modal.classList.add('hidden'); 
-                document.getElementById('documentIframe').src = ""; 
-            }, 300);
+            modal.classList.add('opacity-0'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
         }
 
         // =========================================
@@ -1474,11 +1421,7 @@
             document.getElementById('pivot-area').classList.add('hidden');
 
             const data = rawData[sheetName] || [];
-            
-            if ($.fn.DataTable.isDataTable('#mainTable')) { 
-                $('#mainTable').DataTable().destroy(); 
-                $('#mainTable').empty(); 
-            }
+            if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
             
             if (data.length === 0) { 
                 $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
@@ -1486,49 +1429,22 @@
             }
 
             const columns = Object.keys(data[0]).map(key => {
-                return { 
-                    title: key, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `
-                            <a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">
-                                ${getFileIcon(parts[0])} 
-                                <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span>
-                            </a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `
-                            <a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                </svg>
-                                <span class="group-hover:underline">Buka Link</span>
-                            </a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) {
-                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        }
-                        return val;
+                return { title: key, data: key, defaultContent: "-", render: function(val) {
+                    if (typeof val === 'string' && val.includes('|||')) {
+                        const parts = val.split('|||');
+                        return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
                     }
-                };
+                    else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                        return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                    }
+                    if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                    return val;
+                }};
             });
 
             currentDataTable = $('#mainTable').DataTable({
-                data: data, 
-                columns: columns, 
-                scrollX: true, 
-                pageLength: 10, 
-                ordering: false,
-                language: { 
-                    search: "", 
-                    searchPlaceholder: "Cari Data...", 
-                    lengthMenu: "Tampil _MENU_ baris", 
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", 
-                    paginate: { previous: "Prev", next: "Next" } 
-                }
+                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
+                language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
 
             if (sheetName === 'INPUT ASTA') {
@@ -1587,9 +1503,7 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) {
-                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
                         return val;
                     }
                 };
@@ -1691,19 +1605,13 @@
                                     let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
 
                                     allKeys.forEach(key => {
-                                        // Abaikan metadata link dan baris kosong internal dari Excel
                                         if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
 
                                         let oldVal = String(oldRow[key] || "").trim();
                                         let newVal = String(newRow[key] || "").trim();
 
-                                        // Hilangkan URL kalau ada fitur "|||" supaya rapi di notifikasi
-                                        if(oldVal.includes('|||')) {
-                                            oldVal = oldVal.split('|||')[0];
-                                        }
-                                        if(newVal.includes('|||')) {
-                                            newVal = newVal.split('|||')[0];
-                                        }
+                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
 
                                         if (oldVal !== newVal) {
                                             detectedChanges.push({
@@ -1719,50 +1627,37 @@
                                 }
                             });
 
-                            // Masukkan log baru ke urutan teratas (Max 50 riwayat)
                             if(detectedChanges.length > 0) {
                                 logsData = [...detectedChanges, ...logsData];
-                                if (logsData.length > 50) {
-                                    logsData = logsData.slice(0, 50); 
-                                }
+                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
                             }
                             isUnread = true; 
                         }
 
-                        // Terapkan data baru ke aplikasi
                         rawData = result.rawData;
-                        
                         renderNotifications();
                         renderPivotDashboard(); 
                         
-                        // Reload Tabel Master Data jika sedang dibuka
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
-                                currentFilter = $('#asta-status-filter').val() || '';
-                            }
-                            
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
                             loadTable(activeTab.dataset.sheet);
-                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
                             }
                         }
 
-                        // Reload Tabel Evaluasi Kinerja jika sedang dibuka
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
                         if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
                         
-                        // Kalo pas ngetab Rekap Kemitraan lagi aktif pas background narik data, refresh chartnya!
                         if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
                             renderKemitraanDashboard();
                         }
 
-                        // Animasi tombol LIVE
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); 
@@ -1788,7 +1683,6 @@
                 }
             }
 
-            // Fetch langsung kalau cache kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
             }
