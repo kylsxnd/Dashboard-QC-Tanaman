@@ -299,10 +299,6 @@
                                 <button id="btn-list-pt" onclick="setKemitraanTab('list-pt')" class="sub-tab-btn sub-tab-inactive">List Nama PT</button>
                             </div>
 
-                            <div id="kemitraan-loading" class="text-center py-10 hidden">
-                                <p class="text-sm theme-text-muted animate-pulse">Menghitung Data Akurat...</p>
-                            </div>
-
                             <!-- AREA KONTEN REKAP KEMITRAAN -->
                             <div id="kemitraan-content-box">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="kemitraan-kpi-container"></div>
@@ -370,6 +366,7 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
+        // Data MURNI dari backend server.js
         let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
@@ -440,6 +437,15 @@
             else if(viewId === 'view-evaluasi') headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
             else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
+                fetch('/api/read-emails?t=' + new Date().getTime(), { method: 'POST' }).then(() => {
+                    const badge = document.getElementById('sidebar-email-badge');
+                    if(badge) { badge.classList.add('hidden'); badge.classList.remove('badge-pop'); }
+                    document.querySelectorAll('.email-row.bg-blue-500\\/5').forEach(el => {
+                        el.classList.remove('bg-blue-500/5');
+                        el.querySelector('.email-sender').classList.remove('font-bold', 'text-white');
+                        el.querySelector('.email-subject').classList.remove('font-bold', 'text-white');
+                    });
+                });
             }
             
             document.getElementById('nav-dashboard').classList.remove('active');
@@ -459,6 +465,14 @@
 
         function markAsRead() { document.getElementById('notif-badge').classList.add('hidden'); isUnread = false; }
 
+        async function changeEmailLabel(id, newLabel) {
+            try {
+                const res = await fetch('/api/update-email-label?t=' + new Date().getTime(), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, label: newLabel }) });
+                const data = await res.json();
+                if(data.success) { emailsData = data.emails; renderEmailsUI(); }
+            } catch (err) { console.error(err); }
+        }
+
         function renderEmailsUI() {
             const container = document.getElementById('email-list-container');
             let html = '';
@@ -469,7 +483,7 @@
                     const textSubjectClass = email.unread ? 'font-bold text-white' : 'font-medium theme-text-main';
                     const dotClass = email.unread ? '<div class="w-2 h-2 bg-blue-500 rounded-full mr-2 md:mr-3 shrink-0"></div>' : '<div class="w-2 h-2 mr-2 md:mr-3 shrink-0"></div>';
                     let badgeColor = email.label === "SUDAH DI CRO" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border-amber-500/20";
-                    html += `<div class="email-row flex flex-col md:flex-row md:items-center justify-between px-4 md:px-6 py-4 cursor-pointer transition-colors border-b theme-border last:border-0 ${bgClass} gap-3 md:gap-0"><div class="flex items-center gap-3 md:gap-4 min-w-0 pr-0 md:pr-4">${dotClass}<div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[var(--hover-bg)] border theme-border flex items-center justify-center text-xs font-bold theme-text-main shrink-0">${email.sender.charAt(0)}</div><div class="min-w-0"><div class="flex items-center gap-2 mb-0.5 md:mb-1"><span class="email-sender text-[11px] md:text-xs truncate ${textSenderClass}">${email.sender}</span><span class="text-[9px] md:text-[10px] theme-text-muted shrink-0">• ${email.time}</span></div><h4 class="email-subject text-xs md:text-sm truncate mb-0.5 ${textSubjectClass}">${email.subject}</h4><p class="text-[10px] md:text-xs theme-text-muted truncate">${email.snippet}</p></div></div><div class="shrink-0 flex items-center pl-10 md:pl-0"><span class="text-[10px] md:text-xs font-semibold px-2 py-1 md:px-3 md:py-1.5 rounded-lg border ${badgeColor}">${email.label}</span></div></div>`;
+                    html += `<div class="email-row flex flex-col md:flex-row md:items-center justify-between px-4 md:px-6 py-4 cursor-pointer transition-colors border-b theme-border last:border-0 ${bgClass} gap-3 md:gap-0"><div class="flex items-center gap-3 md:gap-4 min-w-0 pr-0 md:pr-4">${dotClass}<div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[var(--hover-bg)] border theme-border flex items-center justify-center text-xs font-bold theme-text-main shrink-0">${email.sender.charAt(0)}</div><div class="min-w-0"><div class="flex items-center gap-2 mb-0.5 md:mb-1"><span class="email-sender text-[11px] md:text-xs truncate ${textSenderClass}">${email.sender}</span><span class="text-[9px] md:text-[10px] theme-text-muted shrink-0">• ${email.time}</span></div><h4 class="email-subject text-xs md:text-sm truncate mb-0.5 ${textSubjectClass}">${email.subject}</h4><p class="text-[10px] md:text-xs theme-text-muted truncate">${email.snippet}</p></div></div><div class="shrink-0 flex items-center pl-10 md:pl-0"><select onchange="changeEmailLabel(${email.id}, this.value)" class="text-[10px] md:text-xs font-semibold px-2 py-1 md:px-3 md:py-1.5 rounded-lg border cursor-pointer outline-none transition-all ${badgeColor}"><option value="BELUM DI CRO" ${email.label === 'BELUM DI CRO' ? 'selected' : ''}>BELUM DI CRO</option><option value="SUDAH DI CRO" ${email.label === 'SUDAH DI CRO' ? 'selected' : ''}>SUDAH DI CRO</option></select></div></div>`;
                 });
             } else { html = `<div class="p-8 text-center text-sm theme-text-muted">Tidak ada email masuk.</div>`; }
             if(container) container.innerHTML = html;
@@ -482,7 +496,7 @@
                 if (isUnread && badge) badge.classList.remove('hidden'); 
                 let html = '';
                 logsData.forEach(log => {
-                    html += `<div class="mb-3 pb-3 border-b theme-border last:border-0 last:mb-0 last:pb-0"><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-semibold text-blue-500 uppercase tracking-wider">${log.sheet}</span><div class="flex items-center gap-1 text-[10px] theme-text-muted">${log.waktu}</div></div><div class="text-xs theme-text-muted mb-2">Row <span class="theme-text-main font-medium">${log.baris}</span>, Col <span class="theme-text-main font-medium">${log.kolom}</span></div><div class="text-xs theme-bg-main border theme-border rounded py-1.5 px-2"><div class="flex items-center gap-2 theme-text-muted line-through mb-1"><span class="truncate">${log.lama}</span></div><div class="flex items-center gap-2 text-emerald-500"><span class="truncate">${log.baru}</span></div></div></div>`;
+                    html += `<div class="mb-3 pb-3 border-b theme-border last:border-0 last:mb-0 last:pb-0"><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-semibold text-blue-500 uppercase tracking-wider">${log.sheet}</span><div class="flex items-center gap-1 text-[10px] theme-text-muted"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${log.waktu}</div></div><div class="text-xs theme-text-muted mb-2">Row <span class="theme-text-main font-medium">${log.baris}</span>, Col <span class="theme-text-main font-medium">${log.kolom}</span></div><div class="text-xs theme-bg-main border theme-border rounded py-1.5 px-2"><div class="flex items-center gap-2 theme-text-muted line-through mb-1"><svg class="w-3 h-3 text-red-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg><span class="truncate">${log.lama}</span></div><div class="flex items-center gap-2 text-emerald-500"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg><span class="truncate">${log.baru}</span></div></div></div>`;
                 });
                 if(listContainer) listContainer.innerHTML = html;
             } else {
@@ -599,23 +613,17 @@
         }
 
         // =========================================
-        // FUNGSI KHUSUS: DASHBOARD REKAP KEMITRAAN DENGAN 4 BUTTON TABS
+        // FUNGSI KHUSUS: DASHBOARD REKAP KEMITRAAN 4 TABS (ANTI SKIP BARIS)
         // =========================================
         function setKemitraanTab(tabId) {
             activeKemitraanTab = tabId;
-            
-            // Update UI Button
             ['tahap1-5', 'tahap1-7', 'status-mitra', 'list-pt'].forEach(id => {
                 const btn = document.getElementById('btn-' + id);
                 if (btn) {
-                    if (id === tabId) {
-                        btn.className = 'sub-tab-btn sub-tab-active';
-                    } else {
-                        btn.className = 'sub-tab-btn sub-tab-inactive';
-                    }
+                    if (id === tabId) btn.className = 'sub-tab-btn sub-tab-active';
+                    else btn.className = 'sub-tab-btn sub-tab-inactive';
                 }
             });
-            
             renderKemitraanDashboard();
         }
 
@@ -626,8 +634,8 @@
             const tableHead = document.getElementById('kemitraan-list-head');
             const tableBody = document.getElementById('kemitraan-list-body');
             
-            // Trik Ambil Nama Sheet Anti-Spasi
-            let sheetName = Object.keys(rawData).find(k => k.trim() === "Rekap Kemitraan" || k.trim().includes("Rekap Kemitraan"));
+            // Cari data di memori
+            let sheetName = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekap kemitraan");
             const rawRekapData = rawData[sheetName] || [];
 
             if (rawRekapData.length === 0) {
@@ -635,25 +643,26 @@
                 return;
             }
 
-            // MENCARI INDEX POSISI TABEL YANG BENAR (Meskipun Header di Excel di Merge)
+            // KITA BACA SEMUA KEYS/KOLOM
             let allKeys = Object.keys(rawRekapData[2] || rawRekapData[3] || rawRekapData[0]); 
             let regKeys = []; 
 
-            // Cari tulisan 'Regional' di seluruh kolom yang ada
+            // Scan cari tulisan 'Regional' di 15 baris pertama buat nentuin posisi ke-4 tabel
             for(let i=0; i<Math.min(15, rawRekapData.length); i++) {
                 let rowKeys = Object.keys(rawRekapData[i]);
                 let tempReg = [];
                 rowKeys.forEach(k => {
                     if(String(rawRekapData[i][k]).toLowerCase().trim() === 'regional') tempReg.push(k);
                 });
+                
                 if (tempReg.length > regKeys.length) {
                     regKeys = tempReg;
                     allKeys = rowKeys;
                 }
-                if(tempReg.length >= 4) break; // Kalo ketemu ke-4 tabelnya, stop.
+                if(tempReg.length >= 4) break; 
             }
 
-            // Tentukan target "Regional" berdasarkan Tab yg dipilih
+            // Tentukan posisi index Regional berdasarkan Tab yg dipilih
             let baseRegionalKey = null;
             if (activeKemitraanTab === 'tahap1-5') baseRegionalKey = regKeys[0] || allKeys[1];
             if (activeKemitraanTab === 'tahap1-7') baseRegionalKey = regKeys[1] || allKeys[11];
@@ -671,7 +680,7 @@
 
             let keyWil, keyJml, keySudah, keyBelum, keyPT, keyCV, keyKop, keyTahap, keyNamaPT, keyNamaMitra, keyStatus;
             
-            // Scan 10 baris pertama untuk nyocokin headers spesifik di sekitar baseRegionalKey
+            // Scan 10 baris pertama untuk nyocokin headers di area target
             for(let i=0; i<Math.min(10, rawRekapData.length); i++) {
                 let row = rawRekapData[i];
                 for(let j=baseIdx; j < Math.min(baseIdx+12, allKeys.length); j++) {
@@ -691,21 +700,21 @@
             }
 
             // ==========================================
-            // LOOPING DATA UTAMA DARI BARIS KE-0 AGAR TIDAK ADA DATA YANG KE SKIP!
+            // LOOPING DATA UTAMA - BACA DARI INDEX 0 (BIAR ACEH GAK KE-SKIP!)
             // ==========================================
             for(let i=0; i<rawRekapData.length; i++) {
                 let row = rawRekapData[i];
                 let cro = String(row[baseRegionalKey] || "").replace(/^[+-]\s*/, '').trim();
                 let wil = String(row[keyWil] || "").trim();
 
-                // PERATURAN FILTER SUPER KETAT: Abaikan baris judul dan total.
+                // Abaikan kalau isinya kosong atau cuma header 'Regional'
                 if(!cro || cro === "-" || cro.toLowerCase() === "regional" || cro.toLowerCase() === "no") continue;
                 if(cro.toLowerCase().includes("total") || cro.toLowerCase().includes("summary") || cro.toLowerCase().includes("grand")) continue;
 
                 if(cro.toLowerCase().startsWith('cro')) cro = cro.toUpperCase();
                 else cro = "CRO " + cro.toUpperCase(); 
 
-                // KALKULASI TAB TAHAP 1-5 & TAHAP 1-7
+                // TAHAP 1-5 & TAHAP 1-7
                 if (activeKemitraanTab === 'tahap1-5' || activeKemitraanTab === 'tahap1-7') {
                     let jml = parseInt(String(row[keyJml]).replace(/[^0-9]/g,'')) || 0;
                     let sudah = parseInt(String(row[keySudah]).replace(/[^0-9]/g,'')) || 0;
@@ -719,7 +728,7 @@
                     summaryMap[k].jml += jml; summaryMap[k].sdh += sudah; summaryMap[k].blm += belum;
                 }
                 
-                // KALKULASI TAB STATUS MITRA
+                // STATUS MITRA
                 if (activeKemitraanTab === 'status-mitra') {
                     let jml = parseInt(String(row[keyJml]).replace(/[^0-9]/g,'')) || 0;
                     let pt = parseInt(String(row[keyPT]).replace(/[^0-9]/g,'')) || 0;
@@ -734,7 +743,7 @@
                     summaryMap[k].jml += jml; summaryMap[k].pt += pt; summaryMap[k].cv += cv; summaryMap[k].kop += kop;
                 }
 
-                // TAB LIST NAMA PT
+                // LIST NAMA PT
                 if (activeKemitraanTab === 'list-pt') {
                     let tahap = String(row[keyTahap] || "").trim();
                     let npt = String(row[keyNamaPT] || "").trim();
@@ -820,7 +829,9 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
+        // =========================================
         // FUNGSI MENDAPATKAN IKON FILE
+        // =========================================
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -913,15 +924,12 @@
             });
 
             if (sheetName === 'INPUT ASTA') {
-                $('#asta-status-filter').on('change', function() {
-                    let val = $(this).val();
-                    currentDataTable.search(val).draw();
-                });
+                $('#asta-status-filter').on('change', function() { let val = $(this).val(); currentDataTable.search(val).draw(); });
             }
         }
 
         // =========================================
-        // FUNGSI RENDER EVALUASI KINERJA
+        // FUNGSI RENDER EVALUASI KINERJA (BIASA)
         // =========================================
         function loadEvaluasiTable(sheetName) {
             document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
@@ -938,7 +946,7 @@
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
 
-            // FITUR PENCARIAN NAMA SHEET DINAMIS (ANTI SPASI)
+            // FITUR PENCARIAN NAMA SHEET DINAMIS
             let exactKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === sheetName.trim().toLowerCase());
             const data = rawData[exactKey] || [];
             
@@ -948,7 +956,7 @@
             }
             
             if (data.length === 0) { 
-                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Sedang sinkronisasi data Viewer... Jika kosong, pastikan koneksi lancar.</td></tr></tbody>`); 
+                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Menarik data dari server, mohon tunggu sebentar...</td></tr></tbody>`); 
                 return; 
             }
 
@@ -985,13 +993,10 @@
         // INIT SAAT WEB DIBUKA
         // =========================================
         document.addEventListener("DOMContentLoaded", function() {
-            
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
-                if(themeIcon) {
-                    themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
-                }
+                if(themeIcon) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
             }
 
             renderNotifications();
@@ -1024,11 +1029,7 @@
             }
 
             const isLightInit = document.body.classList.contains('light-mode');
-            Highcharts.setOptions({ 
-                colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#6366f1'], 
-                credits: { enabled: false }, 
-                chart: { style: { fontFamily: 'Inter' } } 
-            });
+            Highcharts.setOptions({ colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#6366f1'], credits: { enabled: false }, chart: { style: { fontFamily: 'Inter' } } });
             updateChartTheme(isLightInit);
 
             // Tampilkan Dashboard & Tabel Awal
@@ -1036,13 +1037,14 @@
             loadTable("REKAPITULASI");
             loadEvaluasiTable("Sumber/Source Data");
             
+            // Re-adjust DataTables on window resize
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
                 if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND INSTANT
+            // LOGIKA POLLING BACKGROUND (CEPAT & AMAN DARI LAG)
             // ==========================================
             async function syncData() {
                 const syncText = document.getElementById('sync-text');
@@ -1078,14 +1080,7 @@
                                         if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
 
                                         if (oldVal !== newVal) {
-                                            detectedChanges.push({
-                                                sheet: sheet, 
-                                                waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
-                                                baris: i + 2, 
-                                                kolom: key, 
-                                                lama: oldVal === "" ? "(Kosong)" : oldVal, 
-                                                baru: newVal === "" ? "(Kosong)" : newVal
-                                            });
+                                            detectedChanges.push({ sheet: sheet, waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), baris: i + 2, kolom: key, lama: oldVal === "" ? "(Kosong)" : oldVal, baru: newVal === "" ? "(Kosong)" : newVal });
                                         }
                                     });
                                 }
@@ -1117,21 +1112,17 @@
                         if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
-                        
                         if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
                             renderKemitraanDashboard();
                         }
 
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
-                            syncText.classList.remove('text-emerald-500', 'text-red-500'); 
-                            syncText.classList.add('text-blue-500');
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
                             syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
                             
                             setTimeout(() => { 
-                                syncText.innerText = "LIVE SYSTEM"; 
-                                syncText.classList.add('text-emerald-500'); 
-                                syncText.classList.remove('text-blue-500');
+                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
                                 syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
                             }, 3000);
                         }
@@ -1139,17 +1130,23 @@
                 } catch (err) { 
                     console.error("Gagal sinkronisasi background:", err); 
                     if(syncText && syncDot) {
-                        syncText.innerText = "KONEKSI LAMBAT"; 
-                        syncText.classList.remove('text-blue-500', 'text-emerald-500'); 
-                        syncText.classList.add('text-red-500');
+                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
                         syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
                     }
                 }
             }
 
-            // Panggil API Vercel langsung kalau data kosong
+            // Tembak data kalau kosong
             if (Object.keys(rawData).length === 0) {
                 syncData();
+                let retryInterval = setInterval(() => {
+                    if(Object.keys(rawData).length > 0) {
+                        clearInterval(retryInterval);
+                        const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
+                        if (activeEvalTab) loadEvaluasiTable(activeEvalTab.dataset.sheet);
+                    }
+                    else syncData();
+                }, 2000);
             }
 
             setInterval(syncData, 10000); 
@@ -1159,18 +1156,12 @@
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
                     const result = await response.json();
-                    
                     if (JSON.stringify(emailsData) !== JSON.stringify(result.emails)) {
                         emailsData = result.emails;
                         renderEmailsUI();
-                        
                         const badge = document.getElementById('sidebar-email-badge');
                         if (result.unreadCount > 0 && badge) {
-                            badge.innerText = result.unreadCount;
-                            badge.classList.remove('hidden');
-                            badge.classList.remove('badge-pop');
-                            void badge.offsetWidth; 
-                            badge.classList.add('badge-pop');
+                            badge.innerText = result.unreadCount; badge.classList.remove('hidden'); badge.classList.remove('badge-pop'); void badge.offsetWidth; badge.classList.add('badge-pop');
                         }
                     }
                 } catch (err) {}
