@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Executive Portal - Agrinas</title>
     
+    <!-- Library CSS & Framework -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
+    <!-- DataTables -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -294,10 +297,17 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
 
+    <!-- =========================================
+         OVERLAY BACKDROP (UNTUK HP)
+         ========================================= -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
+    <!-- =========================================
+         SIDEBAR KIRI (Menu Navigasi)
+         ========================================= -->
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
         
+        <!-- Logo Sidebar -->
         <div class="h-16 flex items-center px-6 border-b theme-border">
             <div class="flex items-center gap-3">
                 <svg class="w-6 h-6 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -308,11 +318,13 @@
                     <span class="text-[10px] theme-text-muted">PT Agrinas Nusantara</span>
                 </div>
             </div>
+            <!-- Tombol Close Sidebar (Mobile Only) -->
             <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400 hover:text-white focus:outline-none">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
+        <!-- Menu Utama -->
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">
                 Menu Utama
@@ -332,18 +344,21 @@
                 Master Data Kebun
             </button>
 
+            <!-- MENU BARU: INBOX EMAIL -->
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
                 Inbox Email
                 
+                <!-- BADGE NOTIFIKASI KIRI -->
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">
                     0
                 </span>
             </button>
         </div>
 
+        <!-- Profil User Bawah -->
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold theme-text-main" style="background-color: var(--hover-bg);">
@@ -357,11 +372,17 @@
         </div>
     </aside>
 
+    <!-- =========================================
+         AREA KONTEN KANAN (Header + Main)
+         ========================================= -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         
+        <!-- HEADER ATAS KANAN -->
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
             
+            <!-- Bagian Kiri Header (Hamburger + Judul) -->
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
+                <!-- Tombol Menu Hamburger (Khusus Layar HP) -->
                 <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 -ml-2 rounded-lg theme-text-muted hover:bg-[var(--hover-bg)] focus:outline-none shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
@@ -369,11 +390,14 @@
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
+                <!-- Dikasih max-width biar teks panjang di HP otomatis dipotong pakai titik-titik (...) -->
                 <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard</span>
             </div>
 
+            <!-- Panel Kanan Atas -->
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
                 
+                <!-- TOMBOL GANTI TEMA -->
                 <button onclick="toggleTheme()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none" title="Ganti Tema">
                     <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -382,6 +406,7 @@
 
                 <div class="w-px h-5 theme-border border-l"></div>
 
+                <!-- Live System Indicator -->
                 <div class="flex items-center gap-2 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 md:px-3 rounded-full border border-emerald-500/20">
                     <span id="sync-dot" class="relative flex h-1.5 w-1.5">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -392,6 +417,7 @@
                 
                 <div class="w-px h-5 theme-border border-l hidden sm:block"></div>
                 
+                <!-- Lonceng Notifikasi Update Database -->
                 <div class="relative group">
                     <button onclick="markAsRead()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none z-50">
                         <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden"></span>
@@ -400,22 +426,27 @@
                         </svg>
                     </button>
                     
+                    <!-- Dropdown Notifikasi -->
                     <div class="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 premium-dropdown rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col max-h-[450px]">
                         <div class="px-5 py-3 premium-dropdown-header rounded-t-xl flex justify-between items-center">
                             <span class="text-[11px] font-bold theme-text-muted uppercase tracking-widest">Audit Trail Database</span>
                         </div>
                         <div id="notif-list" class="p-3 overflow-y-auto flex-grow text-left">
-                            </div>
+                            <!-- Nanti list notifikasi database disuntik ke sini -->
+                        </div>
                     </div>
                 </div>
 
             </div>
         </header>
 
+        <!-- KONTEN UTAMA (Yang Bisa Di-Scroll) -->
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
             
+            <!-- 1. HALAMAN DASHBOARD PIVOT -->
             <section id="view-dashboard" class="fade-in block">
                 
+                <!-- HEADER DASHBOARD DENGAN FILTER CRO -->
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
@@ -427,16 +458,20 @@
                         </p>
                     </div>
                     
+                    <!-- FILTER CRO -->
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
                         <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter CRO:</span>
                         <select id="cro-filter" onchange="renderPivotDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer">
                             <option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>
-                            </select>
+                            <!-- Daftar CRO akan disuntik otomatis dari Javascript -->
+                        </select>
                     </div>
                 </div>
 
+                <!-- KPI BOXES DARI PIVOT -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
 
+                <!-- CHARTS DARI PIVOT -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Target Produksi (Ton) per CRO</h3>
@@ -448,10 +483,12 @@
                     </div>
                 </div>
 
+                <!-- DAFTAR PERUSAHAAN (PT) PER CRO -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full">
                     <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">
                         Daftar Perusahaan (PT)
                     </h3>
+                    <!-- Bungkus dengan overflow-x-auto supaya tabel bisa digeser kanan-kiri di HP -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
@@ -463,13 +500,15 @@
                                 </tr>
                             </thead>
                             <tbody id="pt-list-body">
-                                </tbody>
+                                <!-- Daftar PT disuntik dari JS -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
 
             </section>
 
+            <!-- 2. HALAMAN MASTER DATA -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Master Data Repository</h2>
@@ -478,13 +517,16 @@
 
                 <div class="premium-card p-4 md:p-6 w-full">
                     
+                    <!-- TAB NAVIGASI SHEET -->
                     <div id="tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
                     
                     <div class="w-full overflow-hidden" id="data-wrapper">
+                        <!-- AREA TABEL NORMAL -->
                         <div id="table-area" class="w-full">
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
                         
+                        <!-- AREA PIVOT TABLE (IFRAME) -->
                         <div id="pivot-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
                             <iframe src="https://docs.google.com/spreadsheets/d/1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY/edit?gid=2130529003#gid=2130529003&rm=minimal" class="w-full h-full border-none"></iframe>
                         </div>
@@ -493,6 +535,7 @@
                 </div>
             </section>
 
+            <!-- 3. HALAMAN INBOX EMAIL -->
             <section id="view-inbox" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -505,19 +548,24 @@
                     </div>
                 </div>
 
+                <!-- DAFTAR EMAIL -->
                 <div class="premium-card overflow-hidden w-full">
                     <div class="flex items-center justify-between px-4 md:px-6 py-4 border-b theme-border bg-black/10">
                         <span class="text-[10px] md:text-xs font-semibold theme-text-muted">Kotak Masuk (Gmail API Sync)</span>
                         <button class="text-[10px] md:text-xs text-blue-500 hover:underline font-medium">Tandai semua dibaca</button>
                     </div>
                     <div id="email-list-container" class="divide-y theme-border flex flex-col max-h-[600px] overflow-y-auto">
-                        </div>
+                        <!-- Email disuntik via Javascript disini -->
+                    </div>
                 </div>
             </section>
 
         </main>
     </div>
 
+    <!-- =========================================
+         MODAL DOKUMEN PREVIEW
+         ========================================= -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
             
@@ -552,6 +600,9 @@
         </div>
     </div>
 
+    <!-- =========================================
+         JAVASCRIPT LOGIC
+         ========================================= -->
     <script>
         // Data dari backend server.js
         let rawData = <%- sheetData %>;
@@ -799,7 +850,7 @@
                 if(listContainer) listContainer.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-8 text-center">
                         <svg class="w-8 h-8 theme-text-muted mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <p class="text-xs theme-text-muted font-medium">No recent changes detected.</p>
+                        <p class="text-xs theme-text-muted font-medium">Belum ada perubahan data.</p>
                     </div>
                 `;
             }
@@ -819,11 +870,11 @@
             let totalLuas = 0;
             let totalLuasTM = 0;
             let totalTarget = 0;
-            let totalPtCount = 0; // PENGHITUNG BARU: Ngitung total baris/dokumen persis seperti COUNTA
+            let totalPtCount = 0;
             
             let chartBarDataMap = {};
             let chartPieDataMap = {};
-            let ptDataMap = {}; // Untuk menyimpan rekap per PT
+            let ptDataMap = {}; 
 
             // Fungsi helper pembersih format angka dari Excel
             const parseNum = (val) => {
@@ -834,8 +885,8 @@
                 if (s.includes(',') && s.includes('.')) {
                     let lastComma = s.lastIndexOf(',');
                     let lastDot = s.lastIndexOf('.');
-                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); // Format Indo (1.234,56)
-                    else s = s.replace(/,/g, ''); // Format US (1,234.56)
+                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); 
+                    else s = s.replace(/,/g, ''); 
                 } else if (s.includes(',')) {
                     if ((s.match(/,/g) || []).length > 1) s = s.replace(/,/g, '');
                     else if (s.length - s.lastIndexOf(',') <= 3) s = s.replace(',', '.');
@@ -860,13 +911,12 @@
                 let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
                 let namaPt = String(row[keyPT] || "").trim();
 
-                // Skip baris kosong atau baris "Total" bawaan dari pivot/rekap agar tidak dobel hitung
+                // Skip baris kosong atau baris "Total"
                 if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase().includes("total") || rowCRO.toLowerCase().includes("summary")) return;
                 if (!namaPt || namaPt === "-" || namaPt.toLowerCase().includes("total") || namaPt.toLowerCase().includes("summary")) return;
 
                 croList.add(rowCRO);
 
-                // Filter CRO Dropdown
                 if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
 
                 let luasKebun = parseNum(row[keyLuas]);
@@ -876,8 +926,7 @@
                 totalLuas += luasKebun;
                 totalLuasTM += luasTM;
                 totalTarget += targetProd;
-                
-                totalPtCount++; // Menghitung setiap baris dokumen PT yang valid (seperti COUNTA)
+                totalPtCount++; 
 
                 // Agregasi per PT untuk ditampilkan di Tabel
                 if (!ptDataMap[namaPt]) {
@@ -963,8 +1012,6 @@
             
             // RENDER TABEL RINCIAN NAMA PT
             let ptHtml = '';
-            
-            // Urutkan daftar PT berdasarkan target produksinya (terbesar ke terkecil)
             let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
             
             if (sortedPTs.length > 0) {
@@ -1174,43 +1221,75 @@
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND (SHEETS & EMAIL) ANTI-CACHE
+            // LOGIKA POLLING BACKGROUND (SHEETS DEEP-DIFF)
             // ==========================================
             
-            // Cek Data Spreadsheet Tiap 10 Detik
             setInterval(async () => {
                 try {
-                    // Tambahin ?t=timestamp biar Vercel nggak ngasih data basi (cache)
+                    // Anti-Cache request ke Vercel
                     const response = await fetch('/api/check-updates?t=' + new Date().getTime());
                     const result = await response.json();
                     
                     if (JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
                         
-                        // Buat notif log buatan kalau data beda, karena logsData Vercel kereset
-                        logsData.unshift({
-                            sheet: "AUTO SYNC",
-                            waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }),
-                            baris: "Pembaruan",
-                            kolom: "Terdeteksi",
-                            lama: "Data Lama",
-                            baru: "Data Baru"
-                        });
+                        // --- LOGIKA DETEKSI PERUBAHAN SPESIFIK (DEEP DIFF) ---
+                        let detectedChanges = [];
                         
-                        // Batasi log maksimal 50
-                        if(logsData.length > 50) logsData.pop();
+                        listSheets.forEach(sheet => {
+                            let oldSheet = rawData[sheet] || [];
+                            let newSheet = result.rawData[sheet] || [];
+                            let maxRows = Math.max(oldSheet.length, newSheet.length);
 
+                            for (let i = 0; i < maxRows; i++) {
+                                let oldRow = oldSheet[i] || {};
+                                let newRow = newSheet[i] || {};
+                                let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
+
+                                allKeys.forEach(key => {
+                                    // Abaikan metadata link dan baris kosong internal dari Excel
+                                    if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
+
+                                    let oldVal = String(oldRow[key] || "").trim();
+                                    let newVal = String(newRow[key] || "").trim();
+
+                                    // Hilangkan URL kalau ada fitur "|||" supaya rapi di notifikasi
+                                    if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                    if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
+
+                                    if (oldVal !== newVal) {
+                                        detectedChanges.push({
+                                            sheet: sheet,
+                                            waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }),
+                                            baris: i + 2, // Excel baris 1 itu header, jadi index 0 = baris 2
+                                            kolom: key,
+                                            lama: oldVal === "" ? "(Kosong)" : oldVal,
+                                            baru: newVal === "" ? "(Kosong)" : newVal
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
+                        // Masukkan log baru ke urutan teratas (Max 50 riwayat)
+                        if(detectedChanges.length > 0) {
+                            logsData = [...detectedChanges, ...logsData];
+                            if (logsData.length > 50) logsData = logsData.slice(0, 50); 
+                        }
+                        // ----------------------------------------------------
+
+                        // Terapkan data baru ke aplikasi
                         rawData = result.rawData;
                         isUnread = true; 
                         
                         renderNotifications();
-                        renderPivotDashboard(); // Render Ulang Dashboard Kalo Data Berubah
+                        renderPivotDashboard(); 
                         
-                        // Render Ulang Tabel Database yang lagi aktif
                         const activeTab = document.querySelector('.tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             loadTable(activeTab.dataset.sheet);
                         }
 
+                        // Animasi tombol LIVE hijau jadi biru
                         const syncText = document.getElementById('sync-text');
                         const syncDot = document.getElementById('sync-dot');
                         
