@@ -22,7 +22,6 @@
            SISTEM TEMA: DARK / LIGHT MODE
            ========================================= */
         :root {
-            /* Tema Gelap (Bawaan) */
             --bg-main: #0a0a0a; 
             --bg-panel: #111111;
             --bg-card: #151515;
@@ -35,7 +34,6 @@
         }
         
         body.light-mode {
-            /* Tema Terang */
             --bg-main: #f3f4f6; 
             --bg-panel: #ffffff;
             --bg-card: #ffffff;
@@ -47,31 +45,11 @@
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
 
-        /* CLASS KHUSUS UNTUK MENERAPKAN TEMA */
-        .theme-bg-main { 
-            background-color: var(--bg-main); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-bg-panel { 
-            background-color: var(--bg-panel); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-border { 
-            border-color: var(--border-color); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-text-main { 
-            color: var(--text-main); 
-            transition: all 0.3s ease; 
-        }
-        
-        .theme-text-muted { 
-            color: var(--text-muted); 
-            transition: all 0.3s ease; 
-        }
+        .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
+        .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
+        .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
+        .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
+        .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
 
         /* =========================================
            BASE & LAYOUT
@@ -84,7 +62,6 @@
             transition: all 0.3s ease; 
         }
         
-        /* PREMIUM CARDS */
         .premium-card { 
             background: var(--bg-card); 
             border: 1px solid var(--border-color); 
@@ -93,9 +70,6 @@
             transition: all 0.3s ease; 
         }
 
-        /* =========================================
-           DROPDOWN NOTIFIKASI KHUSUS
-           ========================================= */
         .premium-dropdown { 
             background-color: var(--bg-dropdown); 
             backdrop-filter: blur(12px); 
@@ -103,14 +77,12 @@
             box-shadow: var(--shadow-drop); 
             z-index: 100 !important; 
         }
+        
         .premium-dropdown-header { 
             background-color: var(--bg-panel); 
             border-bottom: 1px solid var(--border-color); 
         }
 
-        /* =========================================
-           SIDEBAR LINKS
-           ========================================= */
         .sidebar-link { 
             padding: 10px 16px; 
             font-size: 13px; 
@@ -123,29 +95,25 @@
             margin-bottom: 4px; 
             position: relative; 
         }
+        
         .sidebar-link:hover { 
             color: var(--text-main); 
             background: var(--hover-bg); 
         }
+        
         .sidebar-link.active { 
             color: var(--text-main); 
             background: var(--hover-bg); 
             border-left: 3px solid #83b765; 
         }
 
-        /* ANIMASI BADGE KIRI */
         @keyframes pop { 
             0% { transform: scale(0.8); opacity: 0; } 
             50% { transform: scale(1.2); opacity: 1; } 
             100% { transform: scale(1); opacity: 1; } 
         }
-        .badge-pop { 
-            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-        }
+        .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        /* =========================================
-           TABS NAVIGATION (Menu Sheet)
-           ========================================= */
         .tab-btn { 
             padding: 8px 16px; 
             font-size: 13px; 
@@ -158,19 +126,18 @@
             background: transparent; 
             border: 1px solid transparent; 
         }
+        
         .tab-active { 
             background: var(--hover-bg) !important; 
             color: var(--text-main) !important; 
             border-color: var(--border-color) !important; 
         }
+        
         .tab-btn:hover:not(.tab-active) { 
             color: var(--text-main); 
             background: var(--hover-bg); 
         }
 
-        /* =========================================
-           DATATABLES CUSTOMIZATION
-           ========================================= */
         .dataTables_wrapper .dataTables_length, 
         .dataTables_wrapper .dataTables_filter, 
         .dataTables_wrapper .dataTables_info, 
@@ -180,6 +147,7 @@
             margin-top: 16px; 
             margin-bottom: 24px; 
         }
+        
         .dataTables_wrapper select, 
         .dataTables_wrapper .dataTables_filter input { 
             background-color: var(--bg-main) !important; 
@@ -190,6 +158,7 @@
             outline: none !important; 
             transition: all 0.2s; 
         }
+        
         .dataTables_wrapper .dataTables_filter input:focus { 
             border-color: #83b765 !important; 
         }
@@ -202,6 +171,7 @@
             width: 100% !important; 
             border-bottom: 1px solid var(--border-color) !important; 
         }
+        
         table.dataTable thead th { 
             background-color: var(--bg-card) !important; 
             color: var(--text-muted) !important; 
@@ -213,13 +183,16 @@
             text-transform: uppercase; 
             white-space: nowrap !important; 
         }
+        
         table.dataTable tbody tr { 
             background-color: transparent !important; 
             transition: all 0.15s ease; 
         }
+        
         table.dataTable tbody tr:hover { 
             background-color: var(--hover-bg) !important; 
         }
+        
         table.dataTable tbody td { 
             border-bottom: 1px solid var(--border-color) !important; 
             font-size: 13px; 
@@ -238,10 +211,12 @@
             margin: 0 2px !important; 
             transition: all 0.2s; 
         }
+        
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { 
             background: var(--hover-bg) !important; 
             color: var(--text-main) !important; 
         }
+        
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { 
             background: var(--hover-bg) !important; 
             color: var(--text-main) !important; 
@@ -249,9 +224,6 @@
             font-weight: 600; 
         }
 
-        /* =========================================
-           ANIMATIONS & CUSTOM SCROLLBAR
-           ========================================= */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -263,81 +235,53 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
 
-    <!-- =========================================
-         OVERLAY BACKDROP (UNTUK HP)
-         ========================================= -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
-    <!-- =========================================
-         SIDEBAR KIRI (Menu Navigasi)
-         ========================================= -->
+    <!-- SIDEBAR KIRI -->
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-        
-        <!-- Logo Sidebar -->
         <div class="h-16 flex items-center px-6 border-b theme-border">
             <div class="flex items-center gap-3">
-                <svg class="w-6 h-6 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                </svg>
+                <svg class="w-6 h-6 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                 <div class="flex flex-col">
                     <h1 class="text-sm font-bold theme-text-main tracking-wide leading-tight">AGRINAS OPS</h1>
                     <span class="text-[10px] theme-text-muted">PT Agrinas Nusantara</span>
                 </div>
             </div>
-            <!-- Tombol Close Sidebar (Mobile Only) -->
             <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400 hover:text-white focus:outline-none">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <!-- Menu Utama -->
         <div class="flex-1 overflow-y-auto py-5 px-3">
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">
-                Menu Utama
-            </div>
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 Dashboard On Farm
             </button>
             
             <button onclick="switchView('view-database', 'nav-database')" class="w-full sidebar-link" id="nav-database">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                 Master Data Kebun
             </button>
 
             <!-- MENU EVALUASI KINERJA -->
             <button onclick="switchView('view-evaluasi', 'nav-evaluasi')" class="w-full sidebar-link" id="nav-evaluasi">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 Evaluasi Kinerja
             </button>
 
             <!-- MENU INBOX EMAIL -->
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 Inbox Email
-                
-                <!-- BADGE NOTIFIKASI KIRI -->
-                <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">
-                    0
-                </span>
+                <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
         </div>
 
-        <!-- Profil User Bawah -->
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold theme-text-main" style="background-color: var(--hover-bg);">
-                    PIC
-                </div>
+                <div class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold theme-text-main" style="background-color: var(--hover-bg);">PIC</div>
                 <div class="flex flex-col overflow-hidden">
                     <span class="text-xs font-semibold theme-text-main truncate">Staf PIC HO</span>
                     <span class="text-[10px] theme-text-muted truncate">staf.pic.ho@agrinas.id</span>
@@ -346,70 +290,45 @@
         </div>
     </aside>
 
-    <!-- =========================================
-         AREA KONTEN KANAN (Header + Main)
-         ========================================= -->
+    <!-- AREA KONTEN KANAN -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         
         <!-- HEADER ATAS KANAN -->
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
-            
-            <!-- Bagian Kiri Header (Hamburger + Judul) -->
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
-                <!-- Tombol Menu Hamburger (Khusus Layar HP) -->
                 <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 -ml-2 rounded-lg theme-text-muted hover:bg-[var(--hover-bg)] focus:outline-none shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                
-                <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
+                <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard</span>
             </div>
 
-            <!-- Panel Kanan Atas -->
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
-                
-                <!-- TOMBOL GANTI TEMA -->
                 <button onclick="toggleTheme()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none" title="Ganti Tema">
-                    <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
+                    <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
 
                 <div class="w-px h-5 theme-border border-l"></div>
 
-                <!-- Live System Indicator -->
                 <div class="flex items-center gap-2 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 md:px-3 rounded-full border border-emerald-500/20">
-                    <span id="sync-dot" class="relative flex h-1.5 w-1.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                    </span>
+                    <span id="sync-dot" class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span></span>
                     <span id="sync-text" class="hidden sm:inline">LIVE SYSTEM</span>
                 </div>
                 
                 <div class="w-px h-5 theme-border border-l hidden sm:block"></div>
                 
-                <!-- Lonceng Notifikasi Update Database -->
                 <div class="relative group">
                     <button onclick="markAsRead()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none z-50">
                         <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                        </svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                     </button>
-                    
-                    <!-- Dropdown Notifikasi -->
                     <div class="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 premium-dropdown rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col max-h-[450px]">
                         <div class="px-5 py-3 premium-dropdown-header rounded-t-xl flex justify-between items-center">
                             <span class="text-[11px] font-bold theme-text-muted uppercase tracking-widest">Audit Trail Database</span>
                         </div>
-                        <div id="notif-list" class="p-3 overflow-y-auto flex-grow text-left">
-                            <!-- Nanti list notifikasi database disuntik ke sini -->
-                        </div>
+                        <div id="notif-list" class="p-3 overflow-y-auto flex-grow text-left"></div>
                     </div>
                 </div>
-
             </div>
         </header>
 
@@ -433,7 +352,6 @@
                         <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter CRO:</span>
                         <select id="cro-filter" onchange="renderPivotDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer">
                             <option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>
-                            <!-- Daftar CRO akan disuntik otomatis dari Javascript -->
                         </select>
                     </div>
                 </div>
@@ -491,11 +409,10 @@
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div id="tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
                     <div class="w-full overflow-hidden" id="data-wrapper">
+                        
                         <div id="table-area" class="w-full">
-                            
                             <!-- FILTER SPESIFIK UNTUK "INPUT ASTA" -->
                             <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit"></div>
-                            
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
                         
@@ -506,25 +423,19 @@
                 </div>
             </section>
 
-            <!-- 3. HALAMAN EVALUASI KINERJA (SHEET KE-2) -->
+            <!-- 3. HALAMAN EVALUASI KINERJA -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Evaluasi Kinerja Produksi</h2>
-                    <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan dari dokumen viewer.</p>
+                    <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan secara Native.</p>
                 </div>
 
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div id="evaluasi-tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
+                    
                     <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
-                        
-                        <!-- AREA TABEL NORMAL EVALUASI -->
                         <div id="evaluasi-table-area" class="w-full">
                             <table id="evaluasiTable" class="w-full text-left"></table>
-                        </div>
-                        
-                        <!-- AREA REKAP KEMITRAAN (IFRAME) -->
-                        <div id="evaluasi-iframe-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
-                            <iframe id="evaluasi-iframe" src="" class="w-full h-full border-none"></iframe>
                         </div>
                     </div>
                 </div>
@@ -573,32 +484,12 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // Data dari backend server.js
-        let rawData = <%- sheetData %>;
+        let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // Daftar Sheet untuk Halaman "Master Data Kebun" (Sheet 1)
-        const listSheets = [
-            "REKAPITULASI", 
-            "Pivot Table", 
-            "Pembayaran Vendor", 
-            "Draft Surat Penugasan", 
-            "INPUT ASTA", 
-            "Acuan Nama Kebun", 
-            "Acuan Nama CRO & Region", 
-            "Perubahan CV ke PT", 
-            "Rekap Vendor"
-        ];
-        
-        // Daftar Sheet untuk Halaman "Evaluasi Kinerja" (Sheet 2)
-        const listEvaluasiSheets = [
-            "Sumber/Source Data", 
-            "Kinerja Prod", 
-            "Rekap Kemitraan", 
-            "Rekapan", 
-            "Executive Summary"
-        ];
+        const listSheets = ["REKAPITULASI", "Pivot Table", "Pembayaran Vendor", "Draft Surat Penugasan", "INPUT ASTA", "Acuan Nama Kebun", "Acuan Nama CRO & Region", "Perubahan CV ke PT", "Rekap Vendor"];
+        const listEvaluasiSheets = ["Sumber/Source Data", "Kinerja Prod", "Rekap Kemitraan", "Rekapan", "Executive Summary"];
         
         let currentDataTable = null;
         let evaluasiDataTable = null;
@@ -623,11 +514,8 @@
             const isLight = document.body.classList.contains('light-mode');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
             const themeIcon = document.getElementById('theme-icon');
-            if (isLight) {
-                themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
-            } else {
-                themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
-            }
+            if (isLight) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
+            else themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
             updateChartTheme(isLight);
         }
 
@@ -658,20 +546,14 @@
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
-            if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard";
-            } else if(viewId === 'view-database') {
-                headerTitle.innerText = "Executive On-Farm > Master Data";
-            } else if(viewId === 'view-evaluasi') {
-                headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
-            } else if(viewId === 'view-inbox') {
+            if(viewId === 'view-dashboard') headerTitle.innerText = "Executive On-Farm > Dashboard";
+            else if(viewId === 'view-database') headerTitle.innerText = "Executive On-Farm > Master Data";
+            else if(viewId === 'view-evaluasi') headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
+            else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
                 fetch('/api/read-emails?t=' + new Date().getTime(), { method: 'POST' }).then(() => {
                     const badge = document.getElementById('sidebar-email-badge');
-                    if(badge) { 
-                        badge.classList.add('hidden'); 
-                        badge.classList.remove('badge-pop'); 
-                    }
+                    if(badge) { badge.classList.add('hidden'); badge.classList.remove('badge-pop'); }
                     document.querySelectorAll('.email-row.bg-blue-500\\/5').forEach(el => {
                         el.classList.remove('bg-blue-500/5');
                         el.querySelector('.email-sender').classList.remove('font-bold', 'text-white');
@@ -686,38 +568,20 @@
             document.getElementById('nav-inbox').classList.remove('active');
             document.getElementById(elementId).classList.add('active');
             
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            }
+            if (window.innerWidth < 768) toggleSidebar();
             
-            if(viewId === 'view-database' && currentDataTable) {
-                setTimeout(() => currentDataTable.columns.adjust(), 50);
-            }
-            if(viewId === 'view-evaluasi' && evaluasiDataTable) {
-                setTimeout(() => evaluasiDataTable.columns.adjust(), 50);
-            }
+            if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
+            if(viewId === 'view-evaluasi' && evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 50);
         }
 
-        function markAsRead() { 
-            document.getElementById('notif-badge').classList.add('hidden'); 
-            isUnread = false; 
-        }
+        function markAsRead() { document.getElementById('notif-badge').classList.add('hidden'); isUnread = false; }
 
         async function changeEmailLabel(id, newLabel) {
             try {
-                const res = await fetch('/api/update-email-label?t=' + new Date().getTime(), { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ id: id, label: newLabel }) 
-                });
+                const res = await fetch('/api/update-email-label?t=' + new Date().getTime(), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, label: newLabel }) });
                 const data = await res.json();
-                if(data.success) { 
-                    emailsData = data.emails; 
-                    renderEmailsUI(); 
-                }
-            } catch (err) { 
-                console.error(err); 
-            }
+                if(data.success) { emailsData = data.emails; renderEmailsUI(); }
+            } catch (err) { console.error(err); }
         }
 
         function renderEmailsUI() {
@@ -745,21 +609,15 @@
                             <div class="shrink-0 flex items-center pl-10 md:pl-0"><select onchange="changeEmailLabel(${email.id}, this.value)" class="text-[10px] md:text-xs font-semibold px-2 py-1 md:px-3 md:py-1.5 rounded-lg border cursor-pointer outline-none transition-all ${badgeColor}"><option value="BELUM DI CRO" ${email.label === 'BELUM DI CRO' ? 'selected' : ''}>BELUM DI CRO</option><option value="SUDAH DI CRO" ${email.label === 'SUDAH DI CRO' ? 'selected' : ''}>SUDAH DI CRO</option></select></div>
                         </div>`;
                 });
-            } else { 
-                html = `<div class="p-8 text-center text-sm theme-text-muted">Tidak ada email masuk.</div>`; 
-            }
-            if(container) {
-                container.innerHTML = html;
-            }
+            } else { html = `<div class="p-8 text-center text-sm theme-text-muted">Tidak ada email masuk.</div>`; }
+            if(container) container.innerHTML = html;
         }
 
         function renderNotifications() {
             const listContainer = document.getElementById('notif-list');
             const badge = document.getElementById('notif-badge');
             if (logsData && logsData.length > 0) {
-                if (isUnread && badge) {
-                    badge.classList.remove('hidden'); 
-                }
+                if (isUnread && badge) badge.classList.remove('hidden'); 
                 let html = '';
                 logsData.forEach(log => {
                     html += `
@@ -775,13 +633,9 @@
                             </div>
                         </div>`;
                 });
-                if(listContainer) {
-                    listContainer.innerHTML = html;
-                }
+                if(listContainer) listContainer.innerHTML = html;
             } else {
-                if(listContainer) {
-                    listContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-8 text-center"><svg class="w-8 h-8 theme-text-muted mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><p class="text-xs theme-text-muted font-medium">Belum ada perubahan data.</p></div>`;
-                }
+                if(listContainer) listContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-8 text-center"><svg class="w-8 h-8 theme-text-muted mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><p class="text-xs theme-text-muted font-medium">Belum ada perubahan data.</p></div>`;
             }
         }
 
@@ -915,9 +769,6 @@
             if(document.getElementById('chart-title-pie')) {
                 document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
             }
-            if(document.getElementById('pt-list-title')) {
-                document.getElementById('pt-list-title').innerText = `Rekap Kemitraan per Wilayah (Status Pengelolaan) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
-            }
 
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
@@ -1042,7 +893,7 @@
         }
 
         // =========================================
-        // RENDER TABEL MASTER DATA KEBUN (SHEET 1)
+        // RENDER TABEL MASTER DATA KEBUN
         // =========================================
         function loadTable(sheetName) {
             document.querySelectorAll('#tab-container .tab-btn').forEach(btn => { 
@@ -1131,22 +982,12 @@
         }
 
         // =========================================
-        // FUNGSI RENDER TABEL EVALUASI KINERJA (SHEET 2)
+        // FUNGSI RENDER TABEL EVALUASI KINERJA HTML NATIVE
         // =========================================
         function loadEvaluasiTable(sheetName) {
             document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
-
-            if (sheetName === "Rekap Kemitraan") {
-                document.getElementById('evaluasi-table-area').classList.add('hidden');
-                document.getElementById('evaluasi-iframe-area').classList.remove('hidden');
-                document.getElementById('evaluasi-iframe').src = "https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/htmlembed?gid=1226301174&widget=false&chrome=false";
-                return; 
-            } 
-            
-            document.getElementById('evaluasi-table-area').classList.remove('hidden');
-            document.getElementById('evaluasi-iframe-area').classList.add('hidden');
 
             const data = rawData[sheetName] || [];
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
@@ -1160,8 +1001,14 @@
             }
 
             const columns = Object.keys(data[0]).map(key => {
+                // Sembunyikan tulisan __EMPTY bawaan pembaca Excel
+                let title = key;
+                if (title.includes('__EMPTY')) {
+                    title = '';
+                }
+
                 return { 
-                    title: key, 
+                    title: title, 
                     data: key, 
                     defaultContent: "-", 
                     render: function(val) {
@@ -1196,6 +1043,21 @@
                     lengthMenu: "Tampil _MENU_ baris", 
                     info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", 
                     paginate: { previous: "Prev", next: "Next" } 
+                },
+                // MANIPULASI TAMPILAN KHUSUS REKAP KEMITRAAN (Highlight Baris Judul)
+                createdRow: function (row, data, dataIndex) {
+                    let values = Object.values(data).map(v => String(v).trim());
+                    
+                    // Deteksi Baris Judul Excel (Subheader)
+                    if (values.includes('No') || values.includes('Regional') || values.includes('Status') || values.includes('% tase') || values.includes('Tahap 1 - 5') || values.includes('Tahap 1 - 7')) {
+                        $(row).addClass('bg-[#1a1a1a] font-bold text-[#83b765] border-t border-b border-gray-600 shadow-md');
+                        $(row).find('td').addClass('uppercase tracking-wider text-[10px]');
+                    }
+                    
+                    // Deteksi Baris Grand Total
+                    if (values.includes('Grand Total') || values.includes('Total') || values.join(' ').toLowerCase().includes('total')) {
+                        $(row).addClass('bg-[#1a1a1a] font-bold text-yellow-500 border-t-2 border-gray-600');
+                    }
                 }
             });
         }
@@ -1216,7 +1078,7 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            // Bangun tombol Tab Master Data (Sheet 1)
+            // Bangun tombol Tab Master Data
             const tabContainer = document.getElementById('tab-container');
             if(tabContainer) {
                 listSheets.forEach(sheet => {
@@ -1229,7 +1091,7 @@
                 });
             }
 
-            // Bangun tombol Tab Evaluasi Kinerja (Sheet 2)
+            // Bangun tombol Tab Evaluasi Kinerja
             const evaluasiTabContainer = document.getElementById('evaluasi-tab-container');
             if(evaluasiTabContainer) {
                 listEvaluasiSheets.forEach(sheet => {
@@ -1255,83 +1117,78 @@
             loadTable("REKAPITULASI");
             loadEvaluasiTable("Sumber/Source Data");
             
-            // Re-adjust DataTables on window resize (untuk HP ke Desktop / Rotate)
+            // Re-adjust DataTables on window resize
             window.addEventListener('resize', () => {
-                if(currentDataTable) {
-                    setTimeout(() => currentDataTable.columns.adjust(), 200);
-                }
-                if(evaluasiDataTable) {
-                    setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
-                }
+                if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
+                if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             // ==========================================
-            // LOGIKA POLLING BACKGROUND (SHEETS DEEP-DIFF)
+            // LOGIKA POLLING BACKGROUND (SHEETS DEEP-DIFF) INSTANT FETCH
             // ==========================================
-            setInterval(async () => {
+            async function syncData() {
+                const syncText = document.getElementById('sync-text');
+                const syncDot = document.getElementById('sync-dot');
+
                 try {
                     const response = await fetch('/api/check-updates?t=' + new Date().getTime());
                     const result = await response.json();
                     
-                    if (JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
+                    if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
                         
-                        let detectedChanges = [];
-                        const allSheetNames = [...listSheets, ...listEvaluasiSheets];
-                        
-                        allSheetNames.forEach(sheet => {
-                            let oldSheet = rawData[sheet] || [];
-                            let newSheet = result.rawData[sheet] || [];
-                            let maxRows = Math.max(oldSheet.length, newSheet.length);
+                        // JANGAN bikin notif spam kalau rawData awalnya emang kosong
+                        if (Object.keys(rawData).length > 0) {
+                            let detectedChanges = [];
+                            const allSheetNames = [...listSheets, ...listEvaluasiSheets];
+                            
+                            allSheetNames.forEach(sheet => {
+                                let oldSheet = rawData[sheet] || [];
+                                let newSheet = result.rawData[sheet] || [];
+                                let maxRows = Math.max(oldSheet.length, newSheet.length);
 
-                            for (let i = 0; i < maxRows; i++) {
-                                let oldRow = oldSheet[i] || {};
-                                let newRow = newSheet[i] || {};
-                                let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
+                                for (let i = 0; i < maxRows; i++) {
+                                    let oldRow = oldSheet[i] || {};
+                                    let newRow = newSheet[i] || {};
+                                    let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
 
-                                allKeys.forEach(key => {
-                                    if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
-                                    let oldVal = String(oldRow[key] || "").trim();
-                                    let newVal = String(newRow[key] || "").trim();
+                                    allKeys.forEach(key => {
+                                        if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
+                                        let oldVal = String(oldRow[key] || "").trim();
+                                        let newVal = String(newRow[key] || "").trim();
 
-                                    if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
-                                    if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
+                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
 
-                                    if (oldVal !== newVal) {
-                                        detectedChanges.push({
-                                            sheet: sheet, 
-                                            waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
-                                            baris: i + 2, 
-                                            kolom: key, 
-                                            lama: oldVal === "" ? "(Kosong)" : oldVal, 
-                                            baru: newVal === "" ? "(Kosong)" : newVal
-                                        });
-                                    }
-                                });
+                                        if (oldVal !== newVal) {
+                                            detectedChanges.push({
+                                                sheet: sheet, 
+                                                waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), 
+                                                baris: i + 2, 
+                                                kolom: key, 
+                                                lama: oldVal === "" ? "(Kosong)" : oldVal, 
+                                                baru: newVal === "" ? "(Kosong)" : newVal
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+
+                            if(detectedChanges.length > 0) {
+                                logsData = [...detectedChanges, ...logsData];
+                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
                             }
-                        });
-
-                        if(detectedChanges.length > 0) {
-                            logsData = [...detectedChanges, ...logsData];
-                            if (logsData.length > 50) {
-                                logsData = logsData.slice(0, 50); 
-                            }
+                            isUnread = true; 
                         }
 
                         rawData = result.rawData;
-                        isUnread = true; 
-                        
                         renderNotifications();
                         renderPivotDashboard(); 
                         
                         const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
-                                currentFilter = $('#asta-status-filter').val() || '';
-                            }
-                            
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
                             loadTable(activeTab.dataset.sheet);
-                            
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
@@ -1339,19 +1196,14 @@
                         }
 
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
-                        if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
+                        if (activeEvalTab) {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
                         
-                        if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
-                            document.getElementById('evaluasi-iframe').src = document.getElementById('evaluasi-iframe').src;
-                        }
-
-                        const syncText = document.getElementById('sync-text');
-                        const syncDot = document.getElementById('sync-dot');
+                        // Animasi tombol LIVE
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
-                            syncText.classList.remove('text-emerald-500'); 
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); 
                             syncText.classList.add('text-blue-500');
                             syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
                             
@@ -1365,10 +1217,23 @@
                     }
                 } catch (err) { 
                     console.error("Gagal sinkronisasi background:", err); 
+                    if(syncText && syncDot) {
+                        syncText.innerText = "KONEKSI LAMBAT"; 
+                        syncText.classList.remove('text-blue-500', 'text-emerald-500'); 
+                        syncText.classList.add('text-red-500');
+                        syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
+                    }
                 }
-            }, 10000); 
+            }
 
-            // Cek Email Baru Tiap 5 Detik (Anti Cache)
+            // Fetch langsung kalau cache kosong
+            if (Object.keys(rawData).length === 0) {
+                syncData();
+            }
+
+            setInterval(syncData, 10000); 
+
+            // Cek Email
             setInterval(async () => {
                 try {
                     const response = await fetch('/api/check-emails?t=' + new Date().getTime());
@@ -1389,7 +1254,6 @@
                     }
                 } catch (err) {}
             }, 5000); 
-
         });
     </script>
 </body>
