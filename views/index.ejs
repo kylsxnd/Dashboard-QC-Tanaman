@@ -521,8 +521,14 @@
                     <div id="tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
                     
                     <div class="w-full overflow-hidden" id="data-wrapper">
+                        
                         <!-- AREA TABEL NORMAL -->
                         <div id="table-area" class="w-full">
+                            <!-- FILTER SPESIFIK UNTUK "INPUT ASTA" -->
+                            <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit">
+                                <!-- Disuntik via JS -->
+                            </div>
+                            
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
                         
@@ -1102,6 +1108,24 @@
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
             
+            // FUNGSI BARU: FILTER KHUSUS UNTUK "INPUT ASTA"
+            const filterContainer = document.getElementById('custom-filter-container');
+            if (sheetName === 'INPUT ASTA' && filterContainer) {
+                filterContainer.classList.remove('hidden');
+                filterContainer.innerHTML = `
+                    <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter Status:</span>
+                    <select id="asta-status-filter" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer">
+                        <option value="" class="bg-[#111111] text-white">Semua Status</option>
+                        <option value="Batal" class="bg-[#111111] text-white">Batal</option>
+                        <option value="Input Asta" class="bg-[#111111] text-white">Input Asta</option>
+                        <option value="TTD" class="bg-[#111111] text-white">TTD</option>
+                    </select>
+                `;
+            } else if(filterContainer) {
+                filterContainer.classList.add('hidden');
+                filterContainer.innerHTML = '';
+            }
+
             if (sheetName === "Pivot Table") {
                 document.getElementById('table-area').classList.add('hidden');
                 document.getElementById('pivot-area').classList.remove('hidden');
@@ -1170,6 +1194,15 @@
                     paginate: { previous: "Prev", next: "Next" } 
                 }
             });
+
+            // FUNGSI BARU: JALANKAN FILTER JIKA SHEET INPUT ASTA DIPILIH
+            if (sheetName === 'INPUT ASTA') {
+                $('#asta-status-filter').on('change', function() {
+                    let val = $(this).val();
+                    // Karena val merupakan keyword unik, .search() Global DataTable bakal langsung nyaring akurat
+                    currentDataTable.search(val).draw();
+                });
+            }
         }
 
         // =========================================
@@ -1286,7 +1319,19 @@
                         
                         const activeTab = document.querySelector('.tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
+                            // Simpan status filter khusus Input Asta sebelum tabel di-reload
+                            let currentFilter = '';
+                            if (activeTab.dataset.sheet === 'INPUT ASTA') {
+                                currentFilter = $('#asta-status-filter').val() || '';
+                            }
+                            
                             loadTable(activeTab.dataset.sheet);
+                            
+                            // Aplikasikan ulang filter setelah tabel di-reload
+                            if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
+                                $('#asta-status-filter').val(currentFilter);
+                                currentDataTable.search(currentFilter).draw();
+                            }
                         }
 
                         // Animasi tombol LIVE hijau jadi biru
