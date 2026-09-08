@@ -496,6 +496,7 @@
                     <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">
                         Daftar Perusahaan (PT)
                     </h3>
+                    <!-- Bungkus dengan overflow-x-auto supaya tabel bisa digeser kanan-kiri di HP -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
@@ -559,8 +560,16 @@
                     <!-- TABS KHUSUS EVALUASI KINERJA -->
                     <div id="evaluasi-tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
                     
-                    <div class="w-full overflow-hidden">
-                        <table id="evaluasiTable" class="w-full text-left"></table>
+                    <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
+                        <!-- AREA TABEL NORMAL EVALUASI -->
+                        <div id="evaluasi-table-area" class="w-full">
+                            <table id="evaluasiTable" class="w-full text-left"></table>
+                        </div>
+                        
+                        <!-- AREA REKAP KEMITRAAN (IFRAME) -->
+                        <div id="evaluasi-iframe-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
+                            <iframe id="evaluasi-iframe" src="" class="w-full h-full border-none"></iframe>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1131,9 +1140,7 @@
             }, 300);
         }
 
-        // =========================================
-        // RENDER TABEL MASTER DATA KEBUN (SHEET 1)
-        // =========================================
+        // RENDER TABEL UTAMA MASTER DATA
         function loadTable(sheetName) {
             document.querySelectorAll('#tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
@@ -1236,18 +1243,33 @@
         }
 
         // =========================================
-        // RENDER TABEL EVALUASI KINERJA (SHEET 2)
+        // FUNGSI BARU: RENDER TABEL EVALUASI KINERJA (SHEET 2)
         // =========================================
         function loadEvaluasiTable(sheetName) {
             document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
 
+            // FUNGSI BARU: JADIKAN REKAP KEMITRAAN SEBAGAI IFRAME KAYA PIVOT TABLE
+            if (sheetName === "Rekap Kemitraan") {
+                document.getElementById('evaluasi-table-area').classList.add('hidden');
+                document.getElementById('evaluasi-iframe-area').classList.remove('hidden');
+                // Set source iframe ke sheet Rekap Kemitraan berdasarkan GID di screenshot
+                document.getElementById('evaluasi-iframe').src = "https://docs.google.com/spreadsheets/d/1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg/htmlembed?gid=1226301174&widget=false&chrome=false";
+                return; 
+            } 
+            
+            document.getElementById('evaluasi-table-area').classList.remove('hidden');
+            document.getElementById('evaluasi-iframe-area').classList.add('hidden');
+
             const data = rawData[sheetName] || [];
-            if ($.fn.DataTable.isDataTable('#evaluasiTable')) { $('#evaluasiTable').DataTable().destroy(); $('#evaluasiTable').empty(); }
+            if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
+                $('#evaluasiTable').DataTable().destroy(); 
+                $('#evaluasiTable').empty(); 
+            }
             
             if (data.length === 0) { 
-                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Sedang sinkronisasi data Viewer... Jika kosong, cek akses Share Google Sheets.</td></tr></tbody>`); 
+                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Sedang sinkronisasi data Viewer... Jika kosong, pastikan koneksi lancar.</td></tr></tbody>`); 
                 return; 
             }
 
@@ -1447,8 +1469,13 @@
 
                         // Reload Tabel Evaluasi Kinerja jika sedang dibuka
                         const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
-                        if (activeEvalTab) {
+                        if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan") {
                             loadEvaluasiTable(activeEvalTab.dataset.sheet);
+                        }
+                        
+                        // Jika Iframe Rekap Kemitraan lagi buka, kita refresh iframenya
+                        if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
+                            document.getElementById('evaluasi-iframe').src = document.getElementById('evaluasi-iframe').src;
                         }
 
                         // Animasi tombol LIVE hijau jadi biru
