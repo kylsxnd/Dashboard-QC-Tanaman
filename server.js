@@ -29,14 +29,14 @@ let emailDatabase = [
 ];
 
 async function fetchGoogleSheets() {
-    if (isFetching) return; 
+    if (isFetching) return; // Biar server gak tabrakan narik datanya
     isFetching = true;
     
     try {
         const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
         const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
 
-        // TARIK 2 FILE SEKALIGUS SECARA PARALEL
+        // TARIK 2 FILE SEKALIGUS SECARA PARALEL BIA CEPAT
         const [response1, response2] = await Promise.all([
             axios.get(url1, { responseType: 'arraybuffer' }),
             axios.get(url2, { responseType: 'arraybuffer' })
@@ -44,7 +44,7 @@ async function fetchGoogleSheets() {
         
         let allSheets = {};
 
-        // Proses Sheet 1 (Master Data)
+        // Proses Sheet 1
         const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
         workbook1.SheetNames.forEach(sheetName => {
             let options = { defval: "-" };
@@ -61,7 +61,7 @@ async function fetchGoogleSheets() {
             allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
         });
 
-        // Proses Sheet 2 (Evaluasi Kinerja)
+        // Proses Sheet 2
         const workbook2 = xlsx.read(response2.data, { type: 'buffer' });
         workbook2.SheetNames.forEach(sheetName => {
             let options = { defval: "-" };
@@ -94,12 +94,13 @@ app.get('/', (req, res) => res.redirect('/login'));
 app.get('/login', (req, res) => res.render('login'));
 
 app.get('/dashboard', (req, res) => {
-    // INSTANT RENDER
+    // INSTANT RENDER: Langsung kasih UI tanpa harus nunggu data (Anti Load Lama)
     res.render('index', { 
         sheetData: JSON.stringify(cachedData), 
         logsData: JSON.stringify(changeLogs),
         emailsData: JSON.stringify(emailDatabase)
     });
+    // Kalo cache kosong (baru nyala), suruh server narik di background
     if (Object.keys(cachedData).length === 0) fetchGoogleSheets();
 });
 
@@ -107,7 +108,10 @@ app.get('/dashboard', (req, res) => {
 // ANTI-LOADING API (STALE-WHILE-REVALIDATE)
 // ==========================================
 app.get('/api/check-updates', (req, res) => {
+    // 1. Langsung kasih data yang ada (Instant Respon 0.1 detik)
     res.json({ logs: changeLogs, rawData: cachedData });
+    
+    // 2. Tapi secara diam-diam di background, dia ngecek data terbaru tiap 5 detik
     if (Date.now() - lastFetchTime > 5000) {
         fetchGoogleSheets(); 
     }
