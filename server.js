@@ -19,7 +19,6 @@ app.use(express.json());
 let cachedData = {}; 
 let lastFetchTime = 0;
 let changeLogs = [];
-let isFetching = false; 
 
 let emailDatabase = [
     { id: 1, sender: "Direktorat Operasi", subject: "Surat Pengawasan Panen PT Sumber Sawindo Kencana", snippet: "Kepada Yth. CRO III Regional Riau 2 & 3...", time: "22:33", label: "BELUM DI CRO", unread: false },
@@ -28,92 +27,108 @@ let emailDatabase = [
     { id: 4, sender: "Jaden Fergil Simatu...", subject: "Review dan Pengajuan Vendor Regional I Sumut - Aceh", snippet: "Selamat pagi, berikut kami kirim data vendor PT Perkebunan Sungai Wang...", time: "08:02", label: "SUDAH DI CRO", unread: false }
 ];
 
-async function fetchGoogleSheets() {
-    if (isFetching) return; // Biar server gak tabrakan narik datanya
-    isFetching = true;
+// KUNCI ANTI-FREEZE VERCEL: Gunakan 1 Promise Global
+let fetchPromise = null;
+
+function fetchGoogleSheets() {
+    // Kalau lagi proses narik data, tungguin aja biar gak dobel request
+    if (fetchPromise) return fetchPromise; 
     
-    try {
-        const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
-        const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
+    fetchPromise = (async () => {
+        try {
+            const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
+            const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
 
-        // TARIK 2 FILE SEKALIGUS SECARA PARALEL BIA CEPAT
-        const [response1, response2] = await Promise.all([
-            axios.get(url1, { responseType: 'arraybuffer' }),
-            axios.get(url2, { responseType: 'arraybuffer' })
-        ]);
-        
-        let allSheets = {};
+            // TARIK 2 FILE SEKALIGUS SECARA PARALEL BIAR CEPAT
+            const [response1, response2] = await Promise.all([
+                axios.get(url1, { responseType: 'arraybuffer' }),
+                axios.get(url2, { responseType: 'arraybuffer' })
+            ]);
+            
+            let allSheets = {};
 
-        // Proses Sheet 1
-        const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
-        workbook1.SheetNames.forEach(sheetName => {
-            let options = { defval: "-" };
-            if (sheetName === 'Pembayaran Vendor' || sheetName === 'Pivot Table') options.range = 1;
-            const sheet = workbook1.Sheets[sheetName];
-            for (let cellAddress in sheet) {
-                if (cellAddress.startsWith('!')) continue;
-                const cell = sheet[cellAddress];
-                if (cell && cell.l && cell.l.Target) {
-                    cell.v = cell.v + "|||" + cell.l.Target;
-                    if (cell.w) cell.w = cell.v;
+            // Proses Sheet 1
+            const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
+            workbook1.SheetNames.forEach(sheetName => {
+                let options = { defval: "-" };
+                if (sheetName === 'Pembayaran Vendor' || sheetName === 'Pivot Table') options.range = 1;
+                const sheet = workbook1.Sheets[sheetName];
+                for (let cellAddress in sheet) {
+                    if (cellAddress.startsWith('!')) continue;
+                    const cell = sheet[cellAddress];
+                    if (cell && cell.l && cell.l.Target) {
+                        cell.v = cell.v + "|||" + cell.l.Target;
+                        if (cell.w) cell.w = cell.v;
+                    }
                 }
-            }
-            allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
-        });
+                allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
+            });
 
-        // Proses Sheet 2
-        const workbook2 = xlsx.read(response2.data, { type: 'buffer' });
-        workbook2.SheetNames.forEach(sheetName => {
-            let options = { defval: "-" };
-            const sheet = workbook2.Sheets[sheetName];
-            for (let cellAddress in sheet) {
-                if (cellAddress.startsWith('!')) continue;
-                const cell = sheet[cellAddress];
-                if (cell && cell.l && cell.l.Target) {
-                    cell.v = cell.v + "|||" + cell.l.Target;
-                    if (cell.w) cell.w = cell.v;
+            // Proses Sheet 2
+            const workbook2 = xlsx.read(response2.data, { type: 'buffer' });
+            workbook2.SheetNames.forEach(sheetName => {
+                let options = { defval: "-" };
+                const sheet = workbook2.Sheets[sheetName];
+                for (let cellAddress in sheet) {
+                    if (cellAddress.startsWith('!')) continue;
+                    const cell = sheet[cellAddress];
+                    if (cell && cell.l && cell.l.Target) {
+                        cell.v = cell.v + "|||" + cell.l.Target;
+                        if (cell.w) cell.w = cell.v;
+                    }
                 }
-            }
-            allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
-        });
+                allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
+            });
 
-        cachedData = allSheets;
-        lastFetchTime = Date.now();
-        
-    } catch (error) {
-        console.error("Gagal menarik data:", error.message);
-    } finally {
-        isFetching = false;
-    }
+            cachedData = allSheets;
+            lastFetchTime = Date.now();
+            return cachedData;
+            
+        } catch (error) {
+            console.error("Gagal menarik data:", error.message);
+            return cachedData; // Kembalikan data lama kalau error
+        } finally {
+            fetchPromise = null; // Bersihkan status agar bisa ditarik ulang nanti
+        }
+    })();
+
+    return fetchPromise;
 }
 
 // Jalankan tarikan data pertama kali saat server nyala
-fetchGoogleSheets();
+fetchGoogleSheets().catch(console.error);
 
 app.get('/', (req, res) => res.redirect('/login'));
 app.get('/login', (req, res) => res.render('login'));
 
 app.get('/dashboard', (req, res) => {
-    // INSTANT RENDER: Langsung kasih UI tanpa harus nunggu data (Anti Load Lama)
+    // UI Pertama dirender. Kalau kosong gak masalah, karena Javascript di index.ejs bakal langsung nembak /api/check-updates
     res.render('index', { 
         sheetData: JSON.stringify(cachedData), 
         logsData: JSON.stringify(changeLogs),
         emailsData: JSON.stringify(emailDatabase)
     });
-    // Kalo cache kosong (baru nyala), suruh server narik di background
-    if (Object.keys(cachedData).length === 0) fetchGoogleSheets();
 });
 
 // ==========================================
-// ANTI-LOADING API (STALE-WHILE-REVALIDATE)
+// ANTI-LOADING API (STALE-WHILE-REVALIDATE YANG DIBENARKAN)
 // ==========================================
-app.get('/api/check-updates', (req, res) => {
-    // 1. Langsung kasih data yang ada (Instant Respon 0.1 detik)
+app.get('/api/check-updates', async (req, res) => {
+    // 1. JIKA CACHE KOSONG (Vercel baru bangun dari tidur):
+    // KITA WAJIB TUNGGU (AWAIT) SAMPAI DATA SELESAI DITARIK!
+    if (Object.keys(cachedData).length === 0) {
+        await fetchGoogleSheets();
+        return res.json({ logs: changeLogs, rawData: cachedData });
+    }
+    
+    // 2. JIKA CACHE UDAH ADA:
+    // Langsung kirim instan tanpa loading (0.1 detik)
     res.json({ logs: changeLogs, rawData: cachedData });
     
-    // 2. Tapi secara diam-diam di background, dia ngecek data terbaru tiap 5 detik
-    if (Date.now() - lastFetchTime > 5000) {
-        fetchGoogleSheets(); 
+    // 3. AUTO-SYNC BACKGROUND: Tarik data terbaru untuk dikasih ke request selanjutnya
+    if (Date.now() - lastFetchTime > 10000) {
+        // Tarik diam-diam di background
+        fetchGoogleSheets().catch(err => console.error(err)); 
     }
 });
 
