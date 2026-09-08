@@ -344,7 +344,15 @@
                 Master Data Kebun
             </button>
 
-            <!-- MENU BARU: INBOX EMAIL -->
+            <!-- MENU BARU: EVALUASI KINERJA -->
+            <button onclick="switchView('view-evaluasi', 'nav-evaluasi')" class="w-full sidebar-link" id="nav-evaluasi">
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                Evaluasi Kinerja
+            </button>
+
+            <!-- MENU INBOX EMAIL -->
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -488,7 +496,6 @@
                     <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">
                         Daftar Perusahaan (PT)
                     </h3>
-                    <!-- Bungkus dengan overflow-x-auto supaya tabel bisa digeser kanan-kiri di HP -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
@@ -508,7 +515,7 @@
 
             </section>
 
-            <!-- 2. HALAMAN MASTER DATA -->
+            <!-- 2. HALAMAN MASTER DATA KEBUN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Master Data Repository</h2>
@@ -541,7 +548,24 @@
                 </div>
             </section>
 
-            <!-- 3. HALAMAN INBOX EMAIL -->
+            <!-- 3. HALAMAN BARU: EVALUASI KINERJA (SHEET KE-2) -->
+            <section id="view-evaluasi" class="fade-in hidden">
+                <div class="mb-6">
+                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Evaluasi Kinerja Produksi</h2>
+                    <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan dari dokumen viewer.</p>
+                </div>
+
+                <div class="premium-card p-4 md:p-6 w-full">
+                    <!-- TABS KHUSUS EVALUASI KINERJA -->
+                    <div id="evaluasi-tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
+                    
+                    <div class="w-full overflow-hidden">
+                        <table id="evaluasiTable" class="w-full text-left"></table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. HALAMAN INBOX EMAIL -->
             <section id="view-inbox" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -615,19 +639,14 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        const listSheets = [
-            "REKAPITULASI", 
-            "Pivot Table", 
-            "Pembayaran Vendor", 
-            "Draft Surat Penugasan", 
-            "INPUT ASTA", 
-            "Acuan Nama Kebun", 
-            "Acuan Nama CRO & Region", 
-            "Perubahan CV ke PT", 
-            "Rekap Vendor"
-        ];
+        // Daftar Sheet untuk Halaman "Master Data Kebun" (Sheet 1)
+        const listSheets = ["REKAPITULASI", "Pivot Table", "Pembayaran Vendor", "Draft Surat Penugasan", "INPUT ASTA", "Acuan Nama Kebun", "Acuan Nama CRO & Region", "Perubahan CV ke PT", "Rekap Vendor"];
+        
+        // Daftar Sheet untuk Halaman "Evaluasi Kinerja" (Sheet 2)
+        const listEvaluasiSheets = ["Sumber/Source Data", "Kinerja Prod", "Rekap Kemitraan", "Rekapan", "Executive Summary"];
         
         let currentDataTable = null;
+        let evaluasiDataTable = null;
         let isUnread = false; 
 
         // =========================================
@@ -692,10 +711,13 @@
         // FUNGSI NAVIGASI MENU SIDEBAR KIRI
         // =========================================
         function switchView(viewId, elementId) {
+            // Sembunyikan semua halaman
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
+            document.getElementById('view-evaluasi').classList.add('hidden');
             document.getElementById('view-inbox').classList.add('hidden');
             
+            // Tampilkan halaman yang dipilih
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
@@ -703,6 +725,8 @@
                 headerTitle.innerText = "Executive On-Farm > Dashboard";
             } else if (viewId === 'view-database') {
                 headerTitle.innerText = "Executive On-Farm > Master Data";
+            } else if (viewId === 'view-evaluasi') {
+                headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
             } else if (viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
                 
@@ -723,6 +747,7 @@
             
             document.getElementById('nav-dashboard').classList.remove('active');
             document.getElementById('nav-database').classList.remove('active');
+            document.getElementById('nav-evaluasi').classList.remove('active');
             document.getElementById('nav-inbox').classList.remove('active');
             document.getElementById(elementId).classList.add('active');
             
@@ -732,9 +757,13 @@
             }
             
             if(viewId === 'view-database' && currentDataTable) { 
-                // Delay adjust to ensure DOM is fully visible before adjusting DataTables
                 setTimeout(() => {
                     currentDataTable.columns.adjust(); 
+                }, 50);
+            }
+            if(viewId === 'view-evaluasi' && evaluasiDataTable) { 
+                setTimeout(() => {
+                    evaluasiDataTable.columns.adjust(); 
                 }, 50);
             }
         }
@@ -1102,13 +1131,15 @@
             }, 300);
         }
 
-        // RENDER TABEL UTAMA
+        // =========================================
+        // RENDER TABEL MASTER DATA KEBUN (SHEET 1)
+        // =========================================
         function loadTable(sheetName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => { 
+            document.querySelectorAll('#tab-container .tab-btn').forEach(btn => { 
                 btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
             });
             
-            // FUNGSI BARU: FILTER KHUSUS UNTUK "INPUT ASTA"
+            // FUNGSI FILTER STATUS KHUSUS "INPUT ASTA"
             const filterContainer = document.getElementById('custom-filter-container');
             if (sheetName === 'INPUT ASTA' && filterContainer) {
                 filterContainer.classList.remove('hidden');
@@ -1195,14 +1226,80 @@
                 }
             });
 
-            // FUNGSI BARU: JALANKAN FILTER JIKA SHEET INPUT ASTA DIPILIH
+            // Aktifkan Filter khusus Input Asta
             if (sheetName === 'INPUT ASTA') {
                 $('#asta-status-filter').on('change', function() {
                     let val = $(this).val();
-                    // Karena val merupakan keyword unik, .search() Global DataTable bakal langsung nyaring akurat
                     currentDataTable.search(val).draw();
                 });
             }
+        }
+
+        // =========================================
+        // RENDER TABEL EVALUASI KINERJA (SHEET 2)
+        // =========================================
+        function loadEvaluasiTable(sheetName) {
+            document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
+                btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
+            });
+
+            const data = rawData[sheetName] || [];
+            if ($.fn.DataTable.isDataTable('#evaluasiTable')) { $('#evaluasiTable').DataTable().destroy(); $('#evaluasiTable').empty(); }
+            
+            if (data.length === 0) { 
+                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Sedang sinkronisasi data Viewer... Jika kosong, cek akses Share Google Sheets.</td></tr></tbody>`); 
+                return; 
+            }
+
+            const columns = Object.keys(data[0]).map(key => {
+                return { 
+                    title: key, 
+                    data: key, 
+                    defaultContent: "-", 
+                    render: function(val) {
+                        if (typeof val === 'number') {
+                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                            return val.toLocaleString('id-ID');
+                        }
+                        if (typeof val === 'string' && val.includes('|||')) {
+                            const parts = val.split('|||');
+                            return `
+                            <a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">
+                                ${getFileIcon(parts[0])} 
+                                <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span>
+                            </a>`;
+                        }
+                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                            return `
+                            <a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                <span class="group-hover:underline">Buka Link</span>
+                            </a>`;
+                        }
+                        if (typeof val === 'string' && val.includes('\n')) { 
+                            return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        }
+                        return val;
+                    }
+                };
+            });
+
+            evaluasiDataTable = $('#evaluasiTable').DataTable({
+                data: data, 
+                columns: columns, 
+                scrollX: true, 
+                pageLength: 15, 
+                ordering: false,
+                language: { 
+                    search: "", 
+                    searchPlaceholder: "Cari Analisis...", 
+                    lengthMenu: "Tampil _MENU_ baris", 
+                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", 
+                    paginate: { previous: "Prev", next: "Next" } 
+                }
+            });
         }
 
         // =========================================
@@ -1219,7 +1316,7 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            // Bangun tombol Tab Database
+            // Bangun tombol Tab Master Data (Sheet 1)
             const tabContainer = document.getElementById('tab-container');
             if(tabContainer) {
                 listSheets.forEach(sheet => {
@@ -1229,6 +1326,19 @@
                     btn.className = 'tab-btn tab-inactive';
                     btn.onclick = () => loadTable(sheet);
                     tabContainer.appendChild(btn);
+                });
+            }
+
+            // Bangun tombol Tab Evaluasi Kinerja (Sheet 2)
+            const evaluasiTabContainer = document.getElementById('evaluasi-tab-container');
+            if(evaluasiTabContainer) {
+                listEvaluasiSheets.forEach(sheet => {
+                    const btn = document.createElement('button'); 
+                    btn.dataset.sheet = sheet; 
+                    btn.innerText = sheet; 
+                    btn.className = 'tab-btn tab-inactive';
+                    btn.onclick = () => loadEvaluasiTable(sheet);
+                    evaluasiTabContainer.appendChild(btn);
                 });
             }
 
@@ -1242,15 +1352,15 @@
             });
             updateChartTheme(isLightInit);
 
-            // Tampilkan Dashboard Pintar
+            // Tampilkan Dashboard & Tabel Awal
             renderPivotDashboard();
             loadTable("REKAPITULASI");
+            loadEvaluasiTable("Sumber/Source Data");
             
             // Re-adjust DataTables on window resize (untuk HP ke Desktop / Rotate)
             window.addEventListener('resize', () => {
-                if(currentDataTable) {
-                    setTimeout(() => currentDataTable.columns.adjust(), 200);
-                }
+                if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
+                if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             // ==========================================
@@ -1268,7 +1378,9 @@
                         // --- LOGIKA DETEKSI PERUBAHAN SPESIFIK (DEEP DIFF) ---
                         let detectedChanges = [];
                         
-                        listSheets.forEach(sheet => {
+                        // Cek perubahan di semua dokumen (Sheet 1 dan Sheet 2)
+                        const allSheetNames = [...listSheets, ...listEvaluasiSheets];
+                        allSheetNames.forEach(sheet => {
                             let oldSheet = rawData[sheet] || [];
                             let newSheet = result.rawData[sheet] || [];
                             let maxRows = Math.max(oldSheet.length, newSheet.length);
@@ -1317,9 +1429,9 @@
                         renderNotifications();
                         renderPivotDashboard(); 
                         
-                        const activeTab = document.querySelector('.tab-active');
+                        // Reload Tabel Master Data jika sedang dibuka
+                        const activeTab = document.querySelector('#tab-container .tab-active');
                         if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
-                            // Simpan status filter khusus Input Asta sebelum tabel di-reload
                             let currentFilter = '';
                             if (activeTab.dataset.sheet === 'INPUT ASTA') {
                                 currentFilter = $('#asta-status-filter').val() || '';
@@ -1327,11 +1439,16 @@
                             
                             loadTable(activeTab.dataset.sheet);
                             
-                            // Aplikasikan ulang filter setelah tabel di-reload
                             if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
                             }
+                        }
+
+                        // Reload Tabel Evaluasi Kinerja jika sedang dibuka
+                        const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
+                        if (activeEvalTab) {
+                            loadEvaluasiTable(activeEvalTab.dataset.sheet);
                         }
 
                         // Animasi tombol LIVE hijau jadi biru
