@@ -1,25 +1,25 @@
 const express = require('express');
 const axios = require('axios');
 const xlsx = require('xlsx');
-const path = require('path'); // Wajib ada untuk Vercel
+const path = require('path'); 
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Penting untuk Vercel
+const PORT = process.env.PORT || 3000; 
 
 // ==========================================
-// MASUKKAN 2 ID GOOGLE SHEETS DI SINI
+// ID GOOGLE SHEETS
 // ==========================================
-const SHEET_ID_1 = '1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY'; // Master Data (Sheet 1)
-const SHEET_ID_2 = '1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg'; // Evaluasi Kinerja (Sheet 2 - Hanya Lihat)
+const SHEET_ID_1 = '1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY'; // Master Data
+const SHEET_ID_2 = '1bbVifsoYTxQFc0t80_tGEU1KyUtFlGsD5kH6opjshQg'; // Evaluasi Kinerja
 
-// Wajib biar Vercel nggak nyasar nyari EJS
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.json());
 
-let cachedData = null;
+let cachedData = {}; 
 let lastFetchTime = 0;
 let changeLogs = [];
+let isFetching = false; 
 
 let emailDatabase = [
     { id: 1, sender: "Direktorat Operasi", subject: "Surat Pengawasan Panen PT Sumber Sawindo Kencana", snippet: "Kepada Yth. CRO III Regional Riau 2 & 3...", time: "22:33", label: "BELUM DI CRO", unread: false },
@@ -29,22 +29,26 @@ let emailDatabase = [
 ];
 
 async function fetchGoogleSheets() {
-    if (cachedData && (Date.now() - lastFetchTime < 10000)) return cachedData;
-    
-    let allSheets = {};
+    if (isFetching) return; // Biar server gak tabrakan narik datanya
+    isFetching = true;
     
     try {
-        // ==========================================
-        // 1. TARIK DATA DARI SHEET 1 (MASTER DATA)
-        // ==========================================
         const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
-        const response1 = await axios.get(url1, { responseType: 'arraybuffer' });
-        const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
+        const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
+
+        // TARIK 2 FILE SEKALIGUS SECARA PARALEL BIA CEPAT
+        const [response1, response2] = await Promise.all([
+            axios.get(url1, { responseType: 'arraybuffer' }),
+            axios.get(url2, { responseType: 'arraybuffer' })
+        ]);
         
+        let allSheets = {};
+
+        // Proses Sheet 1
+        const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
         workbook1.SheetNames.forEach(sheetName => {
             let options = { defval: "-" };
             if (sheetName === 'Pembayaran Vendor' || sheetName === 'Pivot Table') options.range = 1;
-            
             const sheet = workbook1.Sheets[sheetName];
             for (let cellAddress in sheet) {
                 if (cellAddress.startsWith('!')) continue;
@@ -57,16 +61,10 @@ async function fetchGoogleSheets() {
             allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
         });
 
-        // ==========================================
-        // 2. TARIK DATA DARI SHEET 2 (EVALUASI KINERJA)
-        // ==========================================
-        const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
-        const response2 = await axios.get(url2, { responseType: 'arraybuffer' });
+        // Proses Sheet 2
         const workbook2 = xlsx.read(response2.data, { type: 'buffer' });
-        
         workbook2.SheetNames.forEach(sheetName => {
             let options = { defval: "-" };
-            
             const sheet = workbook2.Sheets[sheetName];
             for (let cellAddress in sheet) {
                 if (cellAddress.startsWith('!')) continue;
@@ -76,55 +74,47 @@ async function fetchGoogleSheets() {
                     if (cell.w) cell.w = cell.v;
                 }
             }
-            // Gabungkan data dari Sheet 2 ke object allSheets
             allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
         });
 
         cachedData = allSheets;
         lastFetchTime = Date.now();
-        return allSheets;
         
     } catch (error) {
         console.error("Gagal menarik data:", error.message);
-        // Tetap kembalikan data lama jika gagal narik, biar web nggak langsung crash
-        return cachedData || null; 
+    } finally {
+        isFetching = false;
     }
 }
 
-// ==========================================
-// JALUR (ROUTES) HALAMAN WEB
-// ==========================================
+// Jalankan tarikan data pertama kali saat server nyala
+fetchGoogleSheets();
+
 app.get('/', (req, res) => res.redirect('/login'));
 app.get('/login', (req, res) => res.render('login'));
 
-// Halaman 1: Dashboard Utama
-app.get('/dashboard', async (req, res) => {
-    const data = await fetchGoogleSheets();
-    if (!data) return res.send("Gagal memuat data dari Google Sheets.");
+app.get('/dashboard', (req, res) => {
+    // INSTANT RENDER: Langsung kasih UI tanpa harus nunggu data (Anti Load Lama)
     res.render('index', { 
-        sheetData: JSON.stringify(data), 
+        sheetData: JSON.stringify(cachedData), 
         logsData: JSON.stringify(changeLogs),
         emailsData: JSON.stringify(emailDatabase)
     });
-});
-
-// Halaman 2: Evaluasi Kinerja (File evaluasi.ejs harus ada di folder views)
-app.get('/evaluasi', async (req, res) => {
-    const data = await fetchGoogleSheets();
-    if (!data) return res.send("Gagal memuat data dari Google Sheets.");
-    res.render('evaluasi', { 
-        sheetData: JSON.stringify(data), 
-        logsData: JSON.stringify(changeLogs),
-        emailsData: JSON.stringify(emailDatabase)
-    });
+    // Kalo cache kosong (baru nyala), suruh server narik di background
+    if (Object.keys(cachedData).length === 0) fetchGoogleSheets();
 });
 
 // ==========================================
-// JALUR API UNTUK AUTO-UPDATE BACKGROUND
+// ANTI-LOADING API (STALE-WHILE-REVALIDATE)
 // ==========================================
-app.get('/api/check-updates', async (req, res) => {
-    const data = await fetchGoogleSheets();
-    res.json({ logs: changeLogs, rawData: data });
+app.get('/api/check-updates', (req, res) => {
+    // 1. Langsung kasih data yang ada (Instant Respon 0.1 detik)
+    res.json({ logs: changeLogs, rawData: cachedData });
+    
+    // 2. Tapi secara diam-diam di background, dia ngecek data terbaru tiap 5 detik
+    if (Date.now() - lastFetchTime > 5000) {
+        fetchGoogleSheets(); 
+    }
 });
 
 app.get('/api/check-emails', (req, res) => {
@@ -147,10 +137,8 @@ app.post('/api/update-email-label', (req, res) => {
     res.status(404).json({ success: false, message: "Email tidak ditemukan" });
 });
 
-// Penting: Export app untuk Vercel Serverless Function
 module.exports = app;
 
-// Hanya listen jika dijalankan di local, Vercel nggak butuh app.listen
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`🚀 Sistem aktif di http://localhost:${PORT}`);
