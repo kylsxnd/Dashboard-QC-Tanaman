@@ -10,9 +10,11 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables -->
+    <!-- DataTables & ColReorder Extension -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -65,16 +67,13 @@
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
-        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
-        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
-
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
 
         table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
-        table.dataTable thead th { background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
+        table.dataTable thead th { cursor: grab !important; background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
+        table.dataTable thead th:active { cursor: grabbing !important; }
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
         table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
@@ -125,13 +124,13 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
+            <!-- KATEGORI MASTER DATA (Sub-menu dinamis) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
 
-            <!-- KATEGORI EVALUASI KINERJA -->
+            <!-- KATEGORI EVALUASI KINERJA (Sub-menu dinamis) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
             </div>
@@ -692,28 +691,21 @@
             e.preventDefault();
             
             let th = $(this).closest('th');
-            let colIndex = th.index(); // Dapet posisi ke berapa dari kiri
-            
-            // Karena ada fitur scroll ke samping, DataTables memecah header & body jadi 2 tabel.
-            // Kita cari ID tabel utamanya yang ada di dalam .dataTables_scrollBody
             let wrapper = $(this).closest('.dataTables_wrapper');
             let mainTable = wrapper.find('.dataTables_scrollBody table');
             
             if(mainTable.length > 0) {
                 let tableId = mainTable.attr('id');
                 let table = $('#' + tableId).DataTable();
-                
-                table.column(colIndex).visible(false); // HAPUS KOLOM!
-                
-                // Jeda dikit biar animasinya mulus pas ngerapiin ukuran
-                setTimeout(() => {
-                    table.columns.adjust();
-                }, 50);
+                let colIdx = table.column(th).index();
+                table.column(colIdx).visible(false);
+                setTimeout(() => { table.columns.adjust(); }, 50);
             }
         });
 
         // =========================================
         // RENDER TABEL MASTER DATA KEBUN 
+        // (DENGAN SMART GHOST COLUMN PURGER + TANGGAL 25569)
         // =========================================
         function loadTable(sheetName) {
             const filterContainer = document.getElementById('custom-filter-container');
@@ -750,15 +742,16 @@
                 return; 
             }
 
-            // KUNCI EMAS: HAPUS KOLOM KOSONG & _1 DARI EXCEL
             const validKeys = [];
-            Object.keys(data[0]).forEach(key => {
+            // GATHER ALL KEYS FIRST TO AVOID MISSING COLUMNS
+            let allKeysSet = new Set();
+            data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
+            let allKeys = Array.from(allKeysSet);
+
+            allKeys.forEach(key => {
                 let title = key.trim();
                 
-                // BUANG KOLOM SAMPAH/KOSONG
-                if (title.startsWith('__EMPTY') || title === '') return; 
-                
-                // CEK KOLOM GAIB: Kalau cuma isi "-" doang atau kosong, buang!
+                // BUANG KOLOM KOSONG DARI EXCEL JIKA SELURUH BARISNYA KOSONG ATAU CUMA "-"
                 let isGhost = true;
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
@@ -772,16 +765,22 @@
             });
 
             const columns = validKeys.map(key => {
-                let displayTitle = key.trim().replace(/_\d+$/, '').trim();
+                let displayTitle = key;
+                if (displayTitle.startsWith('__EMPTY')) {
+                    displayTitle = "-"; // Kasih nama strip biar tetep rapi kalo ada isinya
+                } else {
+                    displayTitle = displayTitle.replace(/_\d+$/, '').trim(); // Buang _1, _2
+                }
+
                 let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                 
                 return { 
-                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom Sementara">✖</button></div>`, 
+                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
                     data: key, 
                     defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
-                            // KUNCI TANGGAL: Offset Excel 25569
+                            // KUNCI TANGGAL AKURAT: Offset 25569
                             let d = new Date(Math.round((val - 25569) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -807,6 +806,7 @@
 
             currentDataTable = $('#mainTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
+                colReorder: true, 
                 language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
 
@@ -816,7 +816,7 @@
         }
 
         // =========================================
-        // FUNGSI RENDER EVALUASI KINERJA (BIASA & KINERJA PROD)
+        // FUNGSI RENDER EVALUASI KINERJA
         // =========================================
         function loadEvaluasiTable(sheetName) {
             document.getElementById('evaluasi-table-area').classList.add('hidden');
@@ -850,19 +850,15 @@
                 return; 
             }
 
-            // KUNCI EMAS 2: BYPASS HEADER SHEET "KINERJA PROD" + GHOST PURGER
             let isKinerjaProd = sheetName.toLowerCase() === "kinerja prod";
             let realKeys = [];
             
             if (isKinerjaProd && data.length > 2) {
-                // Di Kinerja Prod, header asli ada di baris ke-2 (index 1) karena baris 1 isinya CRO, Wilayah yang di-merge
                 let headerRow2 = data[1]; 
-                
                 Object.keys(headerRow2).forEach(k => {
                     if(!k.includes('__EMPTY') && headerRow2[k] && String(headerRow2[k]).trim() !== '') {
-                        // KITA CEK APAKAH INI KOLOM GHOST
                         let isGhost = true;
-                        for(let i=2; i<data.length; i++) { // Mulai dari index 2 (data murni)
+                        for(let i=2; i<data.length; i++) { 
                             let v = data[i][k];
                             if(v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
                                 isGhost = false;
@@ -874,14 +870,12 @@
                         }
                     }
                 });
-                // Buang 2 baris header pertama dari data biar gak ikut masuk ke tabel
                 data = data.slice(2);
             }
 
             let columns = [];
             
             if (isKinerjaProd) {
-                // Jika sheet Kinerja Prod, gunakan keys yang udah dipulihkan
                 columns = realKeys.map(k => {
                     let title = k.title;
                     let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
@@ -889,7 +883,7 @@
                     let isTrend = title.toLowerCase() === 'trend produksi';
                     
                     return { 
-                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${title}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom Sementara">✖</button></div>`, 
+                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${title}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
                         data: k.dataKey, 
                         defaultContent: "-", 
                         render: function(val) {
@@ -900,7 +894,7 @@
                                 return `<span class="text-gray-500 font-bold">-</span>`;
                             }
                             if (isDateCol && typeof val === 'number') {
-                                // KUNCI TANGGAL: Offset Excel 25569
+                                // KUNCI TANGGAL: Offset 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -919,12 +913,13 @@
                     };
                 });
             } else {
-                // Evaluasi Sheet normal lainnya (DENGAN GHOST PURGER JUGA)
                 const validKeys = [];
-                Object.keys(data[0]).forEach(key => {
+                let allKeysSet = new Set();
+                data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
+                let allKeys = Array.from(allKeysSet);
+
+                allKeys.forEach(key => {
                     let title = key.trim();
-                    if (title.startsWith('__EMPTY') || title === '') return; 
-                    
                     let isGhost = true;
                     for(let i=0; i < data.length; i++) {
                         let v = data[i][key];
@@ -937,16 +932,21 @@
                 });
 
                 columns = validKeys.map(key => {
-                    let displayTitle = key.trim().replace(/_\d+$/, '').trim();
+                    let displayTitle = key;
+                    if (displayTitle.startsWith('__EMPTY')) {
+                        displayTitle = "-";
+                    } else {
+                        displayTitle = displayTitle.replace(/_\d+$/, '').trim();
+                    }
                     let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                     
                     return { 
-                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom Sementara">✖</button></div>`, 
+                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
                         data: key, 
                         defaultContent: "-", 
                         render: function(val) {
                             if (isDateCol && typeof val === 'number') {
-                                // KUNCI TANGGAL: Offset Excel 25569
+                                // KUNCI TANGGAL: Offset 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -973,6 +973,7 @@
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
+                colReorder: true, 
                 language: { search: "", searchPlaceholder: "Cari Analisis...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
         }
@@ -1235,7 +1236,6 @@
                 }
             }
 
-            // PENGAMAN ABSOLUT
             if (tMitra === 0) tMitra = 253;
             if (tLuas === 0) tLuas = 242234.20;
             if (tTarget === 0) tTarget = 201105.11;
@@ -1362,32 +1362,6 @@
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
                 if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
-            });
-
-            // TOMBOL HAPUS KOLOM MANUAL (SUPER FIX)
-            $(document).on('click', '.hide-col-btn', function(e) {
-                e.stopPropagation(); 
-                e.preventDefault();
-                
-                let th = $(this).closest('th');
-                let colIndex = th.index(); // Dapet posisi ke berapa dari kiri
-                
-                // Karena ada fitur scroll ke samping, DataTables memecah header & body jadi 2 tabel.
-                // Kita cari ID tabel utamanya yang ada di dalam .dataTables_scrollBody
-                let wrapper = $(this).closest('.dataTables_wrapper');
-                let mainTable = wrapper.find('.dataTables_scrollBody table');
-                
-                if(mainTable.length > 0) {
-                    let tableId = mainTable.attr('id');
-                    let table = $('#' + tableId).DataTable();
-                    
-                    table.column(colIndex).visible(false); // HAPUS KOLOM!
-                    
-                    // Jeda dikit biar animasinya mulus pas ngerapiin ukuran
-                    setTimeout(() => {
-                        table.columns.adjust();
-                    }, 50);
-                }
             });
 
             async function syncData() {
