@@ -152,7 +152,6 @@
         </div>
     </aside>
 
-    <!-- AREA KONTEN KANAN -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
@@ -255,7 +254,7 @@
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA (SHEET 2) -->
+            <!-- 3. EVALUASI KINERJA -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
@@ -710,7 +709,6 @@
 
         // =========================================
         // RENDER TABEL MASTER DATA KEBUN 
-        // (DENGAN SMART GHOST COLUMN PURGER + TANGGAL 25569)
         // =========================================
         function loadTable(sheetName) {
             const filterContainer = document.getElementById('custom-filter-container');
@@ -748,7 +746,6 @@
             }
 
             const validKeys = [];
-            // GATHER ALL KEYS FIRST
             let allKeysSet = new Set();
             data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
             let allKeys = Array.from(allKeysSet);
@@ -756,7 +753,6 @@
             allKeys.forEach(key => {
                 let title = key.trim();
                 
-                // BUANG KOLOM KOSONG DARI EXCEL JIKA SELURUH BARISNYA KOSONG ATAU CUMA "-"
                 let isGhost = true;
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
@@ -788,7 +784,6 @@
                     defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
-                            // KUNCI TANGGAL AKURAT: Offset 25569
                             let d = new Date(Math.round((val - 25569) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -806,7 +801,8 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        // GANTI \n JADI <br> BIAR TEKS TURUN KE BAWAH BUKAN KE SAMPING
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
                         return val;
                     }
                 };
@@ -902,7 +898,6 @@
                                 return `<span class="text-gray-500 font-bold">-</span>`;
                             }
                             if (isDateCol && typeof val === 'number') {
-                                // KUNCI TANGGAL: Offset 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -916,6 +911,8 @@
                                 if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
                                 return val.toLocaleString('id-ID');
                             }
+                            // GANTI \n JADI <br> BIAR TEKS TURUN KE BAWAH BUKAN KE SAMPING
+                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>');
                             return val;
                         }
                     };
@@ -955,7 +952,6 @@
                         defaultContent: "-", 
                         render: function(val) {
                             if (isDateCol && typeof val === 'number') {
-                                // KUNCI TANGGAL: Offset 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -973,7 +969,8 @@
                             else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                                 return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                             }
-                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                            // GANTI \n JADI <br> BIAR TEKS TURUN KE BAWAH BUKAN KE SAMPING
+                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
                             return val;
                         }
                     };
