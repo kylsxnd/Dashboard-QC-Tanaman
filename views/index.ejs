@@ -251,7 +251,7 @@
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA (SHEET 2) -->
+            <!-- 3. EVALUASI KINERJA -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
@@ -641,22 +641,31 @@
             if (sortedPTs.length > 0) {
                 sortedPTs.forEach(pt => {
                     ptHtml += `
-                        <tr class="hover:bg-[var(--hover-bg)] transition-colors">
-                            <td class="py-4 px-4 text-[12px] md:text-sm theme-text-main font-bold">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-2 text-[9px] md:text-[10px] bg-blue-900/30 text-blue-400 font-semibold px-2 py-0.5 rounded border border-blue-500/20 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
-                            <td class="py-4 px-4 text-[12px] md:text-sm theme-text-main text-right font-medium">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                            <td class="py-4 px-4 text-[12px] md:text-sm text-purple-400 text-right font-medium">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                            <td class="py-4 px-4 text-[12px] md:text-sm theme-text-main text-right font-bold tracking-wide">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                        <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border last:border-0">
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span>` : ''}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-purple-400 text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                         </tr>`;
                 });
-            } else { ptHtml = `<tr><td colspan="4" class="py-8 text-center text-[12px] md:text-sm theme-text-muted">Tidak ada data perusahaan untuk filter ini.</td></tr>`; }
-            
+            } else { ptHtml = `<tr><td colspan="4" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`; }
             if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
-        // =========================================
+        // FUNGSI KHUSUS PENGHAPUS KOLOM GAIB KETIKA DI KLIK TOMBOL X
+        $(document).on('click', '.hide-col-btn', function(e) {
+            e.stopPropagation(); 
+            e.preventDefault();
+            let th = $(this).closest('th');
+            let tableId = $(this).closest('table').attr('id');
+            if(tableId) {
+                let table = $('#' + tableId).DataTable();
+                table.column(th).visible(false);
+            }
+        });
+
         // FUNGSI MENDAPATKAN IKON FILE
-        // =========================================
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -664,7 +673,6 @@
             else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
         }
 
-        // BUKA MODAL PREVIEW
         function openPreview(rawUrl) {
             let previewUrl = rawUrl.trim();
             if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
@@ -688,7 +696,7 @@
         }
 
         // =========================================
-        // RENDER TABEL MASTER DATA KEBUN (DENGAN GHOST COLUMN PURGER)
+        // RENDER TABEL MASTER DATA KEBUN 
         // =========================================
         function loadTable(sheetName) {
             const filterContainer = document.getElementById('custom-filter-container');
@@ -725,14 +733,14 @@
                 return; 
             }
 
-            // KUNCI EMAS 1: GHOST COLUMN PURGER (PEMBERSIH KOLOM KOSONG)
             const validKeys = [];
             Object.keys(data[0]).forEach(key => {
                 let title = key.trim();
-                // Buang kolom __EMPTY bawaan merge cell
+                
+                // BUANG KOLOM SAMPAH/KOSONG
                 if (title.startsWith('__EMPTY') || title === '') return; 
                 
-                // Cek apakah kolom ini beneran ada isinya selain "-" (defval) atau kosong
+                // CEK KOLOM GAIB: Kalau cuma isi "-" doang atau kosong, buang!
                 let isGhost = true;
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
@@ -742,40 +750,40 @@
                     }
                 }
                 
-                // Kalau bukan ghost column (berarti ada isinya minimal 1 baris), kita simpan
-                if (!isGhost) {
-                    validKeys.push(key);
-                }
+                if (!isGhost) validKeys.push(key);
             });
 
             const columns = validKeys.map(key => {
-                // BUANG EMBEL-EMBEL _1, _2 KARENA MERGE CELL EXCEL
                 let displayTitle = key.trim().replace(/_\d+$/, '').trim();
                 let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                 
-                return { title: displayTitle, data: key, defaultContent: "-", render: function(val) {
-                    if (isDateCol && typeof val === 'number') {
-                        // KUNCI TANGGAL: Offset Excel 25569
-                        let d = new Date(Math.round((val - 25569) * 86400000));
-                        let dd = d.getUTCDate().toString().padStart(2, '0');
-                        let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                        let yy = d.getUTCFullYear();
-                        return `${dd}/${mm}/${yy}`;
+                return { 
+                    title: `<div class="flex justify-between items-center group"><span>${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom Sementara">✖</button></div>`, 
+                    data: key, 
+                    defaultContent: "-", 
+                    render: function(val) {
+                        if (isDateCol && typeof val === 'number') {
+                            let d = new Date(Math.round((val - 25569) * 86400000));
+                            let dd = d.getUTCDate().toString().padStart(2, '0');
+                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                            let yy = d.getUTCFullYear();
+                            return `${dd}/${mm}/${yy}`;
+                        }
+                        if (typeof val === 'number') {
+                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                            return val.toLocaleString('id-ID');
+                        }
+                        if (typeof val === 'string' && val.includes('|||')) {
+                            const parts = val.split('|||');
+                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                        }
+                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        return val;
                     }
-                    if (typeof val === 'number') {
-                        if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                        return val.toLocaleString('id-ID');
-                    }
-                    if (typeof val === 'string' && val.includes('|||')) {
-                        const parts = val.split('|||');
-                        return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                    }
-                    else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                        return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                    }
-                    if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                    return val;
-                }};
+                };
             });
 
             currentDataTable = $('#mainTable').DataTable({
@@ -823,19 +831,16 @@
                 return; 
             }
 
-            // KUNCI EMAS 2: BYPASS HEADER SHEET "KINERJA PROD" + GHOST PURGER
             let isKinerjaProd = sheetName.toLowerCase() === "kinerja prod";
             let realKeys = [];
             
             if (isKinerjaProd && data.length > 2) {
-                // Di Kinerja Prod, header asli ada di baris ke-2 (index 1) karena baris 1 isinya CRO, Wilayah yang di-merge
                 let headerRow2 = data[1]; 
                 
                 Object.keys(headerRow2).forEach(k => {
                     if(!k.includes('__EMPTY') && headerRow2[k] && String(headerRow2[k]).trim() !== '') {
-                        // KITA CEK APAKAH INI KOLOM GHOST
                         let isGhost = true;
-                        for(let i=2; i<data.length; i++) { // Mulai dari index 2 (data murni)
+                        for(let i=2; i<data.length; i++) { 
                             let v = data[i][k];
                             if(v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
                                 isGhost = false;
@@ -847,14 +852,12 @@
                         }
                     }
                 });
-                // Buang 2 baris header pertama dari data biar gak ikut masuk ke tabel
                 data = data.slice(2);
             }
 
             let columns = [];
             
             if (isKinerjaProd) {
-                // Jika sheet Kinerja Prod, gunakan keys yang udah dipulihkan
                 columns = realKeys.map(k => {
                     let title = k.title;
                     let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
@@ -862,7 +865,9 @@
                     let isTrend = title.toLowerCase() === 'trend produksi';
                     
                     return { 
-                        title: title, data: k.dataKey, defaultContent: "-", 
+                        title: `<div class="flex justify-between items-center group"><span>${title}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom Sementara">✖</button></div>`, 
+                        data: k.dataKey, 
+                        defaultContent: "-", 
                         render: function(val) {
                             if (isTrend) {
                                 let v = String(val).toLowerCase();
@@ -871,7 +876,6 @@
                                 return `<span class="text-gray-500 font-bold">-</span>`;
                             }
                             if (isDateCol && typeof val === 'number') {
-                                // KUNCI TANGGAL: Offset Excel 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -890,7 +894,6 @@
                     };
                 });
             } else {
-                // Evaluasi Sheet normal lainnya (DENGAN GHOST PURGER JUGA)
                 const validKeys = [];
                 Object.keys(data[0]).forEach(key => {
                     let title = key.trim();
@@ -912,10 +915,11 @@
                     let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                     
                     return { 
-                        title: displayTitle, data: key, defaultContent: "-", 
+                        title: `<div class="flex justify-between items-center group"><span>${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom Sementara">✖</button></div>`, 
+                        data: key, 
+                        defaultContent: "-", 
                         render: function(val) {
                             if (isDateCol && typeof val === 'number') {
-                                // KUNCI TANGGAL: Offset Excel 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -1204,7 +1208,6 @@
                 }
             }
 
-            // PENGAMAN ABSOLUT
             if (tMitra === 0) tMitra = 253;
             if (tLuas === 0) tLuas = 242234.20;
             if (tTarget === 0) tTarget = 201105.11;
@@ -1331,6 +1334,18 @@
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
                 if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
+            });
+
+            // TOMBOL HAPUS KOLOM MANUAL
+            $(document).on('click', '.hide-col-btn', function(e) {
+                e.stopPropagation(); 
+                e.preventDefault();
+                let th = $(this).closest('th');
+                let tableId = $(this).closest('table').attr('id');
+                if(tableId) {
+                    let table = $('#' + tableId).DataTable();
+                    table.column(th).visible(false);
+                }
             });
 
             async function syncData() {
