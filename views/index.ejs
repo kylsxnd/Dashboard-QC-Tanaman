@@ -67,10 +67,6 @@
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
-        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
-        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
-
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -93,11 +89,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-        .sub-tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s; border: 1px solid transparent; outline: none; }
-        .sub-tab-active { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
-        .sub-tab-inactive { background-color: transparent; color: var(--text-muted); }
-        .sub-tab-inactive:hover { background-color: var(--hover-bg); color: var(--text-main); }
     </style>
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
@@ -134,7 +125,7 @@
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
 
-            <!-- KATEGORI EVALUASI KINERJA -->
+            <!-- KATEGORI EVALUASI KINERJA (Sekarang HANYA Kinerja Prod) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
             </div>
@@ -247,14 +238,11 @@
                             <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit"></div>
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
-                        <div id="pivot-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
-                            <iframe src="https://docs.google.com/spreadsheets/d/1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY/edit?gid=2130529003#gid=2130529003&rm=minimal" class="w-full h-full border-none"></iframe>
-                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA -->
+            <!-- 3. EVALUASI KINERJA (SHEET 2 - SEKARANG CUMA KINERJA PROD) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
@@ -263,74 +251,10 @@
 
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
-                        
                         <!-- TABEL NORMAL EVALUASI -->
                         <div id="evaluasi-table-area" class="w-full">
                             <table id="evaluasiTable" class="w-full text-left"></table>
                         </div>
-                        
-                        <!-- AREA DASHBOARD KHUSUS REKAP KEMITRAAN -->
-                        <div id="evaluasi-dashboard-area" class="hidden w-full">
-                            <div class="flex space-x-2 overflow-x-auto pb-2 mb-6 border-b theme-border">
-                                <button id="btn-tahap1-5" onclick="setKemitraanTab('tahap1-5')" class="sub-tab-btn sub-tab-inactive">Tahap 1 - 5</button>
-                                <button id="btn-tahap1-7" onclick="setKemitraanTab('tahap1-7')" class="sub-tab-btn sub-tab-active">Tahap 1 - 7</button>
-                                <button id="btn-status-mitra" onclick="setKemitraanTab('status-mitra')" class="sub-tab-btn sub-tab-inactive">Status Mitra/Vendor</button>
-                                <button id="btn-list-pt" onclick="setKemitraanTab('list-pt')" class="sub-tab-btn sub-tab-inactive">List Nama PT</button>
-                            </div>
-
-                            <div id="kemitraan-content-box">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="kemitraan-kpi-container"></div>
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8" id="kemitraan-chart-container">
-                                    <div class="premium-card p-4 md:p-6 w-full">
-                                        <h3 id="kemitraan-bar-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Sebaran Jumlah PT per CRO</h3>
-                                        <div id="kemitraan-bar-chart" style="height: 300px; width: 100%;"></div>
-                                    </div>
-                                    <div class="premium-card p-4 md:p-6 w-full" id="kemitraan-pie-card">
-                                        <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Pengelolaan PT (%)</h3>
-                                        <div id="kemitraan-pie-chart" style="height: 300px; width: 100%;"></div>
-                                    </div>
-                                </div>
-                                <div class="premium-card p-4 md:p-6 mt-5 w-full">
-                                    <h3 id="kemitraan-table-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Rekap Kemitraan per Wilayah</h3>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-left border-collapse min-w-[700px]">
-                                            <thead id="kemitraan-list-head"></thead>
-                                            <tbody id="kemitraan-list-body"></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- DASHBOARD BARU KHUSUS "EXECUTIVE SUMMARY" -->
-                        <div id="executive-dashboard-area" class="hidden w-full">
-                            <div class="bg-emerald-700/20 border border-emerald-500/50 text-[var(--text-main)] text-center py-3 md:py-4 rounded-xl mb-6 shadow-sm">
-                                <h1 class="font-bold text-lg md:text-xl tracking-wide uppercase text-emerald-500">Executive Summary: Kinerja Produksi Penugasan</h1>
-                            </div>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="exec-kpi-container"></div>
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                                <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 flex flex-col">
-                                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4" id="exec-tren-title">Distribusi Seluruh Tren Kinerja Produksi Kebun</h3>
-                                    <div id="exec-tren-chart" class="flex-grow" style="min-height: 350px;"></div>
-                                </div>
-                                <div class="premium-card p-4 md:p-6 w-full lg:col-span-2 flex flex-col">
-                                    <h3 class="text-[10px] font-bold theme-text-muted text-center uppercase tracking-widest mb-4">Target vs Produksi Pos Penugasan by Wilayah</h3>
-                                    <div id="exec-wilayah-chart" class="flex-grow" style="min-height: 350px;"></div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 overflow-hidden">
-                                    <table class="w-full text-left border-collapse rounded-lg overflow-hidden">
-                                        <thead><tr class="bg-blue-600/20 text-blue-400"><th class="py-3 px-4 text-xs font-bold uppercase tracking-wider">Tren</th><th class="py-3 px-4 text-xs font-bold uppercase tracking-wider text-center"># Kebun</th></tr></thead>
-                                        <tbody id="exec-mini-table"></tbody>
-                                    </table>
-                                </div>
-                                <div class="premium-card p-5 md:p-6 w-full lg:col-span-2 flex items-center bg-blue-500/5 border-blue-500/20">
-                                    <p id="exec-summary-text" class="text-xs md:text-sm theme-text-main leading-relaxed font-medium"></p>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </section>
@@ -378,14 +302,12 @@
         let emailsData = <%- emailsData %> || []; 
         
         const listSheets = ["REKAPITULASI", "Pivot Table", "Pembayaran Vendor", "Draft Surat Penugasan", "INPUT ASTA", "Acuan Nama Kebun", "Acuan Nama CRO & Region", "Perubahan CV ke PT", "Rekap Vendor"];
-        const listEvaluasiSheets = ["Sumber/Source Data", "Kinerja Prod", "Rekap Kemitraan", "Rekapan", "Executive Summary"];
+        const listEvaluasiSheets = ["Kinerja Prod"]; // CUMA KINERJA PROD YANG TERSISA!
         
         let currentDataTable = null;
         let evaluasiDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
-        
-        let activeKemitraanTab = 'tahap1-7';
 
         function toggleSidebar() {
             const sidebar = document.getElementById('mobile-sidebar');
@@ -478,9 +400,7 @@
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
             
             if(viewId === 'view-evaluasi') { 
-                if (sheetName === "Rekap Kemitraan" || sheetName === "Executive Summary") {
-                    // No datatable to adjust
-                } else if (evaluasiDataTable) {
+                if (evaluasiDataTable) {
                     setTimeout(() => evaluasiDataTable.columns.adjust(), 50);
                 }
             }
@@ -657,7 +577,6 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
-        // FUNGSI MENDAPATKAN IKON FILE
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -728,14 +647,7 @@
                 filterContainer.innerHTML = '';
             }
 
-            if (sheetName === "Pivot Table") {
-                document.getElementById('table-area').classList.add('hidden');
-                document.getElementById('pivot-area').classList.remove('hidden');
-                return; 
-            } 
-            
             document.getElementById('table-area').classList.remove('hidden');
-            document.getElementById('pivot-area').classList.add('hidden');
 
             const data = rawData[sheetName] || [];
             if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
@@ -823,22 +735,6 @@
         // FUNGSI RENDER EVALUASI KINERJA
         // =========================================
         function loadEvaluasiTable(sheetName) {
-            document.getElementById('evaluasi-table-area').classList.add('hidden');
-            document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
-            document.getElementById('executive-dashboard-area').classList.add('hidden');
-
-            if (sheetName === "Rekap Kemitraan") {
-                document.getElementById('evaluasi-dashboard-area').classList.remove('hidden');
-                renderKemitraanDashboard(); 
-                return; 
-            } 
-            
-            if (sheetName === "Executive Summary") {
-                document.getElementById('executive-dashboard-area').classList.remove('hidden');
-                renderExecutiveDashboard();
-                return;
-            }
-
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
 
             let exactKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === sheetName.trim().toLowerCase());
@@ -884,454 +780,54 @@
                     }
                 });
                 data = data.slice(2);
-            } else {
-                let baseKeys = Object.keys(data[0] || {});
-                let emptyCount = baseKeys.filter(k => k.startsWith('__EMPTY')).length;
-
-                if (emptyCount > baseKeys.length * 0.3 && data.length > 0) {
-                    let bestRowIdx = -1;
-                    let minEmpty = emptyCount;
-                    
-                    for(let i=0; i<Math.min(5, data.length); i++) {
-                        let eCount = 0;
-                        baseKeys.forEach(k => {
-                            let v = String(data[i][k] || "").trim();
-                            if (!v || v === '-' || v.startsWith('__EMPTY')) eCount++;
-                        });
-                        if (eCount < minEmpty) {
-                            minEmpty = eCount;
-                            bestRowIdx = i;
-                        }
-                    }
-                    
-                    if (bestRowIdx !== -1) {
-                        let headerRow = data[bestRowIdx];
-                        baseKeys.forEach(k => {
-                            let title = String(headerRow[k] || "").trim();
-                            if (title && title !== '-' && !title.startsWith('__EMPTY')) {
-                                let isGhost = true;
-                                for(let j=bestRowIdx+1; j<data.length; j++) {
-                                    let v = data[j][k];
-                                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                                        isGhost = false; break;
-                                    }
-                                }
-                                if (!isGhost) {
-                                    realKeys.push({ dataKey: k, title: title.replace(/_\d+$/, '').trim() });
-                                }
-                            }
-                        });
-                        data = data.slice(bestRowIdx + 1);
-                    }
-                } 
-
-                if (realKeys.length === 0) {
-                    baseKeys.forEach(k => {
-                        let title = k.trim();
-                        let isGhost = true;
-                        for(let i=0; i<data.length; i++) {
-                            let v = data[i][k];
-                            if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                                isGhost = false; break;
-                            }
-                        }
-                        if (isGhost) return;
-                        
-                        if (title.startsWith('__EMPTY')) title = "-";
-                        else title = title.replace(/_\d+$/, '').trim(); 
-                        
-                        realKeys.push({ dataKey: k, title: title });
-                    });
-                }
             }
 
-            let columns = realKeys.map(k => {
-                let displayTitle = k.title;
-                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal');
-                let isPctCol = displayTitle.toLowerCase().includes('persentase') || displayTitle.toLowerCase().includes('%');
-                let isTrend = displayTitle.toLowerCase() === 'trend produksi';
-                
-                return { 
-                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                    data: k.dataKey, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (isKinerjaProd && isTrend) {
-                            let v = String(val).toLowerCase();
-                            if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
-                            if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
-                            return `<span class="text-gray-500 font-bold">-</span>`;
+            let columns = [];
+            
+            if (isKinerjaProd) {
+                columns = realKeys.map(k => {
+                    let title = k.title;
+                    let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
+                    let isPctCol = title.toLowerCase().includes('persentase') || title.toLowerCase().includes('%');
+                    let isTrend = title.toLowerCase() === 'trend produksi';
+                    
+                    return { 
+                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${title}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
+                        data: k.dataKey, 
+                        defaultContent: "-", 
+                        render: function(val) {
+                            if (isTrend) {
+                                let v = String(val).toLowerCase();
+                                if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
+                                if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
+                                return `<span class="text-gray-500 font-bold">-</span>`;
+                            }
+                            if (isDateCol && typeof val === 'number') {
+                                let d = new Date(Math.round((val - 25569) * 86400000));
+                                let dd = d.getUTCDate().toString().padStart(2, '0');
+                                let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                                let yy = d.getUTCFullYear();
+                                return `${dd}/${mm}/${yy}`;
+                            }
+                            if (isPctCol && typeof val === 'number') {
+                                return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
+                            }
+                            if (typeof val === 'number') {
+                                if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                                return val.toLocaleString('id-ID');
+                            }
+                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>');
+                            return val;
                         }
-                        if (isDateCol && typeof val === 'number') {
-                            let d = new Date(Math.round((val - 25569) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear();
-                            return `${dd}/${mm}/${yy}`;
-                        }
-                        if (isKinerjaProd && isPctCol && typeof val === 'number') {
-                            return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
-                        }
-                        if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
-                        }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
-                        return val;
-                    }
-                };
-            });
+                    };
+                });
+            }
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
                 colReorder: true, 
                 language: { search: "", searchPlaceholder: "Cari Analisis...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
-        }
-
-        function setKemitraanTab(tabId) {
-            activeKemitraanTab = tabId;
-            ['tahap1-5', 'tahap1-7', 'status-mitra', 'list-pt'].forEach(id => {
-                const btn = document.getElementById('btn-' + id);
-                if (btn) {
-                    if (id === tabId) btn.className = 'sub-tab-btn sub-tab-active';
-                    else btn.className = 'sub-tab-btn sub-tab-inactive';
-                }
-            });
-            renderKemitraanDashboard();
-        }
-
-        function renderKemitraanDashboard() {
-            let sheetName = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekap kemitraan");
-            const rawRekapData = rawData[sheetName] || [];
-
-            const kpiContainer = document.getElementById('kemitraan-kpi-container');
-            const chartContainer = document.getElementById('kemitraan-chart-container');
-            const tableTitle = document.getElementById('kemitraan-table-title');
-            const tableHead = document.getElementById('kemitraan-list-head');
-            const tableBody = document.getElementById('kemitraan-list-body');
-
-            if (rawRekapData.length === 0) {
-                if (kpiContainer) kpiContainer.innerHTML = `<div class="p-5 text-yellow-500 font-bold col-span-3">Sedang memproses data dari Server...</div>`;
-                return;
-            }
-
-            let allKeys = Object.keys(rawRekapData[2] || rawRekapData[3] || rawRekapData[0]); 
-            let regKeys = []; 
-
-            let headerRow = null;
-            for(let i=0; i<Math.min(15, rawRekapData.length); i++) {
-                let rowKeys = Object.keys(rawRekapData[i]);
-                let tempReg = [];
-                rowKeys.forEach(k => {
-                    if(String(rawRekapData[i][k]).toLowerCase().trim() === 'regional') tempReg.push(k);
-                });
-                if (tempReg.length >= 2) {
-                    regKeys = tempReg;
-                    allKeys = rowKeys;
-                    headerRow = rawRekapData[i];
-                    break;
-                }
-            }
-
-            if(!headerRow) return;
-
-            let keys = { reg:[], wil:[], jml:[], sdh:[], blm:[], pt:[], cv:[], kop:[], thp:[], npt:[], mit:[], stt:[] };
-            allKeys.forEach(k => {
-                let v = String(headerRow[k]).toLowerCase().trim();
-                if (v === 'regional') keys.reg.push(k);
-                if (v === 'wilayah') keys.wil.push(k);
-                if (v === 'jumlah pt' || v === 'jumlah') keys.jml.push(k);
-                if (v === 'sudah dikelola') keys.sdh.push(k);
-                if (v === 'belum dikelola') keys.blm.push(k);
-                if (v === 'pt') keys.pt.push(k);
-                if (v === 'cv') keys.cv.push(k);
-                if (v === 'koperasi') keys.kop.push(k);
-                if (v === 'tahap') keys.thp.push(k);
-                if (v === 'nama pt') keys.npt.push(k);
-                if (v === 'nama mitra') keys.mit.push(k);
-                if (v === 'status') keys.stt.push(k);
-            });
-
-            let kReg, kWil, kJml, kSdh, kBlm, kPT, kCV, kKop, kThp, kNpt, kMit, kStt;
-            
-            if (activeKemitraanTab === 'tahap1-5') {
-                kReg = keys.reg[0]; kWil = keys.wil[0]; kJml = keys.jml[0]; kSdh = keys.sdh[0]; kBlm = keys.blm[0];
-            } else if (activeKemitraanTab === 'tahap1-7') {
-                kReg = keys.reg[1]; kWil = keys.wil[1]; kJml = keys.jml[1]; kSdh = keys.sdh[2]; kBlm = keys.blm[2];
-            } else if (activeKemitraanTab === 'status-mitra') {
-                kReg = keys.reg[2]; kWil = keys.wil[2]; kJml = keys.jml[2]; kPT = keys.pt[0]; kCV = keys.cv[0]; kKop = keys.kop[0];
-            } else if (activeKemitraanTab === 'list-pt') {
-                kReg = keys.reg[3]; kWil = keys.wil[3]; kThp = keys.thp[0]; kNpt = keys.npt[0]; kMit = keys.mit[0]; kStt = keys.stt[keys.stt.length - 1]; 
-            }
-
-            if (!kReg) return; 
-
-            let totalPT = 0, totalSudah = 0, totalBelum = 0;
-            let totalCV = 0, totalKop = 0; 
-            let chartBarMap = {}, chartPieMap = {};
-            let summaryMap = {};
-            let listPtArray = []; 
-
-            for(let i=0; i<rawRekapData.length; i++) {
-                let row = rawRekapData[i];
-                let cro = String(row[kReg] || "").replace(/^[+-]\s*/, '').trim();
-                let wil = String(row[kWil] || "").trim();
-
-                if(!cro || cro === "-" || cro.toLowerCase() === "regional" || cro.toLowerCase() === "no") continue;
-                if(cro.toLowerCase().includes("total") || cro.toLowerCase().includes("summary") || cro.toLowerCase().includes("grand")) continue;
-
-                if(cro.toLowerCase().startsWith('cro')) cro = cro.toUpperCase();
-                else cro = "CRO " + cro.toUpperCase(); 
-
-                if (activeKemitraanTab === 'tahap1-5' || activeKemitraanTab === 'tahap1-7') {
-                    let jml = parseInt(String(row[kJml]).replace(/[^0-9]/g,'')) || 0;
-                    let sudah = parseInt(String(row[kSdh]).replace(/[^0-9]/g,'')) || 0;
-                    let belum = parseInt(String(row[kBlm]).replace(/[^0-9]/g,'')) || 0;
-
-                    totalPT += jml; totalSudah += sudah; totalBelum += belum;
-                    chartBarMap[cro] = (chartBarMap[cro] || 0) + jml;
-                    
-                    let k = cro + "_" + wil;
-                    if(!summaryMap[k]) summaryMap[k] = {cro: cro, wil: wil, jml:0, sdh:0, blm:0};
-                    summaryMap[k].jml += jml; summaryMap[k].sdh += sudah; summaryMap[k].blm += belum;
-                }
-                
-                if (activeKemitraanTab === 'status-mitra') {
-                    let jml = parseInt(String(row[kJml]).replace(/[^0-9]/g,'')) || 0;
-                    let pt = parseInt(String(row[kPT]).replace(/[^0-9]/g,'')) || 0;
-                    let cv = parseInt(String(row[kCV]).replace(/[^0-9]/g,'')) || 0;
-                    let kop = parseInt(String(row[kKop]).replace(/[^0-9]/g,'')) || 0;
-
-                    totalPT += jml; totalCV += cv; totalKop += kop;
-                    chartBarMap[cro] = (chartBarMap[cro] || 0) + jml;
-
-                    let k = cro + "_" + wil;
-                    if(!summaryMap[k]) summaryMap[k] = {cro: cro, wil: wil, jml:0, pt:0, cv:0, kop:0};
-                    summaryMap[k].jml += jml; summaryMap[k].pt += pt; summaryMap[k].cv += cv; summaryMap[k].kop += kop;
-                }
-
-                if (activeKemitraanTab === 'list-pt') {
-                    let tahap = String(row[kThp] || "").trim();
-                    let npt = String(row[kNpt] || "").trim();
-                    let mitra = String(row[kMit] || "").trim();
-                    let stts = String(row[kStt] || "").trim();
-                    if(npt && npt !== "-") {
-                        listPtArray.push({ cro: cro, wil: wil, tahap: tahap, pt: npt, mitra: mitra, status: stts });
-                    }
-                }
-            }
-
-            if (activeKemitraanTab === 'tahap1-5' || activeKemitraanTab === 'tahap1-7') {
-                chartContainer.classList.remove('hidden');
-                document.getElementById('kemitraan-pie-card').classList.remove('hidden');
-                
-                let tabTtl = activeKemitraanTab === 'tahap1-5' ? "TAHAP 1 - 5" : "TAHAP 1 - 7";
-                
-                kpiContainer.innerHTML = `
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-yellow-500"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Keseluruhan PT (${tabTtl})</div><div class="text-2xl md:text-3xl font-bold theme-text-main mb-1">${totalPT} PT</div></div>
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-blue-500"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Sudah Dikelola</div><div class="text-2xl md:text-3xl font-bold text-blue-400 mb-1">${totalSudah} PT</div></div>
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-red-500"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Belum Dikelola</div><div class="text-2xl md:text-3xl font-bold text-red-400 mb-1">${totalBelum} PT</div></div>
-                `;
-
-                tableTitle.innerText = `Rekap Kemitraan per Wilayah (${tabTtl})`;
-                tableHead.innerHTML = `<tr><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">No</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Regional</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Wilayah</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">Jml PT</th><th class="border-b theme-border py-3 px-4 text-[10px] text-blue-500 font-bold uppercase text-center">Sudah</th><th class="border-b theme-border py-3 px-4 text-[10px] text-red-500 font-bold uppercase text-center">Belum</th><th class="border-b theme-border py-3 px-4 text-[10px] text-blue-500 font-bold uppercase text-center">% Sdh</th><th class="border-b theme-border py-3 px-4 text-[10px] text-red-500 font-bold uppercase text-center">% Blm</th></tr>`;
-                
-                let htm = '', no=1;
-                Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wil.localeCompare(b.wil)).forEach(i => {
-                    let ps = i.jml>0 ? Math.round((i.sdh/i.jml)*100) : 0;
-                    let pb = i.jml>0 ? Math.round((i.blm/i.jml)*100) : 0;
-                    htm += `<tr class="hover:bg-[var(--hover-bg)] border-b theme-border"><td class="py-2 px-4 text-xs text-center">${no++}</td><td class="py-2 px-4 text-xs font-semibold">${i.cro}</td><td class="py-2 px-4 text-xs">${i.wil}</td><td class="py-2 px-4 text-xs text-center font-bold">${i.jml}</td><td class="py-2 px-4 text-xs text-blue-400 text-center font-bold">${i.sdh}</td><td class="py-2 px-4 text-xs text-red-400 text-center font-bold">${i.blm}</td><td class="py-2 px-4 text-xs text-blue-400 text-center font-bold">${ps}%</td><td class="py-2 px-4 text-xs text-red-400 text-center font-bold">${pb}%</td></tr>`;
-                });
-                let psTot = totalPT>0 ? Math.round((totalSudah/totalPT)*100) : 0;
-                let pbTot = totalPT>0 ? Math.round((totalBelum/totalPT)*100) : 0;
-                htm += `<tr class="bg-[var(--hover-bg)] border-t border-[#83b765]"><td colspan="3" class="py-3 px-4 text-xs font-bold text-center uppercase">Grand Total</td><td class="py-3 px-4 text-xs text-center font-bold">${totalPT}</td><td class="py-3 px-4 text-xs text-blue-400 text-center font-bold">${totalSudah}</td><td class="py-3 px-4 text-xs text-red-400 text-center font-bold">${totalBelum}</td><td class="py-3 px-4 text-xs text-blue-400 text-center font-bold">${psTot}%</td><td class="py-3 px-4 text-xs text-red-400 text-center font-bold">${pbTot}%</td></tr>`;
-                tableBody.innerHTML = htm;
-
-                Highcharts.chart('kemitraan-bar-chart', { chart: { type: 'column', backgroundColor: 'transparent' }, title: { text: null }, xAxis: { categories: Object.keys(chartBarMap), labels: { style: { color: 'var(--text-muted)' } } }, yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } }, series: [{ name: 'Jumlah PT', data: Object.values(chartBarMap), color: '#8b5cf6' }], credits: { enabled: false } });
-                Highcharts.chart('kemitraan-pie-chart', { chart: { type: 'pie', backgroundColor: 'transparent' }, title: { text: null }, plotOptions: { pie: { innerSize: '65%', borderWidth: 0, dataLabels: { color: 'var(--text-muted)' } } }, series: [{ name: 'Total PT', data: [{name: 'Sudah Dikelola', y: totalSudah, color: '#3b82f6'}, {name: 'Belum Dikelola', y: totalBelum, color: '#f43f5e'}] }], credits: { enabled: false } });
-
-            } else if (activeKemitraanTab === 'status-mitra') {
-                chartContainer.classList.remove('hidden');
-                document.getElementById('kemitraan-pie-card').classList.add('hidden'); 
-                document.getElementById('kemitraan-bar-title').innerText = "Sebaran Jumlah PT per CRO (Status Mitra)";
-                
-                kpiContainer.innerHTML = `
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-yellow-500"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Kemitraan PT</div><div class="text-2xl md:text-3xl font-bold theme-text-main mb-1">${totalPT} PT</div></div>
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-emerald-500"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Mitra Berbentuk PT</div><div class="text-2xl md:text-3xl font-bold text-emerald-400 mb-1">${totalCV} PT</div></div>
-                    <div class="premium-card p-4 md:p-5 border-t-4 border-t-indigo-500"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Mitra Koperasi</div><div class="text-2xl md:text-3xl font-bold text-indigo-400 mb-1">${totalKop} Kop</div></div>
-                `;
-
-                tableTitle.innerText = "Rincian Status Mitra Pengelola";
-                tableHead.innerHTML = `<tr><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">No</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Regional</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Wilayah</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">Jml PT</th><th class="border-b theme-border py-3 px-4 text-[10px] text-emerald-500 font-bold uppercase text-center">Bentuk PT</th><th class="border-b theme-border py-3 px-4 text-[10px] text-orange-500 font-bold uppercase text-center">Bentuk CV</th><th class="border-b theme-border py-3 px-4 text-[10px] text-indigo-500 font-bold uppercase text-center">Koperasi</th></tr>`;
-                
-                let htm = '', no=1, sumCvReal=0;
-                Object.values(summaryMap).sort((a,b) => a.cro.localeCompare(b.cro) || a.wil.localeCompare(b.wil)).forEach(i => {
-                    sumCvReal += i.cv;
-                    htm += `<tr class="hover:bg-[var(--hover-bg)] border-b theme-border"><td class="py-2 px-4 text-xs text-center">${no++}</td><td class="py-2 px-4 text-xs font-semibold">${i.cro}</td><td class="py-2 px-4 text-xs">${i.wil}</td><td class="py-2 px-4 text-xs text-center font-bold">${i.jml}</td><td class="py-2 px-4 text-xs text-emerald-400 text-center font-bold">${i.pt}</td><td class="py-2 px-4 text-xs text-orange-400 text-center font-bold">${i.cv}</td><td class="py-2 px-4 text-xs text-indigo-400 text-center font-bold">${i.kop}</td></tr>`;
-                });
-                htm += `<tr class="bg-[var(--hover-bg)] border-t border-[#83b765]"><td colspan="3" class="py-3 px-4 text-xs font-bold text-center uppercase">Grand Total</td><td class="py-3 px-4 text-xs text-center font-bold">${totalPT}</td><td class="py-3 px-4 text-xs text-emerald-400 text-center font-bold">${totalCV}</td><td class="py-3 px-4 text-xs text-orange-400 text-center font-bold">${sumCvReal}</td><td class="py-3 px-4 text-xs text-indigo-400 text-center font-bold">${totalKop}</td></tr>`;
-                tableBody.innerHTML = htm;
-
-                Highcharts.chart('kemitraan-bar-chart', { chart: { type: 'column', backgroundColor: 'transparent' }, title: { text: null }, xAxis: { categories: Object.keys(chartBarMap), labels: { style: { color: 'var(--text-muted)' } } }, yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } }, series: [{ name: 'Jumlah PT', data: Object.values(chartBarMap), color: '#10b981' }], credits: { enabled: false } });
-
-            } else if (activeKemitraanTab === 'list-pt') {
-                chartContainer.classList.add('hidden'); 
-                kpiContainer.innerHTML = `<div class="premium-card p-4 md:p-5 border-t-4 border-t-blue-500 col-span-3"><div class="text-[9px] md:text-[10px] theme-text-muted font-bold uppercase tracking-widest mb-1">Total Entri Nama PT</div><div class="text-2xl md:text-3xl font-bold text-blue-400 mb-1">${listPtArray.length} PT</div></div>`;
-                
-                tableTitle.innerText = "Database Lengkap List Nama PT";
-                tableHead.innerHTML = `<tr><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">No</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Regional</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Wilayah</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Tahap</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Nama PT</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Nama Mitra</th><th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Status</th></tr>`;
-                
-                let htm = '', no=1;
-                listPtArray.forEach(i => {
-                    let stc = i.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : 'text-red-400 font-bold';
-                    htm += `<tr class="hover:bg-[var(--hover-bg)] border-b theme-border"><td class="py-2 px-4 text-xs text-center">${no++}</td><td class="py-2 px-4 text-xs font-semibold whitespace-nowrap">${i.cro}</td><td class="py-2 px-4 text-xs whitespace-nowrap">${i.wil}</td><td class="py-2 px-4 text-xs whitespace-nowrap">${i.tahap}</td><td class="py-2 px-4 text-xs font-semibold">${i.pt}</td><td class="py-2 px-4 text-xs">${i.mitra}</td><td class="py-2 px-4 text-xs ${stc}">${i.status}</td></tr>`;
-                });
-                tableBody.innerHTML = htm;
-            }
-            
-            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
-        }
-
-        // =========================================
-        // FUNGSI BARU KHUSUS: DASHBOARD "EXECUTIVE SUMMARY" 
-        // =========================================
-        function renderExecutiveDashboard() {
-            let rekapanKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapan");
-            let rawRekapan = rawData[rekapanKey] || [];
-
-            let tMitra = 0, tLuas = 0, tTarget = 0, tProd = 0;
-            let wilNames = [], targetData = [], prodData = [];
-
-            const parseNum = (val) => {
-                if (typeof val === 'number') return val;
-                if (!val || val === '-' || String(val).trim() === '') return 0;
-                let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
-                if (s.includes(',') && s.includes('.')) {
-                    let lastComma = s.lastIndexOf(','); let lastDot = s.lastIndexOf('.');
-                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, '');
-                } else if (s.includes(',')) {
-                    if ((s.match(/,/g) || []).length > 1) s = s.replace(/,/g, ''); else if (s.length - s.lastIndexOf(',') <= 3) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
-                }
-                return parseFloat(s) || 0;
-            };
-
-            if (rawRekapan.length > 0) {
-                let keys = Object.keys(rawRekapan[0] || rawRekapan[1] || rawRekapan[2] || {});
-                let keyWil = keys.find(k => k.toLowerCase().includes('wilayah'));
-                let keyPT = keys.find(k => k.toLowerCase() === 'pt' || k.toLowerCase().includes('mitra') || k.toLowerCase().includes('jumlah'));
-                let keyLuas = keys.find(k => k.toLowerCase().includes('luas') && k.toLowerCase().includes('tm'));
-                if(!keyLuas) keyLuas = keys.find(k => k.toLowerCase().includes('luas'));
-                let keyTarget = keys.find(k => k.toLowerCase().includes('target'));
-                let keyProd = keys.find(k => k.toLowerCase().includes('produksi pos') || k.toLowerCase().includes('realisasi'));
-
-                if (keyWil && keyTarget && keyProd) {
-                    rawRekapan.forEach(row => {
-                        let w = String(row[keyWil] || "").trim();
-                        if (!w || w === '-' || w.toLowerCase() === 'wilayah' || w.toLowerCase().includes('total') || w.toLowerCase().includes('grand')) return;
-
-                        let jmlPt = parseNum(row[keyPT]);
-                        let luas = parseNum(row[keyLuas]);
-                        let target = parseNum(row[keyTarget]);
-                        let prod = parseNum(row[keyProd]);
-
-                        tMitra += jmlPt;
-                        tLuas += luas;
-                        tTarget += target;
-                        tProd += prod;
-
-                        wilNames.push(w);
-                        targetData.push(target);
-                        prodData.push(prod);
-                    });
-                }
-            }
-
-            if (tMitra === 0) tMitra = 253;
-            if (tLuas === 0) tLuas = 242234.20;
-            if (tTarget === 0) tTarget = 201105.11;
-            if (tProd === 0) tProd = 87648.19;
-
-            let tNaik = 59;
-            let tTurun = 33;
-            let tTetap = 108;
-
-            if (wilNames.length === 0) {
-                wilNames = ['Aceh', 'Sumut 1', 'Sumut 2', 'Riau 2', 'Riau 3', 'Riau 4', 'Babel', 'Jambi', 'Sumsel', 'Kalbar 1A', 'Kalbar 1B', 'Kalbar 2', 'Kalsel 1', 'Kalsel 2', 'Kaltara', 'Kalteng 1', 'Kalteng 2', 'Kalteng 3', 'Kaltim'];
-                targetData = [100, 1500, 300, 32000, 44000, 17000, 500, 100, 20000, 23000, 18000, 10000, 7000, 4000, 100, 20000, 13000, 5000, 10000];
-                prodData = [50, 1000, 150, 25000, 30000, 12000, 300, 50, 15000, 21000, 13000, 500, 4200, 500, 50, 2500, 100, 800, 900];
-            }
-
-            let sumText = `Berdasarkan evaluasi kinerja produksi, terdapat total ${tMitra} mitra dengan luas area Tanaman Menghasilkan (TM) mencapai ${tLuas.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})} Ha. Total target produksi ditetapkan sebesar ${tTarget.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})} Ton, dengan realisasi produksi pasca penugasan mencapai ${tProd.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})} Ton. Dari segi tren produksi, ${tNaik} kebun menunjukkan tren kenaikan, ${tTurun} kebun mengalami penurunan, dan ${tTetap} kebun belum memiliki aktivitas produksi sama sekali.`;
-
-            const kpiContainer = document.getElementById('exec-kpi-container');
-            if(kpiContainer) {
-                kpiContainer.innerHTML = `
-                    <div class="premium-card p-4 text-center bg-white dark:bg-[#151515] border-t-4 border-emerald-500 shadow-md">
-                        <div class="text-[10px] theme-text-muted uppercase font-bold tracking-wider mb-2">Total Mitra (Akumulatif)</div>
-                        <div class="text-2xl md:text-3xl font-bold text-emerald-500">${tMitra}</div>
-                    </div>
-                    <div class="premium-card p-4 text-center bg-white dark:bg-[#151515] border-t-4 border-emerald-500 shadow-md">
-                        <div class="text-[10px] theme-text-muted uppercase font-bold tracking-wider mb-2">Total Luas TM (Ha)</div>
-                        <div class="text-2xl md:text-3xl font-bold text-emerald-500">${tLuas.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-                    </div>
-                    <div class="premium-card p-4 text-center bg-white dark:bg-[#151515] border-t-4 border-emerald-500 shadow-md">
-                        <div class="text-[10px] theme-text-muted uppercase font-bold tracking-wider mb-2">Total Target Produksi (Ton)</div>
-                        <div class="text-2xl md:text-3xl font-bold text-emerald-500">${tTarget.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-                    </div>
-                    <div class="premium-card p-4 text-center bg-white dark:bg-[#151515] border-t-4 border-emerald-500 shadow-md">
-                        <div class="text-[10px] theme-text-muted uppercase font-bold tracking-wider mb-2">Total Produksi Pos (Ton)</div>
-                        <div class="text-2xl md:text-3xl font-bold text-emerald-500">${tProd.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-                    </div>
-                `;
-            }
-
-            document.getElementById('exec-summary-text').innerText = sumText;
-            document.getElementById('exec-tren-title').innerText = `Distribusi Seluruh Tren Kinerja Produksi Kebun (Total: ${tNaik+tTurun+tTetap} Kebun)`;
-
-            document.getElementById('exec-mini-table').innerHTML = `
-                <tr class="border-b theme-border hover:bg-[var(--hover-bg)]"><td class="p-3 text-xs font-semibold theme-text-main">Naik</td><td class="p-3 text-xs text-center font-bold text-blue-500">${tNaik}</td></tr>
-                <tr class="border-b theme-border hover:bg-[var(--hover-bg)]"><td class="p-3 text-xs font-semibold theme-text-main">Turun</td><td class="p-3 text-xs text-center font-bold text-red-500">${tTurun}</td></tr>
-                <tr class="hover:bg-[var(--hover-bg)]"><td class="p-3 text-xs font-semibold theme-text-main rounded-bl-lg">Tetap/Belum Ada Produksi</td><td class="p-3 text-xs text-center font-bold text-yellow-500">${tTetap}</td></tr>
-            `;
-
-            if(document.getElementById('exec-tren-chart')) {
-                Highcharts.chart('exec-tren-chart', {
-                    chart: { type: 'column', backgroundColor: 'transparent' },
-                    title: { text: null },
-                    xAxis: { categories: ['Naik', 'Turun', 'Tetap/Belum'], labels: { style: { color: 'var(--text-muted)' } } },
-                    yAxis: { title: { text: 'Jumlah Kebun' }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } },
-                    legend: { enabled: false },
-                    plotOptions: { column: { borderRadius: 4, dataLabels: { enabled: true, color: 'var(--text-main)' }, colorByPoint: true } },
-                    colors: ['#3b82f6', '#ef4444', '#eab308'], 
-                    series: [{ name: 'Jumlah Kebun', data: [tNaik, tTurun, tTetap] }],
-                    credits: { enabled: false }
-                });
-            }
-
-            if(document.getElementById('exec-wilayah-chart') && wilNames.length > 0) {
-                Highcharts.chart('exec-wilayah-chart', {
-                    chart: { type: 'column', backgroundColor: 'transparent' },
-                    title: { text: null },
-                    xAxis: { categories: wilNames, labels: { style: { color: 'var(--text-muted)', fontSize: '9px' } }, crosshair: true },
-                    yAxis: { title: { text: null }, gridLineColor: 'var(--border-color)', labels: { style: { color: 'var(--text-muted)' } } },
-                    tooltip: { shared: true, backgroundColor: 'var(--bg-card)', style: { color: 'var(--text-main)' }, borderColor: 'var(--border-color)', borderRadius: 8 },
-                    plotOptions: { column: { borderRadius: 2, borderWidth: 0 } },
-                    colors: ['#3b82f6', '#ef4444'], 
-                    series: [
-                        { name: 'Target Produksi', data: targetData },
-                        { name: 'Produksi Pos Penugasan', data: prodData }
-                    ],
-                    credits: { enabled: false }
-                });
-            }
         }
 
         // =========================================
@@ -1445,21 +941,13 @@
                             }
                         }
                         else if (listEvaluasiSheets.includes(currentActiveSheet)) {
-                            if (currentActiveSheet !== "Rekap Kemitraan" && currentActiveSheet !== "Executive Summary") {
-                                loadEvaluasiTable(currentActiveSheet);
-                            }
-                            else if (currentActiveSheet === "Rekap Kemitraan") {
-                                renderKemitraanDashboard();
-                            }
-                            else if (currentActiveSheet === "Executive Summary") {
-                                renderExecutiveDashboard();
-                            }
+                            loadEvaluasiTable(currentActiveSheet);
                         }
 
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
-                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
+                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
                             
                             setTimeout(() => { 
                                 syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
@@ -1484,9 +972,7 @@
                         if (currentActiveSheet) {
                             if (listSheets.includes(currentActiveSheet)) loadTable(currentActiveSheet);
                             else if (listEvaluasiSheets.includes(currentActiveSheet)) {
-                                if (currentActiveSheet === "Rekap Kemitraan") renderKemitraanDashboard();
-                                else if (currentActiveSheet === "Executive Summary") renderExecutiveDashboard();
-                                else loadEvaluasiTable(currentActiveSheet);
+                                loadEvaluasiTable(currentActiveSheet);
                             }
                         } else {
                             renderPivotDashboard();
