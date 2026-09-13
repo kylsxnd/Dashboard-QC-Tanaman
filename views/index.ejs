@@ -737,7 +737,7 @@
             document.getElementById('table-area').classList.remove('hidden');
             document.getElementById('pivot-area').classList.add('hidden');
 
-            const data = rawData[sheetName] || [];
+            let data = rawData[sheetName] || [];
             if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
             
             if (data.length === 0) { 
@@ -745,45 +745,78 @@
                 return; 
             }
 
-            const validKeys = [];
-            let allKeysSet = new Set();
-            data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
-            let allKeys = Array.from(allKeysSet);
+            // SMART HEADER SCANNER UNTUK SEMUA SHEET (Menghindari shift kolom & musnahkan _1)
+            let realKeys = [];
+            let baseKeys = Object.keys(data[0] || {});
+            let emptyCount = baseKeys.filter(k => k.startsWith('__EMPTY')).length;
 
-            allKeys.forEach(key => {
-                let title = key.trim();
+            if (emptyCount > baseKeys.length * 0.3 && data.length > 0) {
+                let bestRowIdx = -1;
+                let minEmpty = emptyCount;
                 
-                let isGhost = true;
-                for(let i=0; i < data.length; i++) {
-                    let v = data[i][key];
-                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                        isGhost = false;
-                        break;
+                for(let i=0; i<Math.min(5, data.length); i++) {
+                    let eCount = 0;
+                    baseKeys.forEach(k => {
+                        let v = String(data[i][k] || "").trim();
+                        if (!v || v === '-' || v.startsWith('__EMPTY')) eCount++;
+                    });
+                    if (eCount < minEmpty) {
+                        minEmpty = eCount;
+                        bestRowIdx = i;
                     }
                 }
                 
-                // JIKA KOLOM MEMANG KOSONG MELOMPONG DAN BUKAN HEADER ASLI -> HAPUS TOTAL DARI WEB!
-                if (title.startsWith('__EMPTY') && isGhost) return;
-                
-                validKeys.push(key);
-            });
-
-            const columns = validKeys.map(key => {
-                let displayTitle = key;
-                if (displayTitle.startsWith('__EMPTY')) {
-                    displayTitle = "-"; // Kasih nama strip biar tetep rapi kalo ada isinya
-                } else {
-                    displayTitle = displayTitle.replace(/_\d+$/, '').trim(); // Buang _1, _2
+                if (bestRowIdx !== -1) {
+                    let headerRow = data[bestRowIdx];
+                    baseKeys.forEach(k => {
+                        let title = String(headerRow[k] || "").trim();
+                        if (title && title !== '-' && !title.startsWith('__EMPTY')) {
+                            let isGhost = true;
+                            for(let j=bestRowIdx+1; j<data.length; j++) {
+                                let v = data[j][k];
+                                if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                                    isGhost = false; break;
+                                }
+                            }
+                            if (!isGhost) {
+                                realKeys.push({ dataKey: k, title: title.replace(/_\d+$/, '').trim() });
+                            }
+                        }
+                    });
+                    data = data.slice(bestRowIdx + 1);
                 }
+            } 
 
+            if (realKeys.length === 0) {
+                baseKeys.forEach(k => {
+                    let title = k.trim();
+                    let isGhost = true;
+                    for(let i=0; i<data.length; i++) {
+                        let v = data[i][k];
+                        if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                            isGhost = false; break;
+                        }
+                    }
+                    if (title.startsWith('__EMPTY') && isGhost) return;
+                    
+                    if (title.startsWith('__EMPTY')) title = "-";
+                    else title = title.replace(/_\d+$/, '').trim(); 
+                    
+                    realKeys.push({ dataKey: k, title: title });
+                });
+            }
+
+            const columns = realKeys.map(k => {
+                let displayTitle = k.title;
                 let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                 
                 return { 
                     title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                    data: key, 
+                    data: k.dataKey, 
                     defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
+                            // KUNCI TANGGAL: Offset Excel 25569
                             let d = new Date(Math.round((val - 25569) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -801,7 +834,6 @@
                         else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
                             return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        // GANTI \n JADI <br> BIAR TEKS TURUN KE BAWAH BUKAN KE SAMPING
                         if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
                         return val;
                     }
@@ -859,10 +891,19 @@
             
             if (isKinerjaProd && data.length > 2) {
                 let headerRow2 = data[1]; 
-                Object.keys(headerRow2).forEach(k => {
-                    if(!k.includes('__EMPTY') && headerRow2[k] && String(headerRow2[k]).trim() !== '') {
+                let baseKeys = Object.keys(data[0]); // Ambil key asli dari baris 1
+                
+                baseKeys.forEach(k => {
+                    let title1 = k.startsWith('__EMPTY') ? '' : k.replace(/_\d+$/, '').trim();
+                    let title2 = String(headerRow2[k] || "").trim();
+                    if (title2 === '-' || title2.startsWith('__EMPTY')) title2 = '';
+                    else title2 = title2.replace(/_\d+$/, '').trim();
+                    
+                    let finalTitle = title2 || title1; 
+                    
+                    if (finalTitle) {
                         let isGhost = true;
-                        for(let i=2; i<data.length; i++) { 
+                        for(let i = 2; i < data.length; i++) { 
                             let v = data[i][k];
                             if(v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
                                 isGhost = false;
@@ -870,112 +911,115 @@
                             }
                         }
                         if(!isGhost) {
-                            realKeys.push({ dataKey: k, title: String(headerRow2[k]).trim() });
+                            realKeys.push({ dataKey: k, title: finalTitle });
                         }
                     }
                 });
                 data = data.slice(2);
-            }
-
-            let columns = [];
-            
-            if (isKinerjaProd) {
-                columns = realKeys.map(k => {
-                    let title = k.title;
-                    let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
-                    let isPctCol = title.toLowerCase().includes('persentase') || title.toLowerCase().includes('%');
-                    let isTrend = title.toLowerCase() === 'trend produksi';
-                    
-                    return { 
-                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${title}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                        data: k.dataKey, 
-                        defaultContent: "-", 
-                        render: function(val) {
-                            if (isTrend) {
-                                let v = String(val).toLowerCase();
-                                if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
-                                if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
-                                return `<span class="text-gray-500 font-bold">-</span>`;
-                            }
-                            if (isDateCol && typeof val === 'number') {
-                                let d = new Date(Math.round((val - 25569) * 86400000));
-                                let dd = d.getUTCDate().toString().padStart(2, '0');
-                                let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                                let yy = d.getUTCFullYear();
-                                return `${dd}/${mm}/${yy}`;
-                            }
-                            if (isPctCol && typeof val === 'number') {
-                                return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
-                            }
-                            if (typeof val === 'number') {
-                                if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                                return val.toLocaleString('id-ID');
-                            }
-                            // GANTI \n JADI <br> BIAR TEKS TURUN KE BAWAH BUKAN KE SAMPING
-                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>');
-                            return val;
-                        }
-                    };
-                });
             } else {
-                const validKeys = [];
-                let allKeysSet = new Set();
-                data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
-                let allKeys = Array.from(allKeysSet);
+                let baseKeys = Object.keys(data[0] || {});
+                let emptyCount = baseKeys.filter(k => k.startsWith('__EMPTY')).length;
 
-                allKeys.forEach(key => {
-                    let title = key.trim();
-                    let isGhost = true;
-                    for(let i=0; i < data.length; i++) {
-                        let v = data[i][key];
-                        if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                            isGhost = false;
-                            break;
-                        }
-                    }
-                    if (title.startsWith('__EMPTY') && isGhost) return;
-                    validKeys.push(key);
-                });
-
-                columns = validKeys.map(key => {
-                    let displayTitle = key;
-                    if (displayTitle.startsWith('__EMPTY')) {
-                        displayTitle = "-";
-                    } else {
-                        displayTitle = displayTitle.replace(/_\d+$/, '').trim();
-                    }
-                    let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
+                if (emptyCount > baseKeys.length * 0.3 && data.length > 0) {
+                    let bestRowIdx = -1;
+                    let minEmpty = emptyCount;
                     
-                    return { 
-                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                        data: key, 
-                        defaultContent: "-", 
-                        render: function(val) {
-                            if (isDateCol && typeof val === 'number') {
-                                let d = new Date(Math.round((val - 25569) * 86400000));
-                                let dd = d.getUTCDate().toString().padStart(2, '0');
-                                let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                                let yy = d.getUTCFullYear();
-                                return `${dd}/${mm}/${yy}`;
-                            }
-                            if (typeof val === 'number') {
-                                if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                                return val.toLocaleString('id-ID');
-                            }
-                            if (typeof val === 'string' && val.includes('|||')) {
-                                const parts = val.split('|||');
-                                return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                            }
-                            else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                                return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                            }
-                            // GANTI \n JADI <br> BIAR TEKS TURUN KE BAWAH BUKAN KE SAMPING
-                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
-                            return val;
+                    for(let i=0; i<Math.min(5, data.length); i++) {
+                        let eCount = 0;
+                        baseKeys.forEach(k => {
+                            let v = String(data[i][k] || "").trim();
+                            if (!v || v === '-' || v.startsWith('__EMPTY')) eCount++;
+                        });
+                        if (eCount < minEmpty) {
+                            minEmpty = eCount;
+                            bestRowIdx = i;
                         }
-                    };
-                });
+                    }
+                    
+                    if (bestRowIdx !== -1) {
+                        let headerRow = data[bestRowIdx];
+                        baseKeys.forEach(k => {
+                            let title = String(headerRow[k] || "").trim();
+                            if (title && title !== '-' && !title.startsWith('__EMPTY')) {
+                                let isGhost = true;
+                                for(let j=bestRowIdx+1; j<data.length; j++) {
+                                    let v = data[j][k];
+                                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                                        isGhost = false; break;
+                                    }
+                                }
+                                if (!isGhost) {
+                                    realKeys.push({ dataKey: k, title: title.replace(/_\d+$/, '').trim() });
+                                }
+                            }
+                        });
+                        data = data.slice(bestRowIdx + 1);
+                    }
+                } 
+
+                if (realKeys.length === 0) {
+                    baseKeys.forEach(k => {
+                        let title = k.trim();
+                        let isGhost = true;
+                        for(let i=0; i<data.length; i++) {
+                            let v = data[i][k];
+                            if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                                isGhost = false; break;
+                            }
+                        }
+                        if (title.startsWith('__EMPTY') && isGhost) return;
+                        
+                        if (title.startsWith('__EMPTY')) title = "-";
+                        else title = title.replace(/_\d+$/, '').trim(); 
+                        
+                        realKeys.push({ dataKey: k, title: title });
+                    });
+                }
             }
+
+            let columns = realKeys.map(k => {
+                let displayTitle = k.title;
+                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal');
+                let isPctCol = displayTitle.toLowerCase().includes('persentase') || displayTitle.toLowerCase().includes('%');
+                let isTrend = displayTitle.toLowerCase() === 'trend produksi';
+                
+                return { 
+                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
+                    data: k.dataKey, 
+                    defaultContent: "-", 
+                    render: function(val) {
+                        if (isKinerjaProd && isTrend) {
+                            let v = String(val).toLowerCase();
+                            if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
+                            if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
+                            return `<span class="text-gray-500 font-bold">-</span>`;
+                        }
+                        if (isDateCol && typeof val === 'number') {
+                            let d = new Date(Math.round((val - 25569) * 86400000));
+                            let dd = d.getUTCDate().toString().padStart(2, '0');
+                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                            let yy = d.getUTCFullYear();
+                            return `${dd}/${mm}/${yy}`;
+                        }
+                        if (isKinerjaProd && isPctCol && typeof val === 'number') {
+                            return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
+                        }
+                        if (typeof val === 'number') {
+                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                            return val.toLocaleString('id-ID');
+                        }
+                        if (typeof val === 'string' && val.includes('|||')) {
+                            const parts = val.split('|||');
+                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                        }
+                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
+                        return val;
+                    }
+                };
+            });
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
@@ -1242,6 +1286,7 @@
                 }
             }
 
+            // PENGAMAN ABSOLUT
             if (tMitra === 0) tMitra = 253;
             if (tLuas === 0) tLuas = 242234.20;
             if (tTarget === 0) tTarget = 201105.11;
