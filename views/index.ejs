@@ -10,11 +10,9 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables & ColReorder Extension -->
+    <!-- DataTables -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -76,10 +74,7 @@
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
 
         table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
-        /* KURSOR JADI TANGAN PAS DI HOVER JUDUL KOLOM BIAR KETAUAN BISA DI GESER */
-        table.dataTable thead th { cursor: grab !important; background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
-        table.dataTable thead th:active { cursor: grabbing !important; }
-        
+        table.dataTable thead th { background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
         table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
@@ -659,6 +654,7 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
+        // FUNGSI MENDAPATKAN IKON FILE
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -687,6 +683,34 @@
             modal.classList.add('opacity-0'); content.classList.add('scale-95');
             setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
         }
+
+        // =========================================
+        // TOMBOL HAPUS KOLOM MANUAL (SUPER FIX)
+        // =========================================
+        $(document).on('click', '.hide-col-btn', function(e) {
+            e.stopPropagation(); 
+            e.preventDefault();
+            
+            let th = $(this).closest('th');
+            let colIndex = th.index(); // Dapet posisi ke berapa dari kiri
+            
+            // Karena ada fitur scroll ke samping, DataTables memecah header & body jadi 2 tabel.
+            // Kita cari ID tabel utamanya yang ada di dalam .dataTables_scrollBody
+            let wrapper = $(this).closest('.dataTables_wrapper');
+            let mainTable = wrapper.find('.dataTables_scrollBody table');
+            
+            if(mainTable.length > 0) {
+                let tableId = mainTable.attr('id');
+                let table = $('#' + tableId).DataTable();
+                
+                table.column(colIndex).visible(false); // HAPUS KOLOM!
+                
+                // Jeda dikit biar animasinya mulus pas ngerapiin ukuran
+                setTimeout(() => {
+                    table.columns.adjust();
+                }, 50);
+            }
+        });
 
         // =========================================
         // RENDER TABEL MASTER DATA KEBUN 
@@ -726,11 +750,15 @@
                 return; 
             }
 
+            // KUNCI EMAS: HAPUS KOLOM KOSONG & _1 DARI EXCEL
             const validKeys = [];
             Object.keys(data[0]).forEach(key => {
                 let title = key.trim();
+                
+                // BUANG KOLOM SAMPAH/KOSONG
                 if (title.startsWith('__EMPTY') || title === '') return; 
                 
+                // CEK KOLOM GAIB: Kalau cuma isi "-" doang atau kosong, buang!
                 let isGhost = true;
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
@@ -739,6 +767,7 @@
                         break;
                     }
                 }
+                
                 if (!isGhost) validKeys.push(key);
             });
 
@@ -752,6 +781,7 @@
                     defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
+                            // KUNCI TANGGAL: Offset Excel 25569
                             let d = new Date(Math.round((val - 25569) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -777,7 +807,6 @@
 
             currentDataTable = $('#mainTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
-                colReorder: true, // FITUR DRAG N DROP DIAKTIFKAN
                 language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
 
@@ -821,16 +850,19 @@
                 return; 
             }
 
+            // KUNCI EMAS 2: BYPASS HEADER SHEET "KINERJA PROD" + GHOST PURGER
             let isKinerjaProd = sheetName.toLowerCase() === "kinerja prod";
             let realKeys = [];
             
             if (isKinerjaProd && data.length > 2) {
+                // Di Kinerja Prod, header asli ada di baris ke-2 (index 1) karena baris 1 isinya CRO, Wilayah yang di-merge
                 let headerRow2 = data[1]; 
                 
                 Object.keys(headerRow2).forEach(k => {
                     if(!k.includes('__EMPTY') && headerRow2[k] && String(headerRow2[k]).trim() !== '') {
+                        // KITA CEK APAKAH INI KOLOM GHOST
                         let isGhost = true;
-                        for(let i=2; i<data.length; i++) { 
+                        for(let i=2; i<data.length; i++) { // Mulai dari index 2 (data murni)
                             let v = data[i][k];
                             if(v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
                                 isGhost = false;
@@ -842,12 +874,14 @@
                         }
                     }
                 });
+                // Buang 2 baris header pertama dari data biar gak ikut masuk ke tabel
                 data = data.slice(2);
             }
 
             let columns = [];
             
             if (isKinerjaProd) {
+                // Jika sheet Kinerja Prod, gunakan keys yang udah dipulihkan
                 columns = realKeys.map(k => {
                     let title = k.title;
                     let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
@@ -866,6 +900,7 @@
                                 return `<span class="text-gray-500 font-bold">-</span>`;
                             }
                             if (isDateCol && typeof val === 'number') {
+                                // KUNCI TANGGAL: Offset Excel 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -884,6 +919,7 @@
                     };
                 });
             } else {
+                // Evaluasi Sheet normal lainnya (DENGAN GHOST PURGER JUGA)
                 const validKeys = [];
                 Object.keys(data[0]).forEach(key => {
                     let title = key.trim();
@@ -910,6 +946,7 @@
                         defaultContent: "-", 
                         render: function(val) {
                             if (isDateCol && typeof val === 'number') {
+                                // KUNCI TANGGAL: Offset Excel 25569
                                 let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -936,7 +973,6 @@
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
-                colReorder: true, // FITUR DRAG N DROP DIAKTIFKAN
                 language: { search: "", searchPlaceholder: "Cari Analisis...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
         }
@@ -1334,6 +1370,10 @@
                 e.preventDefault();
                 
                 let th = $(this).closest('th');
+                let colIndex = th.index(); // Dapet posisi ke berapa dari kiri
+                
+                // Karena ada fitur scroll ke samping, DataTables memecah header & body jadi 2 tabel.
+                // Kita cari ID tabel utamanya yang ada di dalam .dataTables_scrollBody
                 let wrapper = $(this).closest('.dataTables_wrapper');
                 let mainTable = wrapper.find('.dataTables_scrollBody table');
                 
@@ -1341,10 +1381,9 @@
                     let tableId = mainTable.attr('id');
                     let table = $('#' + tableId).DataTable();
                     
-                    // Gunakan column().index() bawaan DataTables untuk akurasi saat drag-n-drop
-                    let colIdx = table.column(th).index();
-                    table.column(colIdx).visible(false);
+                    table.column(colIndex).visible(false); // HAPUS KOLOM!
                     
+                    // Jeda dikit biar animasinya mulus pas ngerapiin ukuran
                     setTimeout(() => {
                         table.columns.adjust();
                     }, 50);
