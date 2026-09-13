@@ -22,6 +22,7 @@
            SISTEM TEMA: DARK / LIGHT MODE
            ========================================= */
         :root {
+            /* Tema Gelap (Bawaan) */
             --bg-main: #0a0a0a; 
             --bg-panel: #111111;
             --bg-card: #151515;
@@ -34,6 +35,7 @@
         }
         
         body.light-mode {
+            /* Tema Terang */
             --bg-main: #f3f4f6; 
             --bg-panel: #ffffff;
             --bg-card: #ffffff;
@@ -45,26 +47,48 @@
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
 
+        /* CLASS KHUSUS UNTUK MENERAPKAN TEMA */
         .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
         .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
         .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
 
+        /* =========================================
+           BASE & LAYOUT
+           ========================================= */
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
         
+        /* PREMIUM CARDS */
         .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
 
+        /* =========================================
+           DROPDOWN NOTIFIKASI KHUSUS (ANTI TRANSPARAN)
+           ========================================= */
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
+        /* =========================================
+           SIDEBAR LINKS
+           ========================================= */
         .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
+        /* ANIMASI BADGE KIRI */
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
+        /* =========================================
+           TABS NAVIGATION (Menu Sheet)
+           ========================================= */
+        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
+        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
+
+        /* =========================================
+           DATATABLES CUSTOMIZATION
+           ========================================= */
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -79,6 +103,9 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
 
+        /* =========================================
+           ANIMATIONS & SCROLLBAR
+           ========================================= */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -87,6 +114,7 @@
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+        /* Sub-tab buttons styling */
         .sub-tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s; border: 1px solid transparent; outline: none; }
         .sub-tab-active { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
         .sub-tab-inactive { background-color: transparent; color: var(--text-muted); }
@@ -145,6 +173,7 @@
         </div>
     </aside>
 
+    <!-- AREA KONTEN KANAN -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
@@ -247,7 +276,7 @@
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA (SHEET 2) -->
+            <!-- 3. EVALUASI KINERJA -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
@@ -718,34 +747,47 @@
                 return; 
             }
 
-            const columns = Object.keys(data[0]).map(key => {
-                let title = key;
-                if (title.includes('__EMPTY')) title = ''; 
-                let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal') || title.toLowerCase().includes('waktu');
+            // KUNCI EMAS: HAPUS KOLOM KOSONG & _1 DARI EXCEL
+            const columns = [];
+            Object.keys(data[0]).forEach(key => {
+                let title = key.trim();
                 
-                return { title: title, data: key, defaultContent: "-", render: function(val) {
-                    if (isDateCol && typeof val === 'number') {
-                        // FIX: Pengurang Excel ke Date UTC = 25570
-                        let d = new Date(Math.round((val - 25570) * 86400000));
-                        let dd = d.getUTCDate().toString().padStart(2, '0');
-                        let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                        let yy = d.getUTCFullYear().toString().slice(-2);
-                        return `${dd}/${mm}/${yy}`;
+                // BUANG KOLOM SAMPAH/KOSONG
+                if (title.startsWith('__EMPTY') || title === '') return; 
+                
+                // BUANG EMBEL-EMBEL _1 KARENA MERGE CELL EXCEL
+                let displayTitle = title.replace(/_\d+$/, '').trim();
+                
+                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
+                
+                columns.push({ 
+                    title: displayTitle, 
+                    data: key, 
+                    defaultContent: "-", 
+                    render: function(val) {
+                        if (isDateCol && typeof val === 'number') {
+                            // KUNCI TANGGAL: Offset Excel 25570
+                            let d = new Date(Math.round((val - 25570) * 86400000));
+                            let dd = d.getUTCDate().toString().padStart(2, '0');
+                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                            let yy = d.getUTCFullYear().toString().slice(-2);
+                            return `${dd}/${mm}/${yy}`;
+                        }
+                        if (typeof val === 'number') {
+                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                            return val.toLocaleString('id-ID');
+                        }
+                        if (typeof val === 'string' && val.includes('|||')) {
+                            const parts = val.split('|||');
+                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                        }
+                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                        return val;
                     }
-                    if (typeof val === 'number') {
-                        if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                        return val.toLocaleString('id-ID');
-                    }
-                    if (typeof val === 'string' && val.includes('|||')) {
-                        const parts = val.split('|||');
-                        return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                    }
-                    else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                        return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                    }
-                    if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                    return val;
-                }};
+                });
             });
 
             currentDataTable = $('#mainTable').DataTable({
@@ -759,7 +801,7 @@
         }
 
         // =========================================
-        // FUNGSI RENDER EVALUASI KINERJA (BIASA)
+        // FUNGSI RENDER EVALUASI KINERJA (BIASA & KINERJA PROD)
         // =========================================
         function loadEvaluasiTable(sheetName) {
             document.getElementById('evaluasi-table-area').classList.add('hidden');
@@ -781,7 +823,7 @@
             document.getElementById('evaluasi-table-area').classList.remove('hidden');
 
             let exactKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === sheetName.trim().toLowerCase());
-            const data = rawData[exactKey] || [];
+            let data = rawData[exactKey] || [];
             
             if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
                 $('#evaluasiTable').DataTable().destroy(); 
@@ -793,38 +835,94 @@
                 return; 
             }
 
-            const columns = Object.keys(data[0]).map(key => {
-                let title = key;
-                if (title.includes('__EMPTY')) title = ''; 
-                let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal') || title.toLowerCase().includes('waktu');
+            // KUNCI EMAS 2: BYPASS HEADER SHEET "KINERJA PROD"
+            let isKinerjaProd = sheetName.toLowerCase() === "kinerja prod";
+            let realKeys = [];
+            
+            if (isKinerjaProd && data.length > 2) {
+                // Di Kinerja Prod, header asli ada di baris ke-2 (index 1) karena baris 1 di-merge
+                let headerRow2 = data[1]; 
                 
-                return { 
-                    title: title, data: key, defaultContent: "-", 
-                    render: function(val) {
-                        if (isDateCol && typeof val === 'number') {
-                            // FIX: Pengurang Excel ke Date UTC = 25570
-                            let d = new Date(Math.round((val - 25570) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear().toString().slice(-2);
-                            return `${dd}/${mm}/${yy}`;
-                        }
-                        if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
-                        }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        return val;
+                Object.keys(headerRow2).forEach(k => {
+                    if(!k.includes('__EMPTY') && headerRow2[k] && String(headerRow2[k]).trim() !== '') {
+                        realKeys.push({ dataKey: k, title: String(headerRow2[k]).trim() });
                     }
-                };
-            });
+                });
+                // Buang 2 baris header pertama dari data biar gak ikut masuk ke tabel
+                data = data.slice(2);
+            }
+
+            let columns = [];
+            
+            if (isKinerjaProd) {
+                columns = realKeys.map(k => {
+                    let title = k.title;
+                    let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
+                    let isPctCol = title.toLowerCase().includes('persentase') || title.toLowerCase().includes('%');
+                    let isTrend = title.toLowerCase() === 'trend produksi';
+                    
+                    return { 
+                        title: title, data: k.dataKey, defaultContent: "-", 
+                        render: function(val) {
+                            if (isTrend) {
+                                let v = String(val).toLowerCase();
+                                if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
+                                if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
+                                return `<span class="text-gray-500 font-bold">-</span>`;
+                            }
+                            if (isDateCol && typeof val === 'number') {
+                                let d = new Date(Math.round((val - 25570) * 86400000));
+                                let dd = d.getUTCDate().toString().padStart(2, '0');
+                                let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                                let yy = d.getUTCFullYear().toString().slice(-2);
+                                return `${dd}/${mm}/${yy}`;
+                            }
+                            if (isPctCol && typeof val === 'number') {
+                                return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
+                            }
+                            if (typeof val === 'number') {
+                                if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                                return val.toLocaleString('id-ID');
+                            }
+                            return val;
+                        }
+                    };
+                });
+            } else {
+                Object.keys(data[0]).forEach(key => {
+                    let title = key.trim();
+                    if (title.startsWith('__EMPTY') || title === '') return; 
+                    
+                    let displayTitle = title.replace(/_\d+$/, '').trim();
+                    let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
+                    
+                    columns.push({ 
+                        title: displayTitle, data: key, defaultContent: "-", 
+                        render: function(val) {
+                            if (isDateCol && typeof val === 'number') {
+                                let d = new Date(Math.round((val - 25570) * 86400000));
+                                let dd = d.getUTCDate().toString().padStart(2, '0');
+                                let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                                let yy = d.getUTCFullYear().toString().slice(-2);
+                                return `${dd}/${mm}/${yy}`;
+                            }
+                            if (typeof val === 'number') {
+                                if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                                return val.toLocaleString('id-ID');
+                            }
+                            if (typeof val === 'string' && val.includes('|||')) {
+                                const parts = val.split('|||');
+                                return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                            }
+                            else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                                return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                            }
+                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                            return val;
+                        }
+                    });
+                });
+            }
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
@@ -1036,9 +1134,6 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
-        // =========================================
-        // FUNGSI BARU KHUSUS: DASHBOARD "EXECUTIVE SUMMARY" 
-        // =========================================
         function renderExecutiveDashboard() {
             let rekapanKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapan");
             let rawRekapan = rawData[rekapanKey] || [];
@@ -1090,7 +1185,6 @@
                 }
             }
 
-            // PENGAMAN ABSOLUT
             if (tMitra === 0) tMitra = 253;
             if (tLuas === 0) tLuas = 242234.20;
             if (tTarget === 0) tTarget = 201105.11;
@@ -1184,7 +1278,6 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            // Bangun menu Master Data di Sidebar KIRI
             const sidebarMaster = document.getElementById('sidebar-master-data');
             if(sidebarMaster) {
                 listSheets.forEach((sheet, idx) => {
@@ -1197,7 +1290,6 @@
                 });
             }
 
-            // Bangun menu Evaluasi Kinerja di Sidebar KIRI
             const sidebarEval = document.getElementById('sidebar-evaluasi');
             if(sidebarEval) {
                 listEvaluasiSheets.forEach((sheet, idx) => {
