@@ -67,6 +67,10 @@
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
+        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
+        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
+
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -124,13 +128,13 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA (Sub-menu dinamis) -->
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
 
-            <!-- KATEGORI EVALUASI KINERJA (Sub-menu dinamis) -->
+            <!-- KATEGORI EVALUASI KINERJA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
             </div>
@@ -148,6 +152,7 @@
         </div>
     </aside>
 
+    <!-- AREA KONTEN KANAN -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
@@ -250,7 +255,7 @@
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA -->
+            <!-- 3. EVALUASI KINERJA (SHEET 2) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
@@ -743,7 +748,7 @@
             }
 
             const validKeys = [];
-            // GATHER ALL KEYS FIRST TO AVOID MISSING COLUMNS
+            // GATHER ALL KEYS FIRST
             let allKeysSet = new Set();
             data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
             let allKeys = Array.from(allKeysSet);
@@ -761,7 +766,10 @@
                     }
                 }
                 
-                if (!isGhost) validKeys.push(key);
+                // JIKA KOLOM MEMANG KOSONG MELOMPONG DAN BUKAN HEADER ASLI -> HAPUS TOTAL DARI WEB!
+                if (title.startsWith('__EMPTY') && isGhost) return;
+                
+                validKeys.push(key);
             });
 
             const columns = validKeys.map(key => {
@@ -928,7 +936,8 @@
                             break;
                         }
                     }
-                    if (!isGhost) validKeys.push(key);
+                    if (title.startsWith('__EMPTY') && isGhost) return;
+                    validKeys.push(key);
                 });
 
                 columns = validKeys.map(key => {
