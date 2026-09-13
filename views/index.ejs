@@ -22,7 +22,6 @@
            SISTEM TEMA: DARK / LIGHT MODE
            ========================================= */
         :root {
-            /* Tema Gelap (Bawaan) */
             --bg-main: #0a0a0a; 
             --bg-panel: #111111;
             --bg-card: #151515;
@@ -35,7 +34,6 @@
         }
         
         body.light-mode {
-            /* Tema Terang */
             --bg-main: #f3f4f6; 
             --bg-panel: #ffffff;
             --bg-card: #ffffff;
@@ -47,48 +45,30 @@
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
 
-        /* CLASS KHUSUS UNTUK MENERAPKAN TEMA */
         .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
         .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
         .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
 
-        /* =========================================
-           BASE & LAYOUT
-           ========================================= */
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
         
-        /* PREMIUM CARDS */
         .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
 
-        /* =========================================
-           DROPDOWN NOTIFIKASI KHUSUS (ANTI TRANSPARAN)
-           ========================================= */
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
-        /* =========================================
-           SIDEBAR LINKS
-           ========================================= */
         .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
-        /* ANIMASI BADGE KIRI */
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        /* =========================================
-           TABS NAVIGATION (Menu Sheet)
-           ========================================= */
         .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
         .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
         .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
 
-        /* =========================================
-           DATATABLES CUSTOMIZATION
-           ========================================= */
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -103,9 +83,6 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
 
-        /* =========================================
-           ANIMATIONS & SCROLLBAR
-           ========================================= */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -114,7 +91,6 @@
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        /* Sub-tab buttons styling */
         .sub-tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s; border: 1px solid transparent; outline: none; }
         .sub-tab-active { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
         .sub-tab-inactive { background-color: transparent; color: var(--text-muted); }
@@ -149,13 +125,13 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA (Sub-menu dinamis) -->
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
 
-            <!-- KATEGORI EVALUASI KINERJA (Sub-menu dinamis) -->
+            <!-- KATEGORI EVALUASI KINERJA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
             </div>
@@ -173,7 +149,6 @@
         </div>
     </aside>
 
-    <!-- AREA KONTEN KANAN -->
     <div class="flex-1 flex flex-col h-full overflow-hidden theme-bg-main transition-colors duration-300">
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300">
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
@@ -276,7 +251,7 @@
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA -->
+            <!-- 3. EVALUASI KINERJA (SHEET 2) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
@@ -679,7 +654,9 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
+        // =========================================
         // FUNGSI MENDAPATKAN IKON FILE
+        // =========================================
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -687,6 +664,7 @@
             else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
         }
 
+        // BUKA MODAL PREVIEW
         function openPreview(rawUrl) {
             let previewUrl = rawUrl.trim();
             if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
@@ -710,7 +688,7 @@
         }
 
         // =========================================
-        // RENDER TABEL MASTER DATA KEBUN
+        // RENDER TABEL MASTER DATA KEBUN (DENGAN GHOST COLUMN PURGER)
         // =========================================
         function loadTable(sheetName) {
             const filterContainer = document.getElementById('custom-filter-container');
@@ -747,47 +725,57 @@
                 return; 
             }
 
-            // KUNCI EMAS: HAPUS KOLOM KOSONG & _1 DARI EXCEL
-            const columns = [];
+            // KUNCI EMAS 1: GHOST COLUMN PURGER (PEMBERSIH KOLOM KOSONG)
+            const validKeys = [];
             Object.keys(data[0]).forEach(key => {
                 let title = key.trim();
-                
-                // BUANG KOLOM SAMPAH/KOSONG
+                // Buang kolom __EMPTY bawaan merge cell
                 if (title.startsWith('__EMPTY') || title === '') return; 
                 
-                // BUANG EMBEL-EMBEL _1 KARENA MERGE CELL EXCEL
-                let displayTitle = title.replace(/_\d+$/, '').trim();
+                // Cek apakah kolom ini beneran ada isinya selain "-" (defval) atau kosong
+                let isGhost = true;
+                for(let i=0; i < data.length; i++) {
+                    let v = data[i][key];
+                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                        isGhost = false;
+                        break;
+                    }
+                }
                 
+                // Kalau bukan ghost column (berarti ada isinya minimal 1 baris), kita simpan
+                if (!isGhost) {
+                    validKeys.push(key);
+                }
+            });
+
+            const columns = validKeys.map(key => {
+                // BUANG EMBEL-EMBEL _1, _2 KARENA MERGE CELL EXCEL
+                let displayTitle = key.trim().replace(/_\d+$/, '').trim();
                 let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                 
-                columns.push({ 
-                    title: displayTitle, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (isDateCol && typeof val === 'number') {
-                            // KUNCI TANGGAL: Offset Excel 25570
-                            let d = new Date(Math.round((val - 25570) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear().toString().slice(-2);
-                            return `${dd}/${mm}/${yy}`;
-                        }
-                        if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
-                        }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
-                        return val;
+                return { title: displayTitle, data: key, defaultContent: "-", render: function(val) {
+                    if (isDateCol && typeof val === 'number') {
+                        // KUNCI TANGGAL: Offset Excel 25569
+                        let d = new Date(Math.round((val - 25569) * 86400000));
+                        let dd = d.getUTCDate().toString().padStart(2, '0');
+                        let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                        let yy = d.getUTCFullYear();
+                        return `${dd}/${mm}/${yy}`;
                     }
-                });
+                    if (typeof val === 'number') {
+                        if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                        return val.toLocaleString('id-ID');
+                    }
+                    if (typeof val === 'string' && val.includes('|||')) {
+                        const parts = val.split('|||');
+                        return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                    }
+                    else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                        return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                    }
+                    if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
+                    return val;
+                }};
             });
 
             currentDataTable = $('#mainTable').DataTable({
@@ -835,17 +823,28 @@
                 return; 
             }
 
-            // KUNCI EMAS 2: BYPASS HEADER SHEET "KINERJA PROD"
+            // KUNCI EMAS 2: BYPASS HEADER SHEET "KINERJA PROD" + GHOST PURGER
             let isKinerjaProd = sheetName.toLowerCase() === "kinerja prod";
             let realKeys = [];
             
             if (isKinerjaProd && data.length > 2) {
-                // Di Kinerja Prod, header asli ada di baris ke-2 (index 1) karena baris 1 di-merge
+                // Di Kinerja Prod, header asli ada di baris ke-2 (index 1) karena baris 1 isinya CRO, Wilayah yang di-merge
                 let headerRow2 = data[1]; 
                 
                 Object.keys(headerRow2).forEach(k => {
                     if(!k.includes('__EMPTY') && headerRow2[k] && String(headerRow2[k]).trim() !== '') {
-                        realKeys.push({ dataKey: k, title: String(headerRow2[k]).trim() });
+                        // KITA CEK APAKAH INI KOLOM GHOST
+                        let isGhost = true;
+                        for(let i=2; i<data.length; i++) { // Mulai dari index 2 (data murni)
+                            let v = data[i][k];
+                            if(v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                                isGhost = false;
+                                break;
+                            }
+                        }
+                        if(!isGhost) {
+                            realKeys.push({ dataKey: k, title: String(headerRow2[k]).trim() });
+                        }
                     }
                 });
                 // Buang 2 baris header pertama dari data biar gak ikut masuk ke tabel
@@ -855,6 +854,7 @@
             let columns = [];
             
             if (isKinerjaProd) {
+                // Jika sheet Kinerja Prod, gunakan keys yang udah dipulihkan
                 columns = realKeys.map(k => {
                     let title = k.title;
                     let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
@@ -871,10 +871,11 @@
                                 return `<span class="text-gray-500 font-bold">-</span>`;
                             }
                             if (isDateCol && typeof val === 'number') {
-                                let d = new Date(Math.round((val - 25570) * 86400000));
+                                // KUNCI TANGGAL: Offset Excel 25569
+                                let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                                let yy = d.getUTCFullYear().toString().slice(-2);
+                                let yy = d.getUTCFullYear();
                                 return `${dd}/${mm}/${yy}`;
                             }
                             if (isPctCol && typeof val === 'number') {
@@ -889,21 +890,36 @@
                     };
                 });
             } else {
+                // Evaluasi Sheet normal lainnya (DENGAN GHOST PURGER JUGA)
+                const validKeys = [];
                 Object.keys(data[0]).forEach(key => {
                     let title = key.trim();
                     if (title.startsWith('__EMPTY') || title === '') return; 
                     
-                    let displayTitle = title.replace(/_\d+$/, '').trim();
+                    let isGhost = true;
+                    for(let i=0; i < data.length; i++) {
+                        let v = data[i][key];
+                        if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                            isGhost = false;
+                            break;
+                        }
+                    }
+                    if (!isGhost) validKeys.push(key);
+                });
+
+                columns = validKeys.map(key => {
+                    let displayTitle = key.trim().replace(/_\d+$/, '').trim();
                     let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
                     
-                    columns.push({ 
+                    return { 
                         title: displayTitle, data: key, defaultContent: "-", 
                         render: function(val) {
                             if (isDateCol && typeof val === 'number') {
-                                let d = new Date(Math.round((val - 25570) * 86400000));
+                                // KUNCI TANGGAL: Offset Excel 25569
+                                let d = new Date(Math.round((val - 25569) * 86400000));
                                 let dd = d.getUTCDate().toString().padStart(2, '0');
                                 let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                                let yy = d.getUTCFullYear().toString().slice(-2);
+                                let yy = d.getUTCFullYear();
                                 return `${dd}/${mm}/${yy}`;
                             }
                             if (typeof val === 'number') {
@@ -920,7 +936,7 @@
                             if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, ' <span class="theme-text-muted opacity-50 mx-2">/</span> '); 
                             return val;
                         }
-                    });
+                    };
                 });
             }
 
@@ -1134,6 +1150,9 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
+        // =========================================
+        // FUNGSI BARU KHUSUS: DASHBOARD "EXECUTIVE SUMMARY" 
+        // =========================================
         function renderExecutiveDashboard() {
             let rekapanKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapan");
             let rawRekapan = rawData[rekapanKey] || [];
@@ -1185,6 +1204,7 @@
                 }
             }
 
+            // PENGAMAN ABSOLUT
             if (tMitra === 0) tMitra = 253;
             if (tLuas === 0) tLuas = 242234.20;
             if (tTarget === 0) tTarget = 201105.11;
