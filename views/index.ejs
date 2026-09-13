@@ -22,7 +22,6 @@
            SISTEM TEMA: DARK / LIGHT MODE
            ========================================= */
         :root {
-            /* Tema Gelap (Bawaan) */
             --bg-main: #0a0a0a; 
             --bg-panel: #111111;
             --bg-card: #151515;
@@ -35,7 +34,6 @@
         }
         
         body.light-mode {
-            /* Tema Terang */
             --bg-main: #f3f4f6; 
             --bg-panel: #ffffff;
             --bg-card: #ffffff;
@@ -47,48 +45,26 @@
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
 
-        /* CLASS KHUSUS UNTUK MENERAPKAN TEMA */
         .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
         .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
         .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
 
-        /* =========================================
-           BASE & LAYOUT
-           ========================================= */
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
         
-        /* PREMIUM CARDS */
         .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
 
-        /* =========================================
-           DROPDOWN NOTIFIKASI KHUSUS (ANTI TRANSPARAN)
-           ========================================= */
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
-        /* =========================================
-           SIDEBAR LINKS
-           ========================================= */
         .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
-        /* ANIMASI BADGE KIRI */
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        /* =========================================
-           TABS NAVIGATION (Menu Sheet)
-           ========================================= */
-        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
-        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
-        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
-
-        /* =========================================
-           DATATABLES CUSTOMIZATION
-           ========================================= */
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -103,9 +79,6 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
 
-        /* =========================================
-           ANIMATIONS & SCROLLBAR
-           ========================================= */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -114,7 +87,6 @@
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        /* Sub-tab buttons styling */
         .sub-tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s; border: 1px solid transparent; outline: none; }
         .sub-tab-active { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
         .sub-tab-inactive { background-color: transparent; color: var(--text-muted); }
@@ -144,16 +116,22 @@
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
-            <button onclick="switchView('view-database', 'nav-database')" class="w-full sidebar-link" id="nav-database">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
-            </button>
-            <button onclick="switchView('view-evaluasi', 'nav-evaluasi')" class="w-full sidebar-link" id="nav-evaluasi">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
-            </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
+
+            <!-- KATEGORI MASTER DATA (Sub-menu dinamis) -->
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
+                <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
+            </div>
+            <div id="sidebar-master-data" class="mb-2"></div>
+
+            <!-- KATEGORI EVALUASI KINERJA (Sub-menu dinamis) -->
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
+                <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
+            </div>
+            <div id="sidebar-evaluasi" class="mb-2"></div>
         </div>
 
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300">
@@ -222,11 +200,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="premium-card p-4 md:p-6 w-full">
+                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Target Produksi (Ton) per CRO</h3>
                         <div id="pivot-bar-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <div class="premium-card p-4 md:p-6 w-full">
+                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
@@ -237,14 +215,14 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
-                                <tr>
+                                <tr class="bg-gray-500/5">
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Nama Perusahaan (PT)</th>
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas Kebun (Ha)</th>
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas TM (Ha)</th>
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Target Produksi (Ton)</th>
                                 </tr>
                             </thead>
-                            <tbody id="pt-list-body"></tbody>
+                            <tbody id="pt-list-body" class="divide-y theme-border"></tbody>
                         </table>
                     </div>
                 </div>
@@ -253,11 +231,10 @@
             <!-- 2. MASTER DATA KEBUN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
-                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Master Data Repository</h2>
+                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
                 <div class="premium-card p-4 md:p-6 w-full">
-                    <div id="tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
                     <div class="w-full overflow-hidden" id="data-wrapper">
                         <div id="table-area" class="w-full">
                             <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit"></div>
@@ -273,14 +250,11 @@
             <!-- 3. EVALUASI KINERJA (SHEET 2) -->
             <section id="view-evaluasi" class="fade-in hidden">
                 <div class="mb-6">
-                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Evaluasi Kinerja Produksi</h2>
+                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan dari dokumen viewer.</p>
                 </div>
 
                 <div class="premium-card p-4 md:p-6 w-full">
-                    <!-- TABS UTAMA EVALUASI KINERJA -->
-                    <div id="evaluasi-tab-container" class="flex space-x-2 overflow-x-auto pb-4 mb-4 border-b theme-border scrollbar-thin"></div>
-                    
                     <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
                         
                         <!-- TABEL NORMAL EVALUASI -->
@@ -402,6 +376,7 @@
         let currentDataTable = null;
         let evaluasiDataTable = null;
         let isUnread = false; 
+        let currentActiveSheet = null; 
         
         let activeKemitraanTab = 'tahap1-7';
 
@@ -447,7 +422,7 @@
             });
         }
 
-        function switchView(viewId, elementId) {
+        function switchView(viewId, elementId, sheetName = null) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
             document.getElementById('view-evaluasi').classList.add('hidden');
@@ -456,11 +431,26 @@
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
-            if(viewId === 'view-dashboard') headerTitle.innerText = "Executive On-Farm > Dashboard";
-            else if(viewId === 'view-database') headerTitle.innerText = "Executive On-Farm > Master Data";
-            else if(viewId === 'view-evaluasi') headerTitle.innerText = "Executive On-Farm > Evaluasi Kinerja";
+            if(viewId === 'view-dashboard') {
+                headerTitle.innerText = "Executive On-Farm > Dashboard";
+                currentActiveSheet = 'dashboard';
+                renderPivotDashboard(); 
+            }
+            else if(viewId === 'view-database') {
+                headerTitle.innerText = "Master Data > " + sheetName;
+                document.getElementById('database-title').innerText = sheetName;
+                currentActiveSheet = sheetName;
+                loadTable(sheetName);
+            }
+            else if(viewId === 'view-evaluasi') {
+                headerTitle.innerText = "Evaluasi Kinerja > " + sheetName;
+                document.getElementById('evaluasi-title').innerText = sheetName;
+                currentActiveSheet = sheetName;
+                loadEvaluasiTable(sheetName);
+            }
             else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
+                currentActiveSheet = 'inbox';
                 fetch('/api/read-emails?t=' + new Date().getTime(), { method: 'POST' }).then(() => {
                     const badge = document.getElementById('sidebar-email-badge');
                     if(badge) { badge.classList.add('hidden'); badge.classList.remove('badge-pop'); }
@@ -472,19 +462,17 @@
                 });
             }
             
-            document.getElementById('nav-dashboard').classList.remove('active');
-            document.getElementById('nav-database').classList.remove('active');
-            document.getElementById('nav-evaluasi').classList.remove('active');
-            document.getElementById('nav-inbox').classList.remove('active');
-            document.getElementById(elementId).classList.add('active');
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            if (elementId && document.getElementById(elementId)) {
+                document.getElementById(elementId).classList.add('active');
+            }
             
             if (window.innerWidth < 768) toggleSidebar();
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
             
-            const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
-            if(viewId === 'view-evaluasi' && activeEvalTab) { 
-                if (activeEvalTab.dataset.sheet === "Rekap Kemitraan" || activeEvalTab.dataset.sheet === "Executive Summary") {
-                    // Do nothing
+            if(viewId === 'view-evaluasi') { 
+                if (sheetName === "Rekap Kemitraan" || sheetName === "Executive Summary") {
+                    // No datatable to adjust
                 } else if (evaluasiDataTable) {
                     setTimeout(() => evaluasiDataTable.columns.adjust(), 50);
                 }
@@ -670,7 +658,6 @@
             else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
         }
 
-        // BUKA MODAL PREVIEW
         function openPreview(rawUrl) {
             let previewUrl = rawUrl.trim();
             if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
@@ -697,10 +684,6 @@
         // RENDER TABEL MASTER DATA KEBUN
         // =========================================
         function loadTable(sheetName) {
-            document.querySelectorAll('#tab-container .tab-btn').forEach(btn => { 
-                btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
-            });
-            
             const filterContainer = document.getElementById('custom-filter-container');
             if (sheetName === 'INPUT ASTA' && filterContainer) {
                 filterContainer.classList.remove('hidden');
@@ -742,7 +725,8 @@
                 
                 return { title: title, data: key, defaultContent: "-", render: function(val) {
                     if (isDateCol && typeof val === 'number') {
-                        let d = new Date((val - 25568) * 86400000);
+                        // FIX: Pengurang Excel ke Date UTC = 25570
+                        let d = new Date(Math.round((val - 25570) * 86400000));
                         let dd = d.getUTCDate().toString().padStart(2, '0');
                         let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
                         let yy = d.getUTCFullYear().toString().slice(-2);
@@ -778,10 +762,6 @@
         // FUNGSI RENDER EVALUASI KINERJA (BIASA)
         // =========================================
         function loadEvaluasiTable(sheetName) {
-            document.querySelectorAll('#evaluasi-tab-container .tab-btn').forEach(btn => { 
-                btn.className = btn.dataset.sheet === sheetName ? 'tab-btn tab-active' : 'tab-btn tab-inactive'; 
-            });
-
             document.getElementById('evaluasi-table-area').classList.add('hidden');
             document.getElementById('evaluasi-dashboard-area').classList.add('hidden');
             document.getElementById('executive-dashboard-area').classList.add('hidden');
@@ -822,7 +802,8 @@
                     title: title, data: key, defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
-                            let d = new Date((val - 25568) * 86400000);
+                            // FIX: Pengurang Excel ke Date UTC = 25570
+                            let d = new Date(Math.round((val - 25570) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
                             let yy = d.getUTCFullYear().toString().slice(-2);
@@ -1203,27 +1184,29 @@
             renderNotifications();
             renderEmailsUI(); 
 
-            const tabContainer = document.getElementById('tab-container');
-            if(tabContainer) {
-                listSheets.forEach(sheet => {
+            // Bangun menu Master Data di Sidebar KIRI
+            const sidebarMaster = document.getElementById('sidebar-master-data');
+            if(sidebarMaster) {
+                listSheets.forEach((sheet, idx) => {
                     const btn = document.createElement('button'); 
-                    btn.dataset.sheet = sheet; 
-                    btn.innerText = sheet; 
-                    btn.className = 'tab-btn tab-inactive';
-                    btn.onclick = () => loadTable(sheet);
-                    tabContainer.appendChild(btn);
+                    btn.id = 'nav-md-' + idx; 
+                    btn.className = 'w-full sidebar-link !pl-9 !py-2 !mb-1'; 
+                    btn.innerHTML = `<span class="w-1 h-1 rounded-full bg-gray-500 mr-3 shrink-0 opacity-50"></span> <span class="truncate text-left text-xs">${sheet}</span>`;
+                    btn.onclick = () => switchView('view-database', btn.id, sheet);
+                    sidebarMaster.appendChild(btn);
                 });
             }
 
-            const evaluasiTabContainer = document.getElementById('evaluasi-tab-container');
-            if(evaluasiTabContainer) {
-                listEvaluasiSheets.forEach(sheet => {
+            // Bangun menu Evaluasi Kinerja di Sidebar KIRI
+            const sidebarEval = document.getElementById('sidebar-evaluasi');
+            if(sidebarEval) {
+                listEvaluasiSheets.forEach((sheet, idx) => {
                     const btn = document.createElement('button'); 
-                    btn.dataset.sheet = sheet; 
-                    btn.innerText = sheet; 
-                    btn.className = 'tab-btn tab-inactive';
-                    btn.onclick = () => loadEvaluasiTable(sheet);
-                    evaluasiTabContainer.appendChild(btn);
+                    btn.id = 'nav-ek-' + idx; 
+                    btn.className = 'w-full sidebar-link !pl-9 !py-2 !mb-1'; 
+                    btn.innerHTML = `<span class="w-1 h-1 rounded-full bg-gray-500 mr-3 shrink-0 opacity-50"></span> <span class="truncate text-left text-xs">${sheet}</span>`;
+                    btn.onclick = () => switchView('view-evaluasi', btn.id, sheet);
+                    sidebarEval.appendChild(btn);
                 });
             }
 
@@ -1231,9 +1214,7 @@
             Highcharts.setOptions({ colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#6366f1'], credits: { enabled: false }, chart: { style: { fontFamily: 'Inter' } } });
             updateChartTheme(isLightInit);
 
-            renderPivotDashboard();
-            loadTable("REKAPITULASI");
-            loadEvaluasiTable("Sumber/Source Data");
+            switchView('view-dashboard', 'nav-dashboard'); 
             
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
@@ -1289,28 +1270,29 @@
 
                         rawData = result.rawData;
                         renderNotifications();
-                        renderPivotDashboard(); 
                         
-                        const activeTab = document.querySelector('#tab-container .tab-active');
-                        if (activeTab && activeTab.dataset.sheet !== "Pivot Table") {
+                        if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) {
+                            renderPivotDashboard(); 
+                        }
+                        else if (listSheets.includes(currentActiveSheet)) {
                             let currentFilter = '';
-                            if (activeTab.dataset.sheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
-                            loadTable(activeTab.dataset.sheet);
-                            if (activeTab.dataset.sheet === 'INPUT ASTA' && currentFilter !== '') {
+                            if (currentActiveSheet === 'INPUT ASTA') currentFilter = $('#asta-status-filter').val() || '';
+                            loadTable(currentActiveSheet);
+                            if (currentActiveSheet === 'INPUT ASTA' && currentFilter !== '') {
                                 $('#asta-status-filter').val(currentFilter);
                                 currentDataTable.search(currentFilter).draw();
                             }
                         }
-
-                        const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
-                        if (activeEvalTab && activeEvalTab.dataset.sheet !== "Rekap Kemitraan" && activeEvalTab.dataset.sheet !== "Executive Summary") {
-                            loadEvaluasiTable(activeEvalTab.dataset.sheet);
-                        }
-                        if (activeEvalTab && activeEvalTab.dataset.sheet === "Rekap Kemitraan") {
-                            renderKemitraanDashboard();
-                        }
-                        if (activeEvalTab && activeEvalTab.dataset.sheet === "Executive Summary") {
-                            renderExecutiveDashboard();
+                        else if (listEvaluasiSheets.includes(currentActiveSheet)) {
+                            if (currentActiveSheet !== "Rekap Kemitraan" && currentActiveSheet !== "Executive Summary") {
+                                loadEvaluasiTable(currentActiveSheet);
+                            }
+                            else if (currentActiveSheet === "Rekap Kemitraan") {
+                                renderKemitraanDashboard();
+                            }
+                            else if (currentActiveSheet === "Executive Summary") {
+                                renderExecutiveDashboard();
+                            }
                         }
 
                         if(syncText && syncDot) {
@@ -1338,8 +1320,16 @@
                 let retryInterval = setInterval(() => {
                     if(Object.keys(rawData).length > 0) {
                         clearInterval(retryInterval);
-                        const activeEvalTab = document.querySelector('#evaluasi-tab-container .tab-active');
-                        if (activeEvalTab) loadEvaluasiTable(activeEvalTab.dataset.sheet);
+                        if (currentActiveSheet) {
+                            if (listSheets.includes(currentActiveSheet)) loadTable(currentActiveSheet);
+                            else if (listEvaluasiSheets.includes(currentActiveSheet)) {
+                                if (currentActiveSheet === "Rekap Kemitraan") renderKemitraanDashboard();
+                                else if (currentActiveSheet === "Executive Summary") renderExecutiveDashboard();
+                                else loadEvaluasiTable(currentActiveSheet);
+                            }
+                        } else {
+                            renderPivotDashboard();
+                        }
                     }
                     else syncData();
                 }, 2000);
@@ -1356,7 +1346,7 @@
                         renderEmailsUI();
                         const badge = document.getElementById('sidebar-email-badge');
                         if (result.unreadCount > 0 && badge) {
-                            badge.innerText = result.unreadCount; badge.classList.remove('ahidden'); badge.classList.remove('badge-pop'); void badge.offsetWidth; badge.classList.add('badge-pop');
+                            badge.innerText = result.unreadCount; badge.classList.remove('hidden'); badge.classList.remove('badge-pop'); void badge.offsetWidth; badge.classList.add('badge-pop');
                         }
                     }
                 } catch (err) {}
