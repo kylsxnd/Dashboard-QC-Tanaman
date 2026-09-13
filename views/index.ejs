@@ -77,7 +77,6 @@
 
         table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
         table.dataTable thead th { cursor: grab !important; background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
-        table.dataTable:hover thead th { cursor: grab !important; }
         table.dataTable thead th:active { cursor: grabbing !important; }
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
@@ -135,7 +134,7 @@
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
 
-            <!-- KATEGORI EVALUASI KINERJA (HANYA KINERJA PROD) -->
+            <!-- KATEGORI EVALUASI KINERJA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
             </div>
@@ -248,9 +247,6 @@
                             <div id="custom-filter-container" class="mb-4 hidden flex items-center gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm w-fit"></div>
                             <table id="mainTable" class="w-full text-left"></table>
                         </div>
-                        <div id="pivot-area" class="hidden w-full h-[700px] border theme-border rounded-lg overflow-hidden bg-white shadow-inner">
-                            <iframe src="https://docs.google.com/spreadsheets/d/1JNPHD-Vg1YjN84z0aVHFiNXhLLQ86ARNCb2MMo5s5iY/edit?gid=2130529003#gid=2130529003&rm=minimal" class="w-full h-full border-none"></iframe>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -314,7 +310,8 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        const listSheets = ["REKAPITULASI", "Pivot Table", "Pembayaran Vendor", "Draft Surat Penugasan", "INPUT ASTA", "Acuan Nama Kebun", "Acuan Nama CRO & Region", "Perubahan CV ke PT", "Rekap Vendor"];
+        // PIVOT TABLE DIHAPUS DARI LIST MASTER DATA KEBUN
+        const listSheets = ["REKAPITULASI", "Pembayaran Vendor", "Draft Surat Penugasan", "INPUT ASTA", "Acuan Nama Kebun", "Acuan Nama CRO & Region", "Perubahan CV ke PT", "Rekap Vendor"];
         const listEvaluasiSheets = ["Kinerja Prod"]; 
         
         let currentDataTable = null;
@@ -590,7 +587,6 @@
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
-        // FUNGSI MENDAPATKAN IKON FILE
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -688,7 +684,6 @@
                     }
                 }
                 
-                // JIKA KOLOM MEMANG KOSONG MELOMPONG -> HAPUS TOTAL DARI WEB!
                 if (isGhost) return;
                 
                 validKeys.push(key);
@@ -702,7 +697,6 @@
                     displayTitle = displayTitle.replace(/_\d+$/, '').trim(); 
                 }
 
-                // FIX HEADER TANGGAL YANG JADI ANGKA (e.g. 46200 -> 1/9)
                 let numTitle = parseFloat(displayTitle);
                 if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
                     let d = new Date(Math.round((numTitle - 25569) * 86400000));
@@ -717,7 +711,6 @@
                     defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
-                            // KUNCI TANGGAL AKURAT: Offset 25569
                             let d = new Date(Math.round((val - 25569) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -771,83 +764,78 @@
                 return; 
             }
 
-            const validKeys = [];
-            let allKeysSet = new Set();
-            data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
-            let allKeys = Array.from(allKeysSet);
-
-            allKeys.forEach(key => {
-                let title = key.trim();
-                let isGhost = true;
-                for(let i=0; i < data.length; i++) {
-                    let v = data[i][key];
-                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                        isGhost = false;
-                        break;
-                    }
-                }
-                // JIKA KOLOM MEMANG KOSONG MELOMPONG -> HAPUS TOTAL DARI WEB!
-                if (isGhost) return;
-                validKeys.push(key);
-            });
-
-            const columns = validKeys.map(key => {
-                let displayTitle = key;
-                if (displayTitle.startsWith('__EMPTY')) {
-                    displayTitle = "-";
-                } else {
-                    displayTitle = displayTitle.replace(/_\d+$/, '').trim();
-                }
-
-                // FIX HEADER TANGGAL YANG JADI ANGKA (e.g. 46200 -> 1/9)
-                let numTitle = parseFloat(displayTitle);
-                if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
-                    let d = new Date(Math.round((numTitle - 25569) * 86400000));
-                    displayTitle = d.getUTCDate() + '/' + (d.getUTCMonth() + 1);
-                }
-
-                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal');
-                let isPctCol = displayTitle.toLowerCase().includes('persentase') || displayTitle.toLowerCase().includes('%') || displayTitle.toLowerCase().includes('trend');
-                let isTrend = displayTitle.toLowerCase() === 'trend produksi';
+            let isKinerjaProd = sheetName.toLowerCase() === "kinerja prod";
+            let realKeys = [];
+            
+            if (isKinerjaProd && data.length > 2) {
+                let headerRow2 = data[1]; 
+                let baseKeys = Object.keys(data[0]); 
                 
-                return { 
-                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (isTrend) {
-                            let v = String(val).toLowerCase();
-                            if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
-                            if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
-                            return `<span class="text-gray-500 font-bold">-</span>`;
+                baseKeys.forEach(k => {
+                    let title1 = k.startsWith('__EMPTY') ? '' : k.replace(/_\d+$/, '').trim();
+                    let title2 = String(headerRow2[k] || "").trim();
+                    if (title2 === '-' || title2.startsWith('__EMPTY')) title2 = '';
+                    else title2 = title2.replace(/_\d+$/, '').trim();
+                    
+                    let finalTitle = title2 || title1; 
+                    
+                    if (finalTitle) {
+                        let isGhost = true;
+                        for(let i = 2; i < data.length; i++) { 
+                            let v = data[i][k];
+                            if(v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                                isGhost = false;
+                                break;
+                            }
                         }
-                        if (isDateCol && typeof val === 'number') {
-                            // KUNCI TANGGAL: Offset 25569
-                            let d = new Date(Math.round((val - 25569) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear();
-                            return `${dd}/${mm}/${yy}`;
+                        if(!isGhost) {
+                            realKeys.push({ dataKey: k, title: finalTitle });
                         }
-                        if (isPctCol && typeof val === 'number' && !isTrend) {
-                            return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
-                        }
-                        if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
-                        }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>');
-                        return val;
                     }
-                };
-            });
+                });
+                data = data.slice(2);
+            }
+
+            let columns = [];
+            
+            if (isKinerjaProd) {
+                columns = realKeys.map(k => {
+                    let title = k.title;
+                    let isDateCol = title.toLowerCase().includes('tgl') || title.toLowerCase().includes('tanggal');
+                    let isPctCol = title.toLowerCase().includes('persentase') || title.toLowerCase().includes('%') || title.toLowerCase().includes('trend');
+                    let isTrend = title.toLowerCase() === 'trend produksi';
+                    
+                    return { 
+                        title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${title}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
+                        data: k.dataKey, 
+                        defaultContent: "-", 
+                        render: function(val) {
+                            if (isTrend) {
+                                let v = String(val).toLowerCase();
+                                if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
+                                if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
+                                return `<span class="text-gray-500 font-bold">-</span>`;
+                            }
+                            if (isDateCol && typeof val === 'number') {
+                                let d = new Date(Math.round((val - 25569) * 86400000));
+                                let dd = d.getUTCDate().toString().padStart(2, '0');
+                                let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                                let yy = d.getUTCFullYear();
+                                return `${dd}/${mm}/${yy}`;
+                            }
+                            if (isPctCol && typeof val === 'number' && !isTrend) {
+                                return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
+                            }
+                            if (typeof val === 'number') {
+                                if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                                return val.toLocaleString('id-ID');
+                            }
+                            if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>');
+                            return val;
+                        }
+                    };
+                });
+            }
 
             evaluasiDataTable = $('#evaluasiTable').DataTable({
                 data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
