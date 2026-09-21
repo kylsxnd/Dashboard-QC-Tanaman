@@ -67,10 +67,6 @@
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
-        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
-        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
-
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -116,7 +112,7 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
@@ -128,12 +124,6 @@
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
-
-            <!-- KATEGORI EVALUASI KINERJA (HANYA KINERJA PROD) -->
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
-                <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
-            </div>
-            <div id="sidebar-evaluasi" class="mb-2"></div>
         </div>
 
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300">
@@ -246,23 +236,7 @@
                 </div>
             </section>
 
-            <!-- 3. EVALUASI KINERJA (HANYA KINERJA PROD) -->
-            <section id="view-evaluasi" class="fade-in hidden">
-                <div class="mb-6">
-                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="evaluasi-title">Evaluasi Kinerja Produksi</h2>
-                    <p class="text-xs md:text-sm theme-text-muted mt-1">Analisis dan evaluasi data pra & setelah penugasan dari dokumen viewer.</p>
-                </div>
-
-                <div class="premium-card p-4 md:p-6 w-full">
-                    <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
-                        <div id="evaluasi-table-area" class="w-full">
-                            <table id="evaluasiTable" class="w-full text-left"></table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. INBOX EMAIL -->
+            <!-- 3. INBOX EMAIL -->
             <section id="view-inbox" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -306,10 +280,8 @@
         
         // HANYA REKAPITULASI YANG TERSISA DI MASTER DATA KEBUN
         const listSheets = ["REKAPITULASI"];
-        const listEvaluasiSheets = ["Kinerja Prod"]; 
         
         let currentDataTable = null;
-        let evaluasiDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
 
@@ -358,7 +330,6 @@
         function switchView(viewId, elementId, sheetName = null) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
-            document.getElementById('view-evaluasi').classList.add('hidden');
             document.getElementById('view-inbox').classList.add('hidden');
             
             document.getElementById(viewId).classList.remove('hidden');
@@ -374,12 +345,6 @@
                 document.getElementById('database-title').innerText = sheetName;
                 currentActiveSheet = sheetName;
                 loadTable(sheetName);
-            }
-            else if(viewId === 'view-evaluasi') {
-                headerTitle.innerText = "Evaluasi Kinerja > " + sheetName;
-                document.getElementById('evaluasi-title').innerText = sheetName;
-                currentActiveSheet = sheetName;
-                loadEvaluasiTable(sheetName);
             }
             else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
@@ -402,12 +367,6 @@
             
             if (window.innerWidth < 768) toggleSidebar();
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
-            
-            if(viewId === 'view-evaluasi') { 
-                if (evaluasiDataTable) {
-                    setTimeout(() => evaluasiDataTable.columns.adjust(), 50);
-                }
-            }
         }
 
         function markAsRead() { document.getElementById('notif-badge').classList.add('hidden'); isUnread = false; }
@@ -696,7 +655,9 @@
                         break;
                     }
                 }
+                
                 if (isGhost) return;
+                
                 validKeys.push(key);
             });
 
@@ -753,107 +714,6 @@
         }
 
         // =========================================
-        // FUNGSI RENDER EVALUASI KINERJA (KINERJA PROD)
-        // =========================================
-        function loadEvaluasiTable(sheetName) {
-            document.getElementById('evaluasi-table-area').classList.remove('hidden');
-
-            let exactKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === sheetName.trim().toLowerCase());
-            let data = rawData[exactKey] || [];
-            
-            if ($.fn.DataTable.isDataTable('#evaluasiTable')) { 
-                $('#evaluasiTable').DataTable().destroy(); 
-                $('#evaluasiTable').empty(); 
-            }
-            
-            if (data.length === 0) { 
-                $('#evaluasiTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Menarik data dari server, mohon tunggu sebentar...</td></tr></tbody>`); 
-                return; 
-            }
-
-            const validKeys = [];
-            let allKeysSet = new Set();
-            data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
-            let allKeys = Array.from(allKeysSet);
-
-            allKeys.forEach(key => {
-                let title = key.trim();
-                let isGhost = true;
-                for(let i=0; i < data.length; i++) {
-                    let v = data[i][key];
-                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                        isGhost = false;
-                        break;
-                    }
-                }
-                if (isGhost) return;
-                validKeys.push(key);
-            });
-
-            const columns = validKeys.map(key => {
-                let displayTitle = key;
-                if (displayTitle.startsWith('__EMPTY')) {
-                    displayTitle = "-";
-                } else {
-                    displayTitle = displayTitle.replace(/_\d+$/, '').trim();
-                }
-
-                let numTitle = parseFloat(displayTitle);
-                if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
-                    let d = new Date(Math.round((numTitle - 25569) * 86400000));
-                    displayTitle = d.getUTCDate() + '/' + (d.getUTCMonth() + 1);
-                }
-
-                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal');
-                let isPctCol = displayTitle.toLowerCase().includes('persentase') || displayTitle.toLowerCase().includes('%') || displayTitle.toLowerCase().includes('trend');
-                let isTrend = displayTitle.toLowerCase() === 'trend produksi';
-                
-                return { 
-                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (isTrend) {
-                            let v = String(val).toLowerCase();
-                            if (v.includes('naik') || v.includes('up') || v.includes('▲')) return `<span class="text-emerald-500 font-bold">▲</span>`;
-                            if (v.includes('turun') || v.includes('down') || v.includes('▼')) return `<span class="text-red-500 font-bold">▼</span>`;
-                            return `<span class="text-gray-500 font-bold">-</span>`;
-                        }
-                        if (isDateCol && typeof val === 'number') {
-                            let d = new Date(Math.round((val - 25569) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear();
-                            return `${dd}/${mm}/${yy}`;
-                        }
-                        if (isPctCol && typeof val === 'number' && !isTrend) {
-                            return (val * 100).toLocaleString('id-ID', {maximumFractionDigits: 1}) + '%';
-                        }
-                        if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
-                        }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>');
-                        return val;
-                    }
-                };
-            });
-
-            evaluasiDataTable = $('#evaluasiTable').DataTable({
-                data: data, columns: columns, scrollX: true, pageLength: 15, ordering: false,
-                colReorder: true, 
-                language: { search: "", searchPlaceholder: "Cari Analisis...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
-            });
-        }
-
-        // =========================================
         // INIT SAAT WEB DIBUKA
         // =========================================
         document.addEventListener("DOMContentLoaded", function() {
@@ -878,18 +738,6 @@
                 });
             }
 
-            const sidebarEval = document.getElementById('sidebar-evaluasi');
-            if(sidebarEval) {
-                listEvaluasiSheets.forEach((sheet, idx) => {
-                    const btn = document.createElement('button'); 
-                    btn.id = 'nav-ek-' + idx; 
-                    btn.className = 'w-full sidebar-link !pl-9 !py-2 !mb-1'; 
-                    btn.innerHTML = `<span class="w-1 h-1 rounded-full bg-gray-500 mr-3 shrink-0 opacity-50"></span> <span class="truncate text-left text-xs">${sheet}</span>`;
-                    btn.onclick = () => switchView('view-evaluasi', btn.id, sheet);
-                    sidebarEval.appendChild(btn);
-                });
-            }
-
             const isLightInit = document.body.classList.contains('light-mode');
             Highcharts.setOptions({ colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#6366f1'], credits: { enabled: false }, chart: { style: { fontFamily: 'Inter' } } });
             updateChartTheme(isLightInit);
@@ -898,7 +746,6 @@
             
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
-                if(evaluasiDataTable) setTimeout(() => evaluasiDataTable.columns.adjust(), 200);
             });
 
             async function syncData() {
@@ -957,9 +804,6 @@
                         else if (listSheets.includes(currentActiveSheet)) {
                             loadTable(currentActiveSheet);
                         }
-                        else if (listEvaluasiSheets.includes(currentActiveSheet)) {
-                            loadEvaluasiTable(currentActiveSheet);
-                        }
 
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
@@ -988,9 +832,6 @@
                         clearInterval(retryInterval);
                         if (currentActiveSheet) {
                             if (listSheets.includes(currentActiveSheet)) loadTable(currentActiveSheet);
-                            else if (listEvaluasiSheets.includes(currentActiveSheet)) {
-                                loadEvaluasiTable(currentActiveSheet);
-                            }
                         } else {
                             renderPivotDashboard();
                         }
