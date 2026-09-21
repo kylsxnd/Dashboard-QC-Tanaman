@@ -93,11 +93,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-        .sub-tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s; border: 1px solid transparent; outline: none; }
-        .sub-tab-active { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
-        .sub-tab-inactive { background-color: transparent; color: var(--text-muted); }
-        .sub-tab-inactive:hover { background-color: var(--hover-bg); color: var(--text-main); }
     </style>
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
@@ -121,7 +116,7 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
@@ -260,7 +255,6 @@
 
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div class="w-full overflow-hidden" id="evaluasi-data-wrapper">
-                        <!-- TABEL NORMAL EVALUASI -->
                         <div id="evaluasi-table-area" class="w-full">
                             <table id="evaluasiTable" class="w-full text-left"></table>
                         </div>
@@ -457,6 +451,47 @@
             }
         }
 
+        // =========================================
+        // FUNGSI KHUSUS BACA ANGKA INDO (Anti Error)
+        // =========================================
+        const parseNum = (val) => {
+            if (typeof val === 'number') return val;
+            if (val === null || val === undefined) return 0;
+            let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
+            s = s.replace(/\s/g, ''); // Hapus semua spasi
+            if(s === '-' || s === '') return 0;
+
+            let commaIdx = s.indexOf(',');
+            let dotIdx = s.indexOf('.');
+
+            if (commaIdx !== -1 && dotIdx !== -1) {
+                // Ada titik dan koma (contoh: 1.000.000,50)
+                if (commaIdx > dotIdx) {
+                    s = s.replace(/\./g, '').replace(',', '.');
+                } else {
+                    s = s.replace(/,/g, '');
+                }
+            } else if (commaIdx !== -1) {
+                let parts = s.split(',');
+                if (parts.length > 2) {
+                    s = s.replace(/,/g, ''); 
+                } else if (parts[1].length !== 3) {
+                    s = s.replace(',', '.'); 
+                } else {
+                    s = s.replace(/,/g, '');
+                }
+            } else if (dotIdx !== -1) {
+                let parts = s.split('.');
+                if (parts.length > 2) {
+                    s = s.replace(/\./g, ''); 
+                } else if (parts[1].length === 3) {
+                    s = s.replace(/\./g, '');
+                }
+            }
+            let res = parseFloat(s);
+            return isNaN(res) ? 0 : res;
+        };
+
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
@@ -465,19 +500,6 @@
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
-
-            const parseNum = (val) => {
-                if (typeof val === 'number') return val;
-                if (!val || val === '-' || String(val).trim() === '') return 0;
-                let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
-                if (s.includes(',') && s.includes('.')) {
-                    let lastComma = s.lastIndexOf(','); let lastDot = s.lastIndexOf('.');
-                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, '');
-                } else if (s.includes(',')) {
-                    if ((s.match(/,/g) || []).length > 1) s = s.replace(/,/g, ''); else if (s.length - s.lastIndexOf(',') <= 3) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
-                }
-                return parseFloat(s) || 0;
-            };
 
             let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)";
             if (rawRekapData.length > 0) {
@@ -493,11 +515,11 @@
                 let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
                 let namaPt = String(row[keyPT] || "").trim();
 
-                // 1. PENGAMAN SUPER KETAT: RADAR ANTI-TOTAL!
+                // 1. PENGAMAN SUPER KETAT: RADAR ANTI-TOTAL (ANTI DOUBLE COUNTING)
                 let cL = rowCRO.toLowerCase();
                 let pL = namaPt.toLowerCase();
-                if (cL.includes('total') || cL.includes('grand') || cL.includes('summary') || cL.includes('jumlah')) return;
-                if (pL.includes('total') || pL.includes('grand') || pL.includes('summary') || pL.includes('jumlah')) return;
+                if (cL === 'total' || cL === 'grand total' || cL === 'summary' || cL.includes('keseluruhan') || cL.includes('total')) return;
+                if (pL === 'total' || pL === 'grand total' || pL === 'summary' || pL.includes('keseluruhan') || pL.includes('total')) return;
 
                 // 2. CEK KELENGKAPAN DATA
                 if (!rowCRO || rowCRO === "-" || cL === "cro" || cL === "regional") return;
@@ -506,8 +528,14 @@
                 croList.add(rowCRO);
                 if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
 
-                let luasKebun = parseNum(row[keyLuas]); let luasTM = parseNum(row[keyLuasTM]); let targetProd = parseNum(row[keyTarget]);
-                totalLuas += luasKebun; totalLuasTM += luasTM; totalTarget += targetProd; totalPtCount++; 
+                let luasKebun = parseNum(row[keyLuas]); 
+                let luasTM = parseNum(row[keyLuasTM]); 
+                let targetProd = parseNum(row[keyTarget]);
+                
+                totalLuas += luasKebun; 
+                totalLuasTM += luasTM; 
+                totalTarget += targetProd; 
+                totalPtCount++; 
 
                 if (!ptDataMap[namaPt]) ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
                 ptDataMap[namaPt].luas += luasKebun; ptDataMap[namaPt].luasTM += luasTM; ptDataMap[namaPt].target += targetProd;
@@ -526,12 +554,12 @@
                 kpiContainer.innerHTML = `
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[#111111] to-[#151515] border-t-[3px] border-t-blue-500 shadow-[0_4px_20px_-4px_rgba(59,130,246,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.25)]">
                         <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2 flex items-center justify-between">Total Target Produksi</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {maximumFractionDigits: 1})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ton</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 2})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ton</span></div>
                         <div class="text-[10px] text-gray-500 italic mt-2 opacity-60">(Data Kalkulasi Akurat)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[#111111] to-[#151515] border-t-[3px] border-t-purple-500 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.25)]">
                         <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Total Luas Kebun / Luas TM</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits: 1})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ha</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 2})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ha</span></div>
                         <div class="text-[10px] font-semibold text-purple-400 mt-2 bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">Luas TM: ${totalLuasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})} Ha</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[#111111] to-[#151515] border-t-[3px] border-t-orange-500 shadow-[0_4px_20px_-4px_rgba(249,115,22,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(249,115,22,0.25)]">
@@ -622,9 +650,6 @@
             setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
         }
 
-        // =========================================
-        // TOMBOL HAPUS KOLOM MANUAL (SUPER FIX)
-        // =========================================
         $(document).on('click', '.hide-col-btn', function(e) {
             e.stopPropagation(); 
             e.preventDefault();
