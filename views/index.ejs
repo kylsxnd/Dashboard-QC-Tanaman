@@ -123,7 +123,6 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -195,14 +194,19 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
+                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Target Produksi (Ton) per CRO</h3>
                         <div id="pivot-bar-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
+                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
+                    </div>
+                    <!-- TAMBAHAN BARU: CHART STATUS PENGELOLAAN (SUDAH VS BELUM) -->
+                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
+                        <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
+                        <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
@@ -213,6 +217,7 @@
                             <thead>
                                 <tr class="bg-gray-500/5">
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase">Nama Perusahaan (PT)</th>
+                                    <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-center">Status Kelola</th>
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas Kebun (Ha)</th>
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas TM (Ha)</th>
                                     <th class="border-b theme-border py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Target Produksi (Ton)</th>
@@ -458,13 +463,20 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI SHEET "PIVOT TABLE" MURNI!
+            // SEDOT DATA LANGSUNG DARI SHEET "PIVOT TABLE" & "REKAPITULASI"
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
+            
             const pivotData = rawData[pivotKey] || [];
+            const rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
+            
+            // Variabel Penampung Status Kelola
+            let totalSudahDikelola = 0;
+            let totalBelumDikelola = 0;
 
             if (pivotData.length > 0) {
                 // ===============================================
@@ -480,15 +492,13 @@
                 // ===============================================
                 // 2. TABEL KIRI (SUMMARY KESELURUHAN) -> UNTUK KPI & GRAFIK
                 // ===============================================
-                // KITA MULAI DARI INDEX 0 BIAR CRO I (BARIS PERTAMA) GAK KESKIP!
                 for(let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
                     let croValRaw = String(row[pCroKey1] || "").replace(/^[+-]\s*/, '').trim();
                     let cL = croValRaw.toLowerCase();
                     
-                    if (!croValRaw) continue; // Skip baris kosong
+                    if (!croValRaw) continue; 
                     
-                    // KUNCI DEWA 1: KETEMU TOTAL KESELURUHAN -> AMBIL ANGKA NYA, LALU STOP BACA TABEL INI!
                     if (cL.includes("total keseluruhan") || cL === "grand total") {
                         if (selectedCRO === 'ALL') {
                             totalLuas = parseNum(row[pLuasKey1]);
@@ -496,16 +506,14 @@
                             totalTarget = parseNum(row[pTargetKey1]);
                             totalPtCount = parseNum(row[pCountKey1]);
                         }
-                        break; // BERHENTI, jangan baca ke tabel bawahnya
+                        break; 
                     }
                     
-                    // Kalau ketemu CRO beneran (seperti "CRO I", "CRO III", dll)
                     if (cL.startsWith("cro") && cL !== "cro") {
                         let cName = croValRaw.toUpperCase();
-                        croList.add(cName); // Masukin ke Dropdown
+                        croList.add(cName); 
                         
                         if (selectedCRO === 'ALL' || selectedCRO === cName) {
-                            // Kalau lagi filter 1 CRO, hitung manual
                             if (selectedCRO !== 'ALL') {
                                 totalLuas += parseNum(row[pLuasKey1]);
                                 totalLuasTM += parseNum(row[pLuasTMKey1]);
@@ -526,7 +534,7 @@
                     let r0 = pivotData[0];
                     idxNamaPT = pKeysAll.findIndex(k => String(r0[k]).toLowerCase() === 'nama pt');
                 }
-                if (idxNamaPT === -1) idxNamaPT = 8; // Fallback posisi
+                if (idxNamaPT === -1) idxNamaPT = 8; 
                 
                 let pCroKey2 = pKeysAll[idxNamaPT - 1] || pKeysAll[7]; 
                 let pNamaPTKey2 = pKeysAll[idxNamaPT];
@@ -541,30 +549,58 @@
                     let rawPt = String(row[pNamaPTKey2] || "").replace(/^[+-]\s*/, '').trim();
                     let pL = rawPt.toLowerCase();
 
-                    // Simpen nama CRO terakhir buat ngebungkus list PT
                     if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro") {
                         currentCro = rawCro.toUpperCase();
                     }
                     
-                    // KUNCI DEWA 2: KETEMU TOTAL KESELURUHAN DI DAFTAR PT -> STOP BACA TABEL INI!
                     if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) break;
-                    
-                    // JANGAN MASUKIN BARIS SUMMARY/TOTAL PER CRO KE DAFTAR NAMA PT
                     if (!rawPt || rawPt === "-" || pL === "nama pt" || pL === "nama mitra" || pL.includes('total') || pL.includes('summary')) continue;
                     
-                    // Kalau formatnya bener nama PT dan nempel sama CRO yang bener
                     if (currentCro.startsWith("CRO")) {
                         if (selectedCRO === 'ALL' || selectedCRO === currentCro) {
                             let l = parseNum(row[pLuasKey2]);
                             let lTM = parseNum(row[pLuasTMKey2]);
                             let t = parseNum(row[pTargetKey2]);
                             
-                            if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCro, luas: 0, luasTM: 0, target: 0 };
+                            if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCro, luas: 0, luasTM: 0, target: 0, status: '-' };
                             ptDataMap[rawPt].luas += l;
                             ptDataMap[rawPt].luasTM += lTM;
                             ptDataMap[rawPt].target += t;
                         }
                     }
+                }
+            }
+
+            // ===============================================
+            // 4. SEDOT STATUS DARI REKAPITULASI 
+            // (Hanya ambil kolom CRO dan Status buat ngisi Donat Chart)
+            // ===============================================
+            if (rekapData.length > 0) {
+                let rKeys = Object.keys(rekapData[0] || {});
+                let rCroKey = rKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || rKeys[0];
+                let rStatusKey = rKeys.find(k => k.toLowerCase() === 'status' || k.toLowerCase().includes('status'));
+                let rNamaPtKey = rKeys.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan'));
+
+                if (rStatusKey) {
+                    rekapData.forEach(row => {
+                        let c = String(row[rCroKey] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
+                        let pt = String(row[rNamaPtKey] || "").trim();
+                        let s = String(row[rStatusKey] || "").trim().toLowerCase();
+
+                        // Masukin status ke ptDataMap kalau PT nya ada di pivot
+                        if (ptDataMap[pt]) {
+                            let displayStatus = String(row[rStatusKey] || "").trim();
+                            ptDataMap[pt].status = displayStatus || '-';
+                        }
+
+                        if (!c.startsWith('CRO') || c.includes('TOTAL') || c.includes('SUMMARY')) return;
+                        
+                        // Cuma hitung yang sesuai filter
+                        if (selectedCRO === 'ALL' || selectedCRO === c) {
+                            if (s.includes('sudah')) totalSudahDikelola++;
+                            else if (s.includes('belum')) totalBelumDikelola++;
+                        }
+                    });
                 }
             }
 
@@ -598,6 +634,7 @@
             const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
+            if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `Status Kelola PT ${titleSuffix}`;
             if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
             if(document.getElementById('pivot-bar-chart')) {
@@ -620,11 +657,30 @@
             if(document.getElementById('pivot-pie-chart')) {
                 Highcharts.chart('pivot-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 16px; font-weight: bold; color: #ffffff;">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
                     colors: ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#6366f1', '#14b8a6', '#f97316', '#84cc16'],
                     series: [{ name: 'Luas Kebun (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }],
+                    credits: { enabled: false }
+                });
+            }
+
+            // TAMBAHAN BARU: CHART STATUS KELOLA
+            if(document.getElementById('status-pie-chart')) {
+                Highcharts.chart('status-pie-chart', {
+                    chart: { type: 'pie', backgroundColor: 'transparent' },
+                    title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
+                    plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
+                    colors: ['#3b82f6', '#f43f5e'], // Biru (Sudah), Merah (Belum)
+                    series: [{ 
+                        name: 'Jumlah PT', 
+                        data: [
+                            {name: 'Sudah Dikelola', y: totalSudahDikelola},
+                            {name: 'Belum Dikelola', y: totalBelumDikelola}
+                        ] 
+                    }],
                     credits: { enabled: false }
                 });
             }
@@ -633,15 +689,17 @@
             let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
             if (sortedPTs.length > 0) {
                 sortedPTs.forEach(pt => {
+                    let stc = pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted');
                     ptHtml += `
                         <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border last:border-0">
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span>` : ''}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center ${stc}">${pt.status}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-purple-400 text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                         </tr>`;
                 });
-            } else { ptHtml = `<tr><td colspan="4" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`; }
+            } else { ptHtml = `<tr><td colspan="5" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`; }
             if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
             const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
@@ -692,9 +750,6 @@
             }
         });
 
-        // =========================================
-        // RENDER TABEL MASTER DATA KEBUN 
-        // =========================================
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
 
