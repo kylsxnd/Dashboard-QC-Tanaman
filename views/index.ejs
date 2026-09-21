@@ -128,13 +128,13 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
+            <!-- KATEGORI MASTER DATA (HANYA REKAPITULASI) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
 
-            <!-- KATEGORI EVALUASI KINERJA -->
+            <!-- KATEGORI EVALUASI KINERJA (HANYA KINERJA PROD) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Evaluasi Kinerja
             </div>
@@ -470,29 +470,11 @@
                 if (typeof val === 'number') return val;
                 if (!val || val === '-' || String(val).trim() === '') return 0;
                 let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
-                
-                // Kalkulator Cerdas Format Indonesia
-                let commaCount = (s.match(/,/g) || []).length;
-                let dotCount = (s.match(/\./g) || []).length;
-
-                if (commaCount > 0 && dotCount > 0) {
-                    s = s.replace(/\./g, '').replace(',', '.');
-                } else if (commaCount === 1 && dotCount === 0) {
-                    let lastCommaDist = s.length - 1 - s.lastIndexOf(',');
-                    if (lastCommaDist <= 2 || s.lastIndexOf(',') === s.length - 3) {
-                         s = s.replace(',', '.');
-                    } else {
-                         s = s.replace(',', '');
-                    }
-                } else if (dotCount > 0 && commaCount === 0) {
-                    if (dotCount > 1) {
-                        s = s.replace(/\./g, '');
-                    } else {
-                        let lastDotDist = s.length - 1 - s.lastIndexOf('.');
-                        if (lastDotDist === 3) {
-                            s = s.replace(/\./g, ''); 
-                        }
-                    }
+                if (s.includes(',') && s.includes('.')) {
+                    let lastComma = s.lastIndexOf(','); let lastDot = s.lastIndexOf('.');
+                    if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, '');
+                } else if (s.includes(',')) {
+                    if ((s.match(/,/g) || []).length > 1) s = s.replace(/,/g, ''); else if (s.length - s.lastIndexOf(',') <= 3) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
                 }
                 return parseFloat(s) || 0;
             };
@@ -500,8 +482,8 @@
             let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)";
             if (rawRekapData.length > 0) {
                 const sampleKeys = Object.keys(rawRekapData[0]);
-                keyCRO = sampleKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || "CRO";
-                keyPT = sampleKeys.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan')) || "Nama PT";
+                keyCRO = sampleKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro') || k.toLowerCase().includes('regional')) || "CRO";
+                keyPT = sampleKeys.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan')) || "Nama PT";
                 keyLuas = sampleKeys.find(k => k.toLowerCase().includes('luas kebun')) || "Luas Kebun (Ha)";
                 keyLuasTM = sampleKeys.find(k => k.toLowerCase().includes('luas tm')) || "Luas TM (Ha)";
                 keyTarget = sampleKeys.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || "Target Produksi (Ton)";
@@ -512,16 +494,14 @@
                 let namaPt = String(row[keyPT] || "").trim();
 
                 // 1. PENGAMAN SUPER KETAT: RADAR ANTI-TOTAL!
-                let isTotalRow = false;
-                let rowStringified = JSON.stringify(row).toLowerCase();
-                if (rowStringified.includes('total') || rowStringified.includes('grand') || rowStringified.includes('summary')) {
-                    isTotalRow = true;
-                }
-                if (isTotalRow) return; // BUANG TOTAL & SUBTOTAL DARI HITUNGAN!
+                let cL = rowCRO.toLowerCase();
+                let pL = namaPt.toLowerCase();
+                if (cL.includes('total') || cL.includes('grand') || cL.includes('summary') || cL.includes('jumlah')) return;
+                if (pL.includes('total') || pL.includes('grand') || pL.includes('summary') || pL.includes('jumlah')) return;
 
                 // 2. CEK KELENGKAPAN DATA
-                if (!rowCRO || rowCRO === "-" || rowCRO.toLowerCase() === "cro") return;
-                if (!namaPt || namaPt === "-" || namaPt.toLowerCase() === "nama pt" || namaPt.length < 2) return;
+                if (!rowCRO || rowCRO === "-" || cL === "cro" || cL === "regional") return;
+                if (!namaPt || namaPt === "-" || pL === "nama pt" || pL === "nama mitra" || namaPt.length < 2) return;
 
                 croList.add(rowCRO);
                 if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
@@ -683,7 +663,6 @@
 
             allKeys.forEach(key => {
                 let title = key.trim();
-                
                 let isGhost = true;
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
@@ -692,9 +671,7 @@
                         break;
                     }
                 }
-                
                 if (isGhost) return;
-                
                 validKeys.push(key);
             });
 
