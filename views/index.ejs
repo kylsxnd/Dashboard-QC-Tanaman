@@ -458,18 +458,18 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
+            // SEDOT DATA LANGSUNG DARI SHEET "PIVOT TABLE" LU
             const pivotData = rawData["Pivot Table"] || [];
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
 
-            // 1. NGAMBIL ANGKA KPI & CHART DARI PIVOT TABLE (BIAR MATCH SAMA EXCEL)
             if (pivotData.length > 0) {
+                // 1. CARI HEADER UNTUK TABEL SUMMARY KESELURUHAN (KPI ATAS & GRAFIK)
                 let headerRow = null;
                 let startRow = 0;
                 
-                // Cari header untuk "Summary Keseluruhan"
                 for(let i=0; i<Math.min(5, pivotData.length); i++) {
                     let keys = Object.keys(pivotData[i]);
                     let cCount = 0;
@@ -492,12 +492,13 @@
                     let pTarget = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('target')) || pKeys[3];
                     let pCount = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('count') || String(headerRow[k]).toLowerCase().includes('nama pt')) || pKeys[4];
 
+                    // BACA BARIS DEMI BARIS DI TABEL KIRI (SUMMARY KESELURUHAN)
                     for(let i = startRow; i < pivotData.length; i++) {
                         let row = pivotData[i];
                         let croNameRaw = String(row[pCro] || "").replace(/^[+-]\s*/, '').trim();
                         let cL = croNameRaw.toLowerCase();
 
-                        // KUNCI DEWA: Berhenti baca kalau udah sampai baris "Total Keseluruhan" pertama!
+                        // KUNCI DEWA: KALO KETEMU "TOTAL KESELURUHAN" LANGSUNG BERHENTI BIAR GAK NYASAR KE TABEL BAWAHNYA!
                         if (cL === 'total keseluruhan' || cL === 'grand total' || cL.includes('total keseluruhan')) {
                             if (selectedCRO === 'ALL') {
                                 totalLuas = parseNum(row[pLuas]);
@@ -505,7 +506,7 @@
                                 totalTarget = parseNum(row[pTarget]);
                                 totalPtCount = parseNum(row[pCount]);
                             }
-                            break; // Stop, jangan baca tabel tahap/PT di bawahnya!
+                            break; 
                         }
                         
                         if (!croNameRaw || croNameRaw === "-" || cL === "cro" || cL.includes("summary")) continue;
@@ -534,16 +535,16 @@
                     }
                 }
                 
-                // 2. NGAMBIL DAFTAR PT DARI SHEET PIVOT TABLE BLOK SAMPINGNYA
-                let pKeys = Object.keys(pivotData[0] || pivotData[1] || {});
-                let idxNamaPT = pKeys.findIndex(k => String(pivotData[0][k] || pivotData[1][k] || "").toLowerCase().trim() === 'nama pt');
+                // 2. CARI HEADER UNTUK TABEL "SUMMARY NAMA PT" (YANG ADA DI SEBELAH KANAN)
+                let pKeysAll = Object.keys(pivotData[0] || pivotData[1] || {});
+                let idxNamaPT = pKeysAll.findIndex(k => String(pivotData[0][k] || pivotData[1][k] || "").toLowerCase().trim() === 'nama pt');
                 
                 if (idxNamaPT !== -1) {
-                    let pCroPT = pKeys[idxNamaPT - 1]; 
-                    let pNamaPT = pKeys[idxNamaPT];
-                    let pLuasPT = pKeys[idxNamaPT + 1];
-                    let pLuasTMPT = pKeys[idxNamaPT + 2];
-                    let pTargetPT = pKeys[idxNamaPT + 3];
+                    let pCroPT = pKeysAll[idxNamaPT - 1]; 
+                    let pNamaPT = pKeysAll[idxNamaPT];
+                    let pLuasPT = pKeysAll[idxNamaPT + 1];
+                    let pLuasTMPT = pKeysAll[idxNamaPT + 2];
+                    let pTargetPT = pKeysAll[idxNamaPT + 3];
 
                     let currentCro = "";
                     let isPtMulai = false;
@@ -563,12 +564,13 @@
                             currentCro = rawCro;
                         }
 
-                        // Berhenti kalau udah sampai total keseluruhan di blok list PT
+                        // KUNCI DEWA: KALO KETEMU "TOTAL KESELURUHAN" DI KOLOM PT, BERHENTI!
                         if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) {
                             break;
                         }
 
-                        if (!rawPt || rawPt === "-" || pL === "nama pt" || pL === "nama mitra" || pL.includes('total') || pL.includes('summary')) {
+                        // ABAIKAN BARIS TOTAL PER CRO DI LIST PT (BIAR GAK MASUK JADI NAMA PT)
+                        if (!rawPt || rawPt === "-" || pL === "nama pt" || pL.includes('total') || pL.includes('summary')) {
                             continue;
                         }
 
@@ -713,6 +715,9 @@
             }
         });
 
+        // =========================================
+        // RENDER TABEL MASTER DATA KEBUN 
+        // =========================================
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
 
@@ -839,7 +844,7 @@
                         
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
-                            const allSheetNames = [...listSheets, "Pivot Table"];
+                            const allSheetNames = [...listSheets, "Pivot Table"]; 
                             
                             allSheetNames.forEach(sheet => {
                                 let oldSheet = rawData[sheet] || [];
