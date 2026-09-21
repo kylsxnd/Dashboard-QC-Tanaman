@@ -67,6 +67,10 @@
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
+        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
+        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
+
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -424,7 +428,6 @@
             let dotIdx = s.indexOf('.');
 
             if (commaIdx !== -1 && dotIdx !== -1) {
-                // Ada titik dan koma (contoh: 1.000.000,50)
                 if (commaIdx > dotIdx) {
                     s = s.replace(/\./g, '').replace(',', '.');
                 } else {
@@ -455,52 +458,99 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
+            // SEDOT DATA LANGSUNG DARI SHEET "PIVOT TABLE"
+            const pivotData = rawData["Pivot Table"] || [];
             const rawRekapData = rawData["REKAPITULASI"] || [];
+            
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
 
-            let keyCRO = "CRO", keyPT = "Nama PT", keyLuas = "Luas Kebun (Ha)", keyLuasTM = "Luas TM (Ha)", keyTarget = "Target Produksi (Ton)";
-            if (rawRekapData.length > 0) {
-                const sampleKeys = Object.keys(rawRekapData[0]);
-                keyCRO = sampleKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro') || k.toLowerCase().includes('regional')) || "CRO";
-                keyPT = sampleKeys.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan')) || "Nama PT";
-                keyLuas = sampleKeys.find(k => k.toLowerCase().includes('luas kebun')) || "Luas Kebun (Ha)";
-                keyLuasTM = sampleKeys.find(k => k.toLowerCase().includes('luas tm')) || "Luas TM (Ha)";
-                keyTarget = sampleKeys.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || "Target Produksi (Ton)";
+            // 1. NGAMBIL ANGKA KPI & CHART DARI PIVOT TABLE
+            if (pivotData.length > 0) {
+                let pKeys = Object.keys(pivotData[0] || pivotData[1] || {});
+                let pCro = pKeys.find(k => k.toLowerCase().includes('cro')) || pKeys[0];
+                let pLuas = pKeys.find(k => k.toLowerCase().includes('luas kebun')) || pKeys[1];
+                let pLuasTM = pKeys.find(k => k.toLowerCase().includes('luas tm')) || pKeys[2];
+                let pTarget = pKeys.find(k => k.toLowerCase().includes('target')) || pKeys[3];
+                let pCount = pKeys.find(k => k.toLowerCase().includes('counta') || k.toLowerCase().includes('nama pt')) || pKeys[4];
+
+                pivotData.forEach(row => {
+                    let croName = String(row[pCro] || "").replace(/^[+-]\s*/, '').trim();
+                    let cL = croName.toLowerCase();
+                    
+                    if (!croName || croName === "-" || cL === "cro") return;
+
+                    let luas = parseNum(row[pLuas]);
+                    let luasTM = parseNum(row[pLuasTM]);
+                    let target = parseNum(row[pTarget]);
+                    let countPT = parseNum(row[pCount]);
+
+                    // TANGKAP BARIS TOTAL KESELURUHAN DARI PIVOT
+                    if (cL.includes('total') || cL.includes('grand') || cL.includes('summary')) {
+                        if (selectedCRO === 'ALL') {
+                            totalLuas = luas;
+                            totalLuasTM = luasTM;
+                            totalTarget = target;
+                            totalPtCount = countPT;
+                        }
+                        return; // Abaikan baris total dari chart
+                    }
+
+                    if(croName.toLowerCase().startsWith('cro')) croName = croName.toUpperCase();
+
+                    croList.add(croName);
+                    
+                    if (selectedCRO !== 'ALL' && croName !== selectedCRO) return;
+
+                    // Kalau lagi milih CRO spesifik, jumlahin manual
+                    if (selectedCRO !== 'ALL') {
+                        totalLuas += luas;
+                        totalLuasTM += luasTM;
+                        totalTarget += target;
+                        totalPtCount += countPT;
+                    }
+
+                    chartBarDataMap[croName] = target;
+                    chartPieDataMap[croName] = luas;
+                });
             }
 
-            rawRekapData.forEach(row => {
-                let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
-                let namaPt = String(row[keyPT] || "").trim();
+            // 2. NGAMBIL DAFTAR PT DARI REKAPITULASI (Tabel Paling Bawah)
+            if (rawRekapData.length > 0) {
+                const sampleKeys = Object.keys(rawRekapData[0]);
+                let keyCRO = sampleKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro') || k.toLowerCase().includes('regional')) || "CRO";
+                let keyPT = sampleKeys.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan')) || "Nama PT";
+                let keyLuas = sampleKeys.find(k => k.toLowerCase().includes('luas kebun')) || "Luas Kebun (Ha)";
+                let keyLuasTM = sampleKeys.find(k => k.toLowerCase().includes('luas tm')) || "Luas TM (Ha)";
+                let keyTarget = sampleKeys.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || "Target Produksi (Ton)";
 
-                // 1. PENGAMAN SUPER KETAT: RADAR ANTI-TOTAL (ANTI DOUBLE COUNTING)
-                let cL = rowCRO.toLowerCase();
-                let pL = namaPt.toLowerCase();
-                if (cL === 'total' || cL === 'grand total' || cL === 'summary' || cL.includes('keseluruhan') || cL.includes('total')) return;
-                if (pL === 'total' || pL === 'grand total' || pL === 'summary' || pL.includes('keseluruhan') || pL.includes('total')) return;
+                rawRekapData.forEach(row => {
+                    let rowCRO = String(row[keyCRO] || "").replace(/^[+-]\s*/, '').trim();
+                    let namaPt = String(row[keyPT] || "").trim();
 
-                // 2. CEK KELENGKAPAN DATA
-                if (!rowCRO || rowCRO === "-" || cL === "cro" || cL === "regional") return;
-                if (!namaPt || namaPt === "-" || pL === "nama pt" || pL === "nama mitra" || namaPt.length < 2) return;
+                    // PENGAMAN SUPER KETAT: RADAR ANTI-TOTAL!
+                    let cL = rowCRO.toLowerCase();
+                    let pL = namaPt.toLowerCase();
+                    if (cL === 'total' || cL === 'grand total' || cL === 'summary' || cL.includes('keseluruhan')) return;
+                    if (pL === 'total' || pL === 'grand total' || pL === 'summary' || pL.includes('keseluruhan')) return;
+                    if (!rowCRO || rowCRO === "-" || cL === "cro" || cL === "regional") return;
+                    if (!namaPt || namaPt === "-" || pL === "nama pt" || pL === "nama mitra" || namaPt.length < 2) return;
 
-                croList.add(rowCRO);
-                if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
+                    if(rowCRO.toLowerCase().startsWith('cro')) rowCRO = rowCRO.toUpperCase();
 
-                let luasKebun = parseNum(row[keyLuas]); 
-                let luasTM = parseNum(row[keyLuasTM]); 
-                let targetProd = parseNum(row[keyTarget]);
-                
-                totalLuas += luasKebun; 
-                totalLuasTM += luasTM; 
-                totalTarget += targetProd; 
-                totalPtCount++; 
+                    if (selectedCRO !== 'ALL' && rowCRO !== selectedCRO) return;
 
-                if (!ptDataMap[namaPt]) ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
-                ptDataMap[namaPt].luas += luasKebun; ptDataMap[namaPt].luasTM += luasTM; ptDataMap[namaPt].target += targetProd;
-                chartBarDataMap[rowCRO] = (chartBarDataMap[rowCRO] || 0) + targetProd;
-                chartPieDataMap[rowCRO] = (chartPieDataMap[rowCRO] || 0) + luasKebun;
-            });
+                    let luasKebun = parseNum(row[keyLuas]); 
+                    let luasTM = parseNum(row[keyLuasTM]); 
+                    let targetProd = parseNum(row[keyTarget]);
+
+                    if (!ptDataMap[namaPt]) ptDataMap[namaPt] = { cro: rowCRO, luas: 0, luasTM: 0, target: 0 };
+                    ptDataMap[namaPt].luas += luasKebun; 
+                    ptDataMap[namaPt].luasTM += luasTM; 
+                    ptDataMap[namaPt].target += targetProd;
+                });
+            }
 
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
@@ -609,6 +659,9 @@
             setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
         }
 
+        // =========================================
+        // TOMBOL HAPUS KOLOM MANUAL (SUPER FIX)
+        // =========================================
         $(document).on('click', '.hide-col-btn', function(e) {
             e.stopPropagation(); 
             e.preventDefault();
@@ -656,6 +709,7 @@
                     }
                 }
                 
+                // JIKA KOLOM MEMANG KOSONG MELOMPONG -> HAPUS TOTAL DARI WEB!
                 if (isGhost) return;
                 
                 validKeys.push(key);
@@ -669,6 +723,7 @@
                     displayTitle = displayTitle.replace(/_\d+$/, '').trim(); 
                 }
 
+                // FIX HEADER TANGGAL YANG JADI ANGKA (e.g. 46200 -> 1/9)
                 let numTitle = parseFloat(displayTitle);
                 if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
                     let d = new Date(Math.round((numTitle - 25569) * 86400000));
@@ -683,6 +738,7 @@
                     defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
+                            // KUNCI TANGGAL AKURAT: Offset 25569
                             let d = new Date(Math.round((val - 25569) * 86400000));
                             let dd = d.getUTCDate().toString().padStart(2, '0');
                             let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
@@ -760,7 +816,7 @@
                         
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
-                            const allSheetNames = [...listSheets, ...listEvaluasiSheets];
+                            const allSheetNames = [...listSheets];
                             
                             allSheetNames.forEach(sheet => {
                                 let oldSheet = rawData[sheet] || [];
