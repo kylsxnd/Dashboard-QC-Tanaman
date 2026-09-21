@@ -123,7 +123,7 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
+            <!-- KATEGORI MASTER DATA (HANYA REKAPITULASI) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -182,7 +182,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data dikalkulasi akurat otomatis Vercel Auto-Sync.
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Pivot Table.
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -282,7 +282,6 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // HANYA REKAPITULASI YANG TERSISA DI MASTER DATA KEBUN
         const listSheets = ["REKAPITULASI"];
         
         let currentDataTable = null;
@@ -458,135 +457,122 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI SHEET "PIVOT TABLE" LU
-            const pivotData = rawData["Pivot Table"] || [];
+            // NYEDOT DATA DARI PIVOT TABLE MURNI !
+            let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
+            const pivotData = rawData[pivotKey] || [];
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
 
             if (pivotData.length > 0) {
-                // 1. CARI HEADER UNTUK TABEL SUMMARY KESELURUHAN (KPI ATAS & GRAFIK)
-                let headerRow = null;
-                let startRow = 0;
+                let pCroKey1 = null, pLuasKey1 = null, pLuasTMKey1 = null, pTargetKey1 = null, pCountKey1 = null;
+                let pCroKey2 = null, pNamaPTKey2 = null, pLuasKey2 = null, pLuasTMKey2 = null, pTargetKey2 = null;
+
+                // 1. CARI ALAMAT KOLOM YANG AKURAT DARI HEADER PIVOT (ROW 0)
+                let keys = Object.keys(pivotData[0]);
+                let row0 = pivotData[0];
                 
-                for(let i=0; i<Math.min(5, pivotData.length); i++) {
-                    let keys = Object.keys(pivotData[i]);
-                    let cCount = 0;
-                    keys.forEach(k => {
-                        let v = String(pivotData[i][k]).toLowerCase();
-                        if(v.includes('cro') || v.includes('luas') || v.includes('target') || v.includes('count') || v.includes('sum')) cCount++;
-                    });
-                    if(cCount >= 3) {
-                        headerRow = pivotData[i];
-                        startRow = i + 1;
-                        break;
+                keys.forEach(k => {
+                    let v = String(row0[k] || "").toLowerCase().trim();
+                    if (v === 'cro') {
+                        if (!pCroKey1) pCroKey1 = k;
+                        else pCroKey2 = k;
                     }
-                }
+                    if (v.includes('luas kebun')) {
+                        if (!pLuasKey1) pLuasKey1 = k;
+                        else pLuasKey2 = k;
+                    }
+                    if (v.includes('luas tm')) {
+                        if (!pLuasTMKey1) pLuasTMKey1 = k;
+                        else pLuasTMKey2 = k;
+                    }
+                    if (v.includes('target')) {
+                        if (!pTargetKey1) pTargetKey1 = k;
+                        else pTargetKey2 = k;
+                    }
+                    if (v.includes('counta')) pCountKey1 = k;
+                    if (v === 'nama pt') pNamaPTKey2 = k;
+                });
 
-                if(headerRow) {
-                    let pKeys = Object.keys(headerRow);
-                    let pCro = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('cro')) || pKeys[0];
-                    let pLuas = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('luas kebun')) || pKeys[1];
-                    let pLuasTM = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('luas tm')) || pKeys[2];
-                    let pTarget = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('target')) || pKeys[3];
-                    let pCount = pKeys.find(k => String(headerRow[k]).toLowerCase().includes('count') || String(headerRow[k]).toLowerCase().includes('nama pt')) || pKeys[4];
+                // Kalo ga ketemu pake fallback dari EJS JSON Keys
+                if(!pCroKey1) pCroKey1 = keys.find(k => k.toLowerCase().includes('keseluruhan')) || keys[0];
+                if(!pLuasKey1) pLuasKey1 = keys[1];
+                if(!pLuasTMKey1) pLuasTMKey1 = keys[2];
+                if(!pTargetKey1) pTargetKey1 = keys[3];
+                if(!pCountKey1) pCountKey1 = keys[4];
+                
+                if(!pCroKey2) pCroKey2 = keys.find(k => k.toLowerCase() === 'summary nama pt') || keys[7];
+                if(!pNamaPTKey2) pNamaPTKey2 = keys[8];
+                if(!pLuasKey2) pLuasKey2 = keys[9];
+                if(!pLuasTMKey2) pLuasTMKey2 = keys[10];
+                if(!pTargetKey2) pTargetKey2 = keys[11];
 
-                    // BACA BARIS DEMI BARIS DI TABEL KIRI (SUMMARY KESELURUHAN)
-                    for(let i = startRow; i < pivotData.length; i++) {
-                        let row = pivotData[i];
-                        let croNameRaw = String(row[pCro] || "").replace(/^[+-]\s*/, '').trim();
-                        let cL = croNameRaw.toLowerCase();
-
-                        // KUNCI DEWA: KALO KETEMU "TOTAL KESELURUHAN" LANGSUNG BERHENTI BIAR GAK NYASAR KE TABEL BAWAHNYA!
-                        if (cL === 'total keseluruhan' || cL === 'grand total' || cL.includes('total keseluruhan')) {
-                            if (selectedCRO === 'ALL') {
-                                totalLuas = parseNum(row[pLuas]);
-                                totalLuasTM = parseNum(row[pLuasTM]);
-                                totalTarget = parseNum(row[pTarget]);
-                                totalPtCount = parseNum(row[pCount]);
+                // ===============================================
+                // TABEL KIRI (SUMMARY KESELURUHAN) -> UNTUK KPI & GRAFIK
+                // ===============================================
+                for(let i=1; i<pivotData.length; i++) {
+                    let row = pivotData[i];
+                    let croVal = String(row[pCroKey1] || "").trim();
+                    let cL = croVal.toLowerCase();
+                    
+                    if (!croVal) continue;
+                    
+                    // KUNCI DEWA: KETEMU TOTAL KESELURUHAN -> AMBIL ANGKA NYA, LALU STOP BACA TABEL INI!
+                    if (cL.includes("total keseluruhan") || cL === "grand total") {
+                        if (selectedCRO === 'ALL') {
+                            totalLuas = parseNum(row[pLuasKey1]);
+                            totalLuasTM = parseNum(row[pLuasTMKey1]);
+                            totalTarget = parseNum(row[pTargetKey1]);
+                            totalPtCount = parseNum(row[pCountKey1]);
+                        }
+                        break; 
+                    }
+                    
+                    if (cL.startsWith("cro")) {
+                        let cName = croVal.toUpperCase();
+                        croList.add(cName);
+                        
+                        if (selectedCRO === 'ALL' || selectedCRO === cName) {
+                            if (selectedCRO !== 'ALL') {
+                                totalLuas += parseNum(row[pLuasKey1]);
+                                totalLuasTM += parseNum(row[pLuasTMKey1]);
+                                totalTarget += parseNum(row[pTargetKey1]);
+                                totalPtCount += parseNum(row[pCountKey1]);
                             }
-                            break; 
+                            chartBarDataMap[cName] = parseNum(row[pTargetKey1]);
+                            chartPieDataMap[cName] = parseNum(row[pLuasKey1]);
                         }
-                        
-                        if (!croNameRaw || croNameRaw === "-" || cL === "cro" || cL.includes("summary")) continue;
-
-                        let luas = parseNum(row[pLuas]);
-                        let luasTM = parseNum(row[pLuasTM]);
-                        let target = parseNum(row[pTarget]);
-                        let countPT = parseNum(row[pCount]);
-
-                        let croName = croNameRaw;
-                        if(croName.toLowerCase().startsWith('cro')) croName = croName.toUpperCase();
-
-                        croList.add(croName);
-                        
-                        if (selectedCRO !== 'ALL' && croName !== selectedCRO) continue;
-
-                        if (selectedCRO !== 'ALL') {
-                            totalLuas += luas;
-                            totalLuasTM += luasTM;
-                            totalTarget += target;
-                            totalPtCount += countPT;
-                        }
-
-                        chartBarDataMap[croName] = target;
-                        chartPieDataMap[croName] = luas;
                     }
                 }
-                
-                // 2. CARI HEADER UNTUK TABEL "SUMMARY NAMA PT" (YANG ADA DI SEBELAH KANAN)
-                let pKeysAll = Object.keys(pivotData[0] || pivotData[1] || {});
-                let idxNamaPT = pKeysAll.findIndex(k => String(pivotData[0][k] || pivotData[1][k] || "").toLowerCase().trim() === 'nama pt');
-                
-                if (idxNamaPT !== -1) {
-                    let pCroPT = pKeysAll[idxNamaPT - 1]; 
-                    let pNamaPT = pKeysAll[idxNamaPT];
-                    let pLuasPT = pKeysAll[idxNamaPT + 1];
-                    let pLuasTMPT = pKeysAll[idxNamaPT + 2];
-                    let pTargetPT = pKeysAll[idxNamaPT + 3];
 
-                    let currentCro = "";
-                    let isPtMulai = false;
+                // ===============================================
+                // TABEL KANAN (SUMMARY NAMA PT) -> UNTUK DAFTAR PT DI BAWAH
+                // ===============================================
+                let currentCro = "";
+                for(let i=1; i<pivotData.length; i++) {
+                    let row = pivotData[i];
+                    let rawCro = String(row[pCroKey2] || "").replace(/^[+-]\s*/, '').trim();
+                    let rawPt = String(row[pNamaPTKey2] || "").trim();
+                    let pL = rawPt.toLowerCase();
 
-                    for (let i = 0; i < pivotData.length; i++) {
-                        let row = pivotData[i];
-                        let rawCro = String(row[pCroPT] || "").replace(/^[+-]\s*/, '').trim();
-                        let rawPt = String(row[pNamaPT] || "").trim();
-                        let pL = rawPt.toLowerCase();
-
-                        if (!isPtMulai) {
-                            if (pL === 'nama pt') isPtMulai = true;
-                            continue;
-                        }
-
-                        if (rawCro && rawCro !== "-") {
-                            currentCro = rawCro;
-                        }
-
-                        // KUNCI DEWA: KALO KETEMU "TOTAL KESELURUHAN" DI KOLOM PT, BERHENTI!
-                        if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) {
-                            break;
-                        }
-
-                        // ABAIKAN BARIS TOTAL PER CRO DI LIST PT (BIAR GAK MASUK JADI NAMA PT)
-                        if (!rawPt || rawPt === "-" || pL === "nama pt" || pL.includes('total') || pL.includes('summary')) {
-                            continue;
-                        }
-
-                        let cCro = currentCro;
-                        if(cCro.toLowerCase().startsWith('cro')) cCro = cCro.toUpperCase();
-
-                        if (selectedCRO !== 'ALL' && cCro !== selectedCRO) continue;
-
-                        let luasKebun = parseNum(row[pLuasPT]); 
-                        let luasTM = parseNum(row[pLuasTMPT]); 
-                        let targetProd = parseNum(row[pTargetPT]);
-
-                        if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: cCro, luas: 0, luasTM: 0, target: 0 };
-                        ptDataMap[rawPt].luas += luasKebun; 
-                        ptDataMap[rawPt].luasTM += luasTM; 
-                        ptDataMap[rawPt].target += targetProd;
+                    if (rawCro && rawCro !== "-") currentCro = rawCro.toUpperCase();
+                    
+                    // KUNCI DEWA 2: KETEMU TOTAL KESELURUHAN DI DAFTAR PT -> STOP BACA TABEL INI!
+                    if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) break;
+                    
+                    // JANGAN MASUKIN BARIS SUMMARY/TOTAL PER CRO KE DAFTAR NAMA PT
+                    if (!rawPt || rawPt === "-" || pL === "nama pt" || pL.includes('total') || pL.includes('summary')) continue;
+                    
+                    if (selectedCRO === 'ALL' || selectedCRO === currentCro) {
+                        let l = parseNum(row[pLuasKey2]);
+                        let lTM = parseNum(row[pLuasTMKey2]);
+                        let t = parseNum(row[pTargetKey2]);
+                        
+                        if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCro, luas: 0, luasTM: 0, target: 0 };
+                        ptDataMap[rawPt].luas += l;
+                        ptDataMap[rawPt].luasTM += lTM;
+                        ptDataMap[rawPt].target += t;
                     }
                 }
             }
@@ -744,7 +730,9 @@
                         break;
                     }
                 }
+                
                 if (isGhost) return;
+                
                 validKeys.push(key);
             });
 
@@ -847,8 +835,9 @@
                             const allSheetNames = [...listSheets, "Pivot Table"]; 
                             
                             allSheetNames.forEach(sheet => {
+                                let pivotKey = Object.keys(result.rawData).find(k => k.trim().toLowerCase() === sheet.toLowerCase()) || sheet;
                                 let oldSheet = rawData[sheet] || [];
-                                let newSheet = result.rawData[sheet] || [];
+                                let newSheet = result.rawData[pivotKey] || [];
                                 let maxRows = Math.max(oldSheet.length, newSheet.length);
 
                                 for (let i = 0; i < maxRows; i++) {
@@ -886,7 +875,8 @@
                             renderPivotDashboard(); 
                         }
                         else if (listSheets.includes(currentActiveSheet)) {
-                            loadTable(currentActiveSheet);
+                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
+                            loadTable(sheetRealKey);
                         }
 
                         if(syncText && syncDot) {
@@ -915,7 +905,8 @@
                     if(Object.keys(rawData).length > 0) {
                         clearInterval(retryInterval);
                         if (currentActiveSheet) {
-                            if (listSheets.includes(currentActiveSheet)) loadTable(currentActiveSheet);
+                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
+                            if (listSheets.includes(currentActiveSheet)) loadTable(sheetRealKey);
                         } else {
                             renderPivotDashboard();
                         }
