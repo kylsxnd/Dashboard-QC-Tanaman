@@ -123,7 +123,7 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA (HANYA REKAPITULASI) -->
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -204,7 +204,7 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- CHART STATUS PENGELOLAAN -->
+                    <!-- TAMBAHAN BARU: CHART STATUS PENGELOLAAN -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -464,7 +464,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAP
+            // SEDOT DATA LANGSUNG DARI PIVOT & REKAP
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -474,66 +474,35 @@
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
-            
-            // Variabel Penampung Status Kelola
-            let totalSudahDikelola = 0;
-            let totalBelumDikelola = 0;
+            let totalSudahDikelola = 0, totalBelumDikelola = 0;
 
             if (pivotData.length > 0) {
                 // ===============================================
-                // SCANNER OTOMATIS: CARI POSISI KOLOM DI SELURUH SHEET
+                // SUPER HARDCODE INDEKS
                 // ===============================================
-                let l_Cro, l_Luas, l_LuasTM, l_Target, l_Count;
-                let r_Cro, r_Pt, r_Luas, r_LuasTM, r_Target;
+                let pKeysAll = Object.keys(pivotData[0] || {});
+                
+                let l_Cro = pKeysAll[0];
+                let l_Luas = pKeysAll[1];
+                let l_LuasTM = pKeysAll[2];
+                let l_Target = pKeysAll[3];
+                let l_Count = pKeysAll[4];
 
-                // Kumpulkan semua keys yang ada dari 20 baris pertama (antisipasi missing keys di row 0)
-                let allPossibleKeys = new Set();
-                for(let i=0; i<Math.min(20, pivotData.length); i++) {
-                    Object.keys(pivotData[i]).forEach(k => allPossibleKeys.add(k));
-                }
-                let pKeysAll = Array.from(allPossibleKeys);
-
-                // Cari mapping kolom yang bener dari value-nya
-                for(let i=0; i<Math.min(20, pivotData.length); i++) {
-                    let row = pivotData[i];
-                    for (let key of pKeysAll) {
-                        if (row[key] === undefined) continue;
-                        let v = String(row[key]).toLowerCase().trim();
-                        
-                        if (v === 'cro') {
-                            if (!l_Cro) l_Cro = key;
-                            else if (!r_Cro && key !== l_Cro) r_Cro = key;
-                        }
-                        else if (v.includes('luas kebun')) {
-                            if (!l_Luas) l_Luas = key;
-                            else if (!r_Luas && key !== l_Luas) r_Luas = key;
-                        }
-                        else if (v.includes('luas tm')) {
-                            if (!l_LuasTM) l_LuasTM = key;
-                            else if (!r_LuasTM && key !== l_LuasTM) r_LuasTM = key;
-                        }
-                        else if (v.includes('target')) {
-                            if (!l_Target) l_Target = key;
-                            else if (!r_Target && key !== l_Target) r_Target = key;
-                        }
-                        else if (v.includes('nama pt') && (v.includes('count') || v.includes('jumlah'))) {
-                            l_Count = key;
-                        }
-                        else if (v === 'nama pt' || v === 'perusahaan') {
-                            r_Pt = key;
-                        }
-                    }
-                }
+                let r_Cro = pKeysAll[7];
+                let r_Pt = pKeysAll[8];
+                let r_Luas = pKeysAll[9];
+                let r_LuasTM = pKeysAll[10];
+                let r_Target = pKeysAll[11];
 
                 // ===============================================
-                // 1. PARSING TABEL KIRI (KPI & GRAFIK)
+                // 1. KIRI - SUMMARY KESELURUHAN (Mulai dari Baris 0)
                 // ===============================================
                 for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
                     let croValRaw = String(row[l_Cro] || "").replace(/^[+-]\s*/, '').trim();
                     let cL = croValRaw.toLowerCase();
 
-                    // KUNCI DEWA: Berhenti pas nemu Total Keseluruhan
+                    // BERHENTI MUTLAK pas nemu "Total Keseluruhan" biar gak dobel
                     if (cL.includes("total keseluruhan") || cL === "grand total") {
                         if (selectedCRO === 'ALL') {
                             totalLuas = parseNum(row[l_Luas]);
@@ -544,6 +513,7 @@
                         break; 
                     }
                     
+                    // Filter murni nama CRO
                     if (cL.startsWith("cro") && cL !== "cro" && !cL.includes("summary") && !cL.includes("tahap")) {
                         let cName = croValRaw.toUpperCase();
                         croList.add(cName); 
@@ -562,7 +532,7 @@
                 }
 
                 // ===============================================
-                // 2. PARSING TABEL KANAN (DAFTAR NAMA PT BAWAH)
+                // 2. KANAN - DAFTAR PT (Mulai dari Baris 0)
                 // ===============================================
                 let currentCro = "";
                 for (let i = 0; i < pivotData.length; i++) {
@@ -595,7 +565,7 @@
             }
 
             // ===============================================
-            // 3. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
+            // 3. STATUS DARI REKAPITULASI
             // ===============================================
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
@@ -691,7 +661,7 @@
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'],
+                    colors: ['#3b82f6', '#f43f5e'], 
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
