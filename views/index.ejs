@@ -464,6 +464,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
+            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAP
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -473,34 +474,66 @@
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
-            let totalSudahDikelola = 0, totalBelumDikelola = 0;
+            
+            // Variabel Penampung Status Kelola
+            let totalSudahDikelola = 0;
+            let totalBelumDikelola = 0;
 
             if (pivotData.length > 0) {
-                let pKeysAll = Object.keys(pivotData[0] || {});
-                
-                // SUPER HARDCODE INDEKS
-                // Di Excel Pivot Lu:
-                // KIRI: 0: CRO, 1: Luas, 2: Luas TM, 3: Target, 4: Counta Nama PT
-                // KANAN: 7: CRO, 8: Nama PT, 9: Luas, 10: Luas TM, 11: Target
-                
-                let l_Cro = pKeysAll[0];
-                let l_Luas = pKeysAll[1];
-                let l_LuasTM = pKeysAll[2];
-                let l_Target = pKeysAll[3];
-                let l_Count = pKeysAll[4];
+                // ===============================================
+                // SCANNER OTOMATIS: CARI POSISI KOLOM DI SELURUH SHEET
+                // ===============================================
+                let l_Cro, l_Luas, l_LuasTM, l_Target, l_Count;
+                let r_Cro, r_Pt, r_Luas, r_LuasTM, r_Target;
 
-                let r_Cro = pKeysAll[7];
-                let r_Pt = pKeysAll[8];
-                let r_Luas = pKeysAll[9];
-                let r_LuasTM = pKeysAll[10];
-                let r_Target = pKeysAll[11];
+                // Kumpulkan semua keys yang ada dari 20 baris pertama (antisipasi missing keys di row 0)
+                let allPossibleKeys = new Set();
+                for(let i=0; i<Math.min(20, pivotData.length); i++) {
+                    Object.keys(pivotData[i]).forEach(k => allPossibleKeys.add(k));
+                }
+                let pKeysAll = Array.from(allPossibleKeys);
 
-                // 1. KIRI - SUMMARY KESELURUHAN
+                // Cari mapping kolom yang bener dari value-nya
+                for(let i=0; i<Math.min(20, pivotData.length); i++) {
+                    let row = pivotData[i];
+                    for (let key of pKeysAll) {
+                        if (row[key] === undefined) continue;
+                        let v = String(row[key]).toLowerCase().trim();
+                        
+                        if (v === 'cro') {
+                            if (!l_Cro) l_Cro = key;
+                            else if (!r_Cro && key !== l_Cro) r_Cro = key;
+                        }
+                        else if (v.includes('luas kebun')) {
+                            if (!l_Luas) l_Luas = key;
+                            else if (!r_Luas && key !== l_Luas) r_Luas = key;
+                        }
+                        else if (v.includes('luas tm')) {
+                            if (!l_LuasTM) l_LuasTM = key;
+                            else if (!r_LuasTM && key !== l_LuasTM) r_LuasTM = key;
+                        }
+                        else if (v.includes('target')) {
+                            if (!l_Target) l_Target = key;
+                            else if (!r_Target && key !== l_Target) r_Target = key;
+                        }
+                        else if (v.includes('nama pt') && (v.includes('count') || v.includes('jumlah'))) {
+                            l_Count = key;
+                        }
+                        else if (v === 'nama pt' || v === 'perusahaan') {
+                            r_Pt = key;
+                        }
+                    }
+                }
+
+                // ===============================================
+                // 1. PARSING TABEL KIRI (KPI & GRAFIK)
+                // ===============================================
                 for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
                     let croValRaw = String(row[l_Cro] || "").replace(/^[+-]\s*/, '').trim();
                     let cL = croValRaw.toLowerCase();
 
+                    // KUNCI DEWA: Berhenti pas nemu Total Keseluruhan
                     if (cL.includes("total keseluruhan") || cL === "grand total") {
                         if (selectedCRO === 'ALL') {
                             totalLuas = parseNum(row[l_Luas]);
@@ -528,7 +561,9 @@
                     }
                 }
 
-                // 2. KANAN - DAFTAR PT
+                // ===============================================
+                // 2. PARSING TABEL KANAN (DAFTAR NAMA PT BAWAH)
+                // ===============================================
                 let currentCro = "";
                 for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
@@ -559,7 +594,9 @@
                 }
             }
 
-            // 3. STATUS DARI REKAPITULASI
+            // ===============================================
+            // 3. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
+            // ===============================================
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let rCroIdx = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || rCols[0];
