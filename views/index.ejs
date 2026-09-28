@@ -64,13 +64,14 @@
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
+        /* Child Links (Sub-menu) Master Data yang Diperbagus */
+        .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
+        .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
+        .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
+
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
-        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
-        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
-
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -97,6 +98,45 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
 
+    <!-- ==========================================
+         LOGIN OVERLAY (PREMIUM SECURITY SCREEN)
+         ========================================== -->
+    <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
+        <!-- Background Ornaments -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+            <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
+            <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-600 opacity-10 blur-[120px] rounded-full"></div>
+        </div>
+        
+        <div class="premium-card w-full max-w-md p-8 md:p-10 relative z-10 mx-4 border-t-4 border-t-[#83b765]">
+            <div class="flex justify-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-[#83b765]/10 border border-[#83b765]/30 flex items-center justify-center shadow-[0_0_20px_rgba(131,183,101,0.2)]">
+                    <svg class="w-8 h-8 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-center theme-text-main mb-1">Executive Portal</h2>
+            <p class="text-xs text-center theme-text-muted mb-8">Masuk ke Sistem Keamanan Agrinas</p>
+            
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-5">
+                    <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Email Akun</label>
+                    <input type="email" id="login-email" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main focus:border-[#83b765] focus:ring-1 focus:ring-[#83b765] outline-none transition-all" placeholder="email@agrinas.id" required>
+                </div>
+                <div class="mb-8">
+                    <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Kata Sandi</label>
+                    <input type="password" id="login-password" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main focus:border-[#83b765] focus:ring-1 focus:ring-[#83b765] outline-none transition-all" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-[#83b765] hover:bg-[#72a356] text-white font-bold py-3.5 rounded-lg text-sm transition-all shadow-lg shadow-[#83b765]/25 hover:shadow-[#83b765]/40 flex justify-center items-center gap-2">
+                    Masuk Dashboard
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+                <div id="login-error" class="hidden mt-4 text-center text-xs text-red-500 font-medium bg-red-500/10 py-2.5 rounded border border-red-500/20">Akses Ditolak: Email atau sandi salah!</div>
+            </form>
+        </div>
+    </div>
+    <!-- ========================================== -->
+
+
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -116,7 +156,7 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
@@ -127,16 +167,21 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
+            <!-- Container untuk Sub-menu Master Data -->
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
-        <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full border theme-border flex items-center justify-center text-xs font-bold theme-text-main" style="background-color: var(--hover-bg);">PIC</div>
-                <div class="flex flex-col overflow-hidden">
-                    <span class="text-xs font-semibold theme-text-main truncate">Staf PIC HO</span>
-                    <span class="text-[10px] theme-text-muted truncate">staf.pic.ho@agrinas.id</span>
+        <!-- AREA PROFIL & LOGOUT -->
+        <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300 group cursor-pointer hover:bg-red-500/5" onclick="logout()" title="Klik untuk keluar (Logout)">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full border border-[#83b765]/30 flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-[#83b765] to-emerald-700 shadow-sm">PIC</div>
+                    <div class="flex flex-col overflow-hidden">
+                        <span id="pic-name-display" class="text-xs font-semibold theme-text-main truncate">User</span>
+                        <span id="pic-email-display" class="text-[10px] theme-text-muted truncate">email@agrinas.id</span>
+                    </div>
                 </div>
+                <svg class="w-4 h-4 text-red-500 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             </div>
         </div>
     </aside>
@@ -204,7 +249,6 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- CHART STATUS PENGELOLAAN -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -231,25 +275,26 @@
                 </div>
             </section>
 
-            <!-- 2. MASTER DATA KEBUN -->
+            <!-- 2. MASTER DATA KEBUN & PEMBATALAN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
                 
-                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN (Hanya muncul di menu Surat Pembatalan) -->
-                <div id="pembatalan-chart-container" class="hidden mb-6 premium-card p-4 md:p-6 w-full relative overflow-hidden">
-                    <div class="flex justify-between items-center mb-4">
+                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN -->
+                <div id="pembatalan-chart-container" class="hidden mb-6 premium-card p-5 md:p-8 w-full relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-6">
                         <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest flex items-center gap-2">
                             <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             Statistik Surat Pembatalan per CRO
                         </h3>
-                        <div id="total-batal-badge" class="bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold px-3 py-1 rounded-full">
+                        <div id="total-batal-badge" class="bg-red-500/10 border border-red-500/30 text-red-500 text-[11px] font-bold px-4 py-1.5 rounded-full shadow-sm">
                             Total: 0 Surat
                         </div>
                     </div>
-                    <div id="chart-pembatalan" style="height: 300px; width: 100%;"></div>
+                    <!-- Area Chart Batang -->
+                    <div id="chart-pembatalan" style="height: 350px; width: 100%;"></div>
                 </div>
 
                 <div class="premium-card p-4 md:p-6 w-full">
@@ -300,6 +345,68 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
+        // ==========================================
+        // 1. SISTEM AUTENTIKASI / LOGIN (LOCAL STORAGE)
+        // ==========================================
+        function checkLoginState() {
+            const loggedInUser = localStorage.getItem('agrinas_user');
+            const loginOverlay = document.getElementById('login-overlay');
+            
+            if (loggedInUser) {
+                // User sudah login, sembunyikan form login
+                loginOverlay.style.opacity = '0';
+                setTimeout(() => { loginOverlay.style.display = 'none'; }, 500);
+                
+                // Ubah data profil di pojok kiri bawah
+                const userObj = JSON.parse(loggedInUser);
+                document.getElementById('pic-name-display').innerText = userObj.name;
+                document.getElementById('pic-email-display').innerText = userObj.email;
+            } else {
+                // Belum login, tampilkan form login
+                loginOverlay.style.display = 'flex';
+                setTimeout(() => { loginOverlay.style.opacity = '1'; }, 10);
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            // Hardcode 2 Akun (Admin & CEO). Kalau mau konek ke DB Backend, masukin logikanya disini.
+            if ((email === 'admin@agrinas.id' && password === 'admin123') || 
+                (email === 'ceo@agrinas.id' && password === 'ceo123')) {
+                
+                const userData = { 
+                    email: email, 
+                    name: email === 'ceo@agrinas.id' ? 'BOD Agrinas' : 'Staf PIC HO' 
+                };
+                
+                // Simpan sesi login ke LocalStorage (Otomatis nyangkut di HP/Laptop user)
+                localStorage.setItem('agrinas_user', JSON.stringify(userData));
+                errorMsg.classList.add('hidden');
+                
+                // Refresh Status
+                checkLoginState();
+            } else {
+                // Kalau salah email/password
+                errorMsg.classList.remove('hidden');
+            }
+        }
+        
+        function logout() {
+            if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+                localStorage.removeItem('agrinas_user');
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+                checkLoginState();
+            }
+        }
+
+        // ==========================================
+        // 2. DATA PENGATURAN AWAL
+        // ==========================================
         let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
@@ -386,6 +493,8 @@
             }
             
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-child-link').forEach(el => el.classList.remove('active'));
+            
             if (elementId && document.getElementById(elementId)) {
                 document.getElementById(elementId).classList.add('active');
             }
@@ -454,7 +563,7 @@
         };
 
         // =========================================
-        // DASHBOARD UTAMA (REKAPITULASI AJA)
+        // DASHBOARD UTAMA (REKAPITULASI ON-FARM)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -583,7 +692,7 @@
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'], 
+                    colors: ['#3b82f6', '#f43f5e'], // Biru untuk Sudah, Merah/Pink untuk Belum
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
@@ -620,7 +729,7 @@
         }
 
         // =========================================
-        // GRAFIK PREMIUM SURAT PEMBATALAN
+        // GRAFIK PREMIUM SURAT PEMBATALAN (LEBIH ELEGAN & GEMUK)
         // =========================================
         function renderPembatalanChart(pembatalanData) {
             let pembatalanCountMap = {};
@@ -654,7 +763,7 @@
             Highcharts.chart('chart-pembatalan', {
                 chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
                 title: { text: null },
-                legend: { enabled: false }, // Hapus legend biar area grafik makin luas dan gak sumpek
+                legend: { enabled: false }, // Hapus legend biar area grafik luas & rapi
                 tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
                 xAxis: { 
                     categories: categories, 
@@ -665,27 +774,27 @@
                 yAxis: { 
                     title: { text: null }, 
                     gridLineColor: '#262626', 
-                    gridLineDashStyle: 'Dash', // Garis background putus-putus ala modern dashboard
+                    gridLineDashStyle: 'Dash', // Garis putus-putus modern
                     labels: { style: { color: '#52525b' } } 
                 },
                 series: [{ 
-                    name: 'Jumlah Surat Pembatalan', 
+                    name: 'Jumlah Surat Batal', 
                     data: chartData, 
-                    // Gradien merah elegan (Terang ke Gelap)
-                    color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#f87171'], [1, '#991b1b'] ] }
+                    // Warna merah terang gradasi ke gelap
+                    color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] }
                 }],
                 plotOptions: { 
                     column: { 
                         borderRadius: 6, 
                         borderWidth: 0, 
-                        pointPadding: 0.1, // Bikin bar lebih "gemuk" / proporsional
+                        pointPadding: 0.15, // Biar bar lebih gemuk
                         groupPadding: 0.1, 
-                        maxPointWidth: 60, // Lebar maksimal bar biar gak aneh di layar ultrawide
+                        maxPointWidth: 70, // Maksimal lebar bar
                         dataLabels: { 
                             enabled: true, 
-                            color: '#ffffff', // Warna font data putih biar kontras
-                            style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, // Angka dibikin lebih gede
-                            y: -5 // Posisi angka pas di atas batang
+                            color: '#ffffff', // Warna font atas putih 
+                            style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, // Angka lebih besar
+                            y: -5
                         } 
                     } 
                 },
@@ -833,7 +942,11 @@
             });
         }
 
+        // TRIGGER LOGIN CEK SAAT PERTAMA KALI WEB DIBUKA
         document.addEventListener("DOMContentLoaded", function() {
+            // Pastikan Form Login Nahan User
+            checkLoginState();
+
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
@@ -848,8 +961,8 @@
                 listSheets.forEach((sheet, idx) => {
                     const btn = document.createElement('button'); 
                     btn.id = 'nav-md-' + idx; 
-                    btn.className = 'w-full sidebar-link !pl-9 !py-2 !mb-1'; 
-                    btn.innerHTML = `<span class="w-1 h-1 rounded-full bg-gray-500 mr-3 shrink-0 opacity-50"></span> <span class="truncate text-left text-xs">${sheet}</span>`;
+                    btn.className = 'w-full sidebar-child-link text-left'; 
+                    btn.innerHTML = `<svg class="w-3.5 h-3.5 mr-2.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="truncate tracking-wide">${sheet}</span>`;
                     btn.onclick = () => switchView('view-database', btn.id, sheet);
                     sidebarMaster.appendChild(btn);
                 });
