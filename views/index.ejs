@@ -123,6 +123,7 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -463,7 +464,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI SHEET "PIVOT TABLE" & "REKAPITULASI"
+            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAP (BUAT STATUS)
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -480,88 +481,97 @@
 
             if (pivotData.length > 0) {
                 // ===============================================
-                // 1. CARI ALAMAT KOLOM YANG AKURAT DARI HEADER
+                // 1. CARI ALAMAT KOLOM YANG AKURAT DARI SELURUH ROW AWAL
                 // ===============================================
-                let pKeysAll = Object.keys(pivotData[0] || {});
-                let pCroKey1 = pKeysAll.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('keseluruhan')) || pKeysAll[0];
-                let pLuasKey1 = pKeysAll.find(k => k.toLowerCase().includes('luas kebun')) || pKeysAll[1];
-                let pLuasTMKey1 = pKeysAll.find(k => k.toLowerCase().includes('luas tm')) || pKeysAll[2];
-                let pTargetKey1 = pKeysAll.find(k => k.toLowerCase().includes('target')) || pKeysAll[3];
-                let pCountKey1 = pKeysAll.find(k => k.toLowerCase().includes('counta') || k.toLowerCase().includes('nama pt')) || pKeysAll[4];
+                let cols = Object.keys(pivotData[0] || {});
+                let leftCroIdx = -1, leftLuasIdx = -1, leftLuasTMIdx = -1, leftTargetIdx = -1, leftCountIdx = -1;
+                let rightPtIdx = -1, rightCroIdx = -1, rightLuasIdx = -1, rightLuasTMIdx = -1, rightTargetIdx = -1;
+
+                // NGE-SCAN KE BAWAH SAMPE 10 BARIS BUAT CARI JUDUL KOLOM YANG BENER
+                for(let i=0; i<Math.min(10, pivotData.length); i++) {
+                    let row = pivotData[i];
+                    cols.forEach((col, idx) => {
+                        let v = String(row[col]).toLowerCase().trim();
+                        // KIRI: Summary Keseluruhan
+                        if ((v === 'cro' || v.includes('keseluruhan')) && leftCroIdx === -1) leftCroIdx = idx;
+                        if (v.includes('luas kebun') && leftLuasIdx === -1 && idx < 5) leftLuasIdx = idx;
+                        if (v.includes('luas tm') && leftLuasTMIdx === -1 && idx < 5) leftLuasTMIdx = idx;
+                        if (v.includes('target') && leftTargetIdx === -1 && idx < 5) leftTargetIdx = idx;
+                        if ((v.includes('counta') || v.includes('nama pt')) && leftCountIdx === -1 && idx < 5) leftCountIdx = idx;
+
+                        // KANAN: Summary Nama PT
+                        if (v === 'nama pt' || v === 'perusahaan') {
+                            rightPtIdx = idx;
+                            rightCroIdx = idx - 1;
+                            rightLuasIdx = idx + 1;
+                            rightLuasTMIdx = idx + 2;
+                            rightTargetIdx = idx + 3;
+                        }
+                    });
+                }
+
+                // Fallback darurat kalo pusing
+                if(leftCroIdx === -1) leftCroIdx = 0; if(leftLuasIdx === -1) leftLuasIdx = 1; if(leftLuasTMIdx === -1) leftLuasTMIdx = 2; if(leftTargetIdx === -1) leftTargetIdx = 3; if(leftCountIdx === -1) leftCountIdx = 4;
+                if(rightPtIdx === -1) { rightPtIdx = 8; rightCroIdx = 7; rightLuasIdx = 9; rightLuasTMIdx = 10; rightTargetIdx = 11; }
 
                 // ===============================================
-                // 2. TABEL KIRI (SUMMARY KESELURUHAN) -> UNTUK KPI & GRAFIK
+                // 2. PARSING TABEL KIRI (SUMMARY KESELURUHAN) -> UNTUK KPI & GRAFIK
                 // ===============================================
-                for(let i = 0; i < pivotData.length; i++) {
+                // BACA DARI BARIS 0 (BIAR CRO I GAK KESKIP)
+                for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
-                    let croValRaw = String(row[pCroKey1] || "").replace(/^[+-]\s*/, '').trim();
+                    let croValRaw = String(row[cols[leftCroIdx]] || "").replace(/^[+-]\s*/, '').trim();
                     let cL = croValRaw.toLowerCase();
-                    
-                    if (!croValRaw) continue; 
-                    
-                    if (cL.includes("total keseluruhan") || cL === "grand total") {
-                        if (selectedCRO === 'ALL') {
-                            totalLuas = parseNum(row[pLuasKey1]);
-                            totalLuasTM = parseNum(row[pLuasTMKey1]);
-                            totalTarget = parseNum(row[pTargetKey1]);
-                            totalPtCount = parseNum(row[pCountKey1]);
-                        }
-                        break; 
-                    }
-                    
-                    if (cL.startsWith("cro") && cL !== "cro") {
+
+                    // KUNCI DEWA: Berhenti pas nemu "Total Keseluruhan" biar gak bablas ke tabel bawahnya!
+                    if (cL.includes("total keseluruhan") || cL === "grand total") break; 
+
+                    // Kalo depannya CRO (seperti CRO I, CRO III)
+                    if (cL.startsWith("cro") && cL !== "cro" && !cL.includes("summary")) {
                         let cName = croValRaw.toUpperCase();
-                        croList.add(cName); 
-                        
+                        croList.add(cName); // Simpan nama CRO buat Dropdown Filter
+
                         if (selectedCRO === 'ALL' || selectedCRO === cName) {
-                            if (selectedCRO !== 'ALL') {
-                                totalLuas += parseNum(row[pLuasKey1]);
-                                totalLuasTM += parseNum(row[pLuasTMKey1]);
-                                totalTarget += parseNum(row[pTargetKey1]);
-                                totalPtCount += parseNum(row[pCountKey1]);
-                            }
-                            chartBarDataMap[cName] = parseNum(row[pTargetKey1]);
-                            chartPieDataMap[cName] = parseNum(row[pLuasKey1]);
+                            // Jumlahin manual angkanya satu per satu (Anti-Nol)
+                            totalLuas += parseNum(row[cols[leftLuasIdx]]);
+                            totalLuasTM += parseNum(row[cols[leftLuasTMIdx]]);
+                            totalTarget += parseNum(row[cols[leftTargetIdx]]);
+                            totalPtCount += parseNum(row[cols[leftCountIdx]]);
+                            
+                            chartBarDataMap[cName] = parseNum(row[cols[leftTargetIdx]]);
+                            chartPieDataMap[cName] = parseNum(row[cols[leftLuasIdx]]);
                         }
                     }
                 }
 
                 // ===============================================
-                // 3. TABEL KANAN (SUMMARY NAMA PT) -> UNTUK DAFTAR PT DI BAWAH
+                // 3. PARSING TABEL KANAN (SUMMARY NAMA PT) -> UNTUK DAFTAR PT DI BAWAH
                 // ===============================================
-                let idxNamaPT = pKeysAll.findIndex(k => String(k).toLowerCase().includes('nama pt') && k !== pCountKey1);
-                if (idxNamaPT === -1) {
-                    let r0 = pivotData[0];
-                    idxNamaPT = pKeysAll.findIndex(k => String(r0[k]).toLowerCase() === 'nama pt');
-                }
-                if (idxNamaPT === -1) idxNamaPT = 8; 
-                
-                let pCroKey2 = pKeysAll[idxNamaPT - 1] || pKeysAll[7]; 
-                let pNamaPTKey2 = pKeysAll[idxNamaPT];
-                let pLuasKey2 = pKeysAll[idxNamaPT + 1] || pKeysAll[9];
-                let pLuasTMKey2 = pKeysAll[idxNamaPT + 2] || pKeysAll[10];
-                let pTargetKey2 = pKeysAll[idxNamaPT + 3] || pKeysAll[11];
-
                 let currentCro = "";
-                for(let i=0; i<pivotData.length; i++) {
+                for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
-                    let rawCro = String(row[pCroKey2] || "").replace(/^[+-]\s*/, '').trim();
-                    let rawPt = String(row[pNamaPTKey2] || "").replace(/^[+-]\s*/, '').trim();
+                    let rawCro = String(row[cols[rightCroIdx]] || "").replace(/^[+-]\s*/, '').trim();
+                    let rawPt = String(row[cols[rightPtIdx]] || "").replace(/^[+-]\s*/, '').trim();
                     let pL = rawPt.toLowerCase();
 
+                    // Simpen nama CRO terakhir biar nempel ke PT di bawahnya
                     if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro") {
                         currentCro = rawCro.toUpperCase();
                     }
-                    
-                    if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) break;
+
+                    // KUNCI DEWA 2: Berhenti pas nemu "Total Keseluruhan" di blok PT
+                    if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) break; 
+
+                    // JANGAN MASUKIN JUDUL ATAU BARIS SUBTOTAL KE DAFTAR NAMA PT
                     if (!rawPt || rawPt === "-" || pL === "nama pt" || pL === "nama mitra" || pL.includes('total') || pL.includes('summary')) continue;
-                    
+
+                    // Kalau ini beneran list PT
                     if (currentCro.startsWith("CRO")) {
                         if (selectedCRO === 'ALL' || selectedCRO === currentCro) {
-                            let l = parseNum(row[pLuasKey2]);
-                            let lTM = parseNum(row[pLuasTMKey2]);
-                            let t = parseNum(row[pTargetKey2]);
-                            
+                            let l = parseNum(row[cols[rightLuasIdx]]);
+                            let lTM = parseNum(row[cols[rightLuasTMIdx]]);
+                            let t = parseNum(row[cols[rightTargetIdx]]);
+
                             if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCro, luas: 0, luasTM: 0, target: 0, status: '-' };
                             ptDataMap[rawPt].luas += l;
                             ptDataMap[rawPt].luasTM += lTM;
@@ -572,30 +582,30 @@
             }
 
             // ===============================================
-            // 4. SEDOT STATUS DARI REKAPITULASI 
-            // (Hanya ambil kolom CRO dan Status buat ngisi Donat Chart)
+            // 4. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
+            // (Untuk mengisi Pie Chart Sudah vs Belum Dikelola)
             // ===============================================
             if (rekapData.length > 0) {
-                let rKeys = Object.keys(rekapData[0] || {});
-                let rCroKey = rKeys.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || rKeys[0];
-                let rStatusKey = rKeys.find(k => k.toLowerCase() === 'status' || k.toLowerCase().includes('status'));
-                let rNamaPtKey = rKeys.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan'));
+                let rCols = Object.keys(rekapData[0] || {});
+                let rCroIdx = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || rCols[0];
+                let rStatusIdx = rCols.find(k => k.toLowerCase() === 'status' || k.toLowerCase().includes('status'));
+                let rNamaPtIdx = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan'));
 
-                if (rStatusKey) {
+                if (rStatusIdx && rCroIdx && rNamaPtIdx) {
                     rekapData.forEach(row => {
-                        let c = String(row[rCroKey] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
-                        let pt = String(row[rNamaPtKey] || "").trim();
-                        let s = String(row[rStatusKey] || "").trim().toLowerCase();
+                        let c = String(row[rCroIdx] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
+                        let pt = String(row[rNamaPtIdx] || "").trim();
+                        let s = String(row[rStatusIdx] || "").trim().toLowerCase();
 
-                        // Masukin status ke ptDataMap kalau PT nya ada di pivot
+                        // Update Status di Data Map PT bawah
                         if (ptDataMap[pt]) {
-                            let displayStatus = String(row[rStatusKey] || "").trim();
-                            ptDataMap[pt].status = displayStatus || '-';
+                            ptDataMap[pt].status = String(row[rStatusIdx] || "").trim() || '-';
                         }
 
+                        // JANGAN HITUNG BARIS TOTAL/SUMMARY DARI REKAPITULASI
                         if (!c.startsWith('CRO') || c.includes('TOTAL') || c.includes('SUMMARY')) return;
                         
-                        // Cuma hitung yang sesuai filter
+                        // Hitung jumlah PT Sudah vs Belum untuk chart Donat (Sesuai Filter CRO)
                         if (selectedCRO === 'ALL' || selectedCRO === c) {
                             if (s.includes('sudah')) totalSudahDikelola++;
                             else if (s.includes('belum')) totalBelumDikelola++;
@@ -657,7 +667,7 @@
             if(document.getElementById('pivot-pie-chart')) {
                 Highcharts.chart('pivot-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 16px; font-weight: bold; color: #ffffff;">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
                     colors: ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#6366f1', '#14b8a6', '#f97316', '#84cc16'],
@@ -666,14 +676,14 @@
                 });
             }
 
-            // TAMBAHAN BARU: CHART STATUS KELOLA
+            // TAMBAHAN BARU: CHART DONAT STATUS KELOLA (SUDAH VS BELUM)
             if(document.getElementById('status-pie-chart')) {
                 Highcharts.chart('status-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'], // Biru (Sudah), Merah (Belum)
+                    colors: ['#3b82f6', '#f43f5e'], // Biru untuk Sudah, Merah/Pink untuk Belum
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
