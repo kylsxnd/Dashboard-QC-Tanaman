@@ -182,7 +182,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Pivot Table.
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Master Rekapitulasi.
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -288,6 +288,7 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
+        // HANYA REKAPITULASI YANG TERSISA DI MASTER DATA KEBUN
         const listSheets = ["REKAPITULASI"];
         
         let currentDataTable = null;
@@ -460,148 +461,107 @@
         };
 
         // =========================================
-        // MESIN UTAMA PIVOT (DENGAN HARDCODE INDEX)
+        // SISTEM MURNI BACA DARI REKAPITULASI AJA
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
+            // SEDOT DATA LANGSUNG DARI SHEET "REKAPITULASI" MURNI!
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
-            
-            const pivotData = rawData[pivotKey] || [];
             const rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
-            let totalLuas = 0, totalLuasTM = 0, totalTarget = 0, totalPtCount = 0;
-            let chartBarDataMap = {}, chartPieDataMap = {}, ptDataMap = {}; 
-            let totalSudahDikelola = 0, totalBelumDikelola = 0;
+            let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
+            let chartBarDataMap = {}, chartPieDataMap = {}; 
+            
+            // Array untuk nyimpen list PT mentah (biar duplikat nama PT tetep dihitung & masuk tabel)
+            let ptListRaw = []; 
+            
+            let totalSudahDikelola = 0;
+            let totalBelumDikelola = 0;
 
-            if (pivotData.length > 0) {
-                
-                // MENGGUNAKAN INDEKS ARRAY 0 SAMPAI AKHIR UNTUK MENCEGAH ERROR HEADER
-                let ptListLagiBuka = false; 
-                let currentCroBawah = ""; 
-
-                for (let i = 0; i < pivotData.length; i++) {
-                    let rowVals = Object.values(pivotData[i]);
-                    
-                    if (rowVals.length < 4) continue; 
-
-                    let cell0 = String(rowVals[0] || "").replace(/^[+-]\s*/, '').trim();
-                    let cell0Low = cell0.toLowerCase();
-
-                    // ===========================================
-                    // TABEL KIRI (ANGKA KPI & GRAFIK TARGET/LUAS)
-                    // ===========================================
-                    if (cell0Low.includes("total keseluruhan") || cell0Low === "grand total") {
-                        if (selectedCRO === 'ALL' && totalTarget === 0) {
-                            totalLuas = parseNum(rowVals[1]);
-                            totalLuasTM = parseNum(rowVals[2]);
-                            totalTarget = parseNum(rowVals[3]);
-                            totalPtCount = parseNum(rowVals[4]);
-                        }
-                        ptListLagiBuka = true; 
-                    }
-                    
-                    if (cell0Low.startsWith("cro") && cell0Low !== "cro" && !cell0Low.includes("summary") && !cell0Low.includes("tahap") && !ptListLagiBuka) {
-                        let cName = cell0.toUpperCase();
-                        croList.add(cName); 
-                        
-                        if (selectedCRO === 'ALL' || selectedCRO === cName) {
-                            if (selectedCRO !== 'ALL') { 
-                                totalLuas += parseNum(rowVals[1]);
-                                totalLuasTM += parseNum(rowVals[2]);
-                                totalTarget += parseNum(rowVals[3]);
-                                totalPtCount += parseNum(rowVals[4]);
-                            }
-                            chartBarDataMap[cName] = parseNum(rowVals[3]);
-                            chartPieDataMap[cName] = parseNum(rowVals[1]);
-                        }
-                    }
-
-                    // ===========================================
-                    // TABEL KANAN (DAFTAR NAMA PT & LUASNYA)
-                    // ===========================================
-                    let idxPt = -1;
-                    for (let j = 1; j < rowVals.length; j++) {
-                        let text = String(rowVals[j]).toLowerCase();
-                        if (text.startsWith("pt ") || text.startsWith("cv ") || text.startsWith("koperasi ") || text.startsWith("kelompok ") || text.startsWith("barumun") || text.startsWith("parsub")) {
-                            idxPt = j;
-                            break;
-                        }
-                    }
-
-                    if (idxPt !== -1 && idxPt + 3 <= rowVals.length) {
-                        let rawPt = String(rowVals[idxPt]).replace(/^[+-]\s*/, '').trim();
-                        let rawCro = String(rowVals[idxPt - 1] || "").replace(/^[+-]\s*/, '').trim();
-                        
-                        if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro" && !rawCro.toLowerCase().includes("summary")) {
-                            currentCroBawah = rawCro.toUpperCase();
-                        }
-
-                        if (currentCroBawah.toLowerCase().includes("total keseluruhan") || rawPt.toLowerCase().includes("total keseluruhan")) {
-                            break; 
-                        }
-
-                        if (rawPt && rawPt !== "-" && rawPt.toLowerCase() !== "nama pt") {
-                            
-                            if (currentCroBawah.startsWith("CRO")) {
-                                if (selectedCRO === 'ALL' || selectedCRO === currentCroBawah) {
-                                    let l = parseNum(rowVals[idxPt + 1]); 
-                                    let lTM = parseNum(rowVals[idxPt + 2]); 
-                                    let t = parseNum(rowVals[idxPt + 3]); 
-
-                                    if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCroBawah, luas: 0, luasTM: 0, target: 0, status: '-' };
-                                    ptDataMap[rawPt].luas += l;
-                                    ptDataMap[rawPt].luasTM += lTM;
-                                    ptDataMap[rawPt].target += t;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // ===============================================
-            // 3. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
-            // ===============================================
             if (rekapData.length > 0) {
+                // Cari Index Kolom Secara Akurat dari Header REKAPITULASI
                 let rCols = Object.keys(rekapData[0] || {});
-                let rCroIdx = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || rCols[0];
-                let rStatusIdx = rCols.find(k => k.toLowerCase() === 'status' || k.toLowerCase().includes('status'));
-                let rNamaPtIdx = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan'));
+                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
+                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
+                let cLuas = rCols.find(k => k.toLowerCase().includes('luas kebun')) || rCols[2];
+                let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[3];
+                let cTarget = rCols.find(k => k.toLowerCase().includes('target')) || rCols[4];
+                let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[5];
+                
+                // Cari Index Kolom No Surat (Sesuai Permintaan Lu Biar Dihitung Per Baris No Surat!)
+                let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
 
-                if (rStatusIdx && rCroIdx && rNamaPtIdx) {
-                    rekapData.forEach(row => {
-                        let c = String(row[rCroIdx] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
-                        let pt = String(row[rNamaPtIdx] || "").trim();
-                        let s = String(row[rStatusIdx] || "").trim().toLowerCase();
+                // Looping Setiap Baris Data REKAPITULASI (TANPA GROUPING PT NAME)
+                rekapData.forEach(row => {
+                    let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
+                    let cro = rawCro.toUpperCase();
+                    let pt = String(row[cPt] || "").trim();
+                    let status = String(row[cStatus] || "").trim();
+                    let sLow = status.toLowerCase();
+                    
+                    // Tarik "No Surat" buat filter baris beneran
+                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
 
-                        if (ptDataMap[pt]) {
-                            ptDataMap[pt].status = String(row[rStatusIdx] || "").trim() || '-';
-                        }
+                    // KUNCI DEWA: ABAIKAN BARIS GAK JELAS / TOTAL / KOSONG (Cuma ambil yang ada No Suratnya)
+                    if (cNoSurat && (!noSurat || noSurat === "-" || noSurat.toLowerCase().includes("no surat"))) return;
+                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
+                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
 
-                        if (!c.startsWith('CRO') || c.includes('TOTAL') || c.includes('SUMMARY')) return;
+                    // Daftar CRO masuk ke Dropdown
+                    croList.add(cro);
+
+                    // Proses Jika Memenuhi Filter (Bisa "ALL" atau Pilih 1 CRO)
+                    if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         
-                        if (selectedCRO === 'ALL' || selectedCRO === c) {
-                            if (s.includes('sudah')) totalSudahDikelola++;
-                            else if (s.includes('belum')) totalBelumDikelola++;
-                        }
-                    });
-                }
+                        // Konversi Angka
+                        let luas = parseNum(row[cLuas]);
+                        let luasTM = parseNum(row[cLuasTM]);
+                        let target = parseNum(row[cTarget]);
+
+                        // Tambahkan ke Total Dashboard Atas
+                        totalLuas += luas;
+                        totalLuasTM += luasTM;
+                        totalTarget += target;
+
+                        // Tambahkan ke Chart Bar dan Pie (Ini tetap di-group per CRO)
+                        chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
+                        chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
+
+                        // SIMPAN KE ARRAY LIST MENTAH (Biar PT Kembar gak nyatu, dihitung masing-masing)
+                        ptListRaw.push({
+                            name: pt,
+                            cro: cro,
+                            luas: luas,
+                            luasTM: luasTM,
+                            target: target,
+                            status: status || '-'
+                        });
+
+                        // Tambahkan ke Chart Status Kelola Donat
+                        if (sLow.includes('sudah')) totalSudahDikelola++;
+                        else if (sLow.includes('belum')) totalBelumDikelola++;
+                    }
+                });
             }
 
-            // UPDATE PILIHAN DROPDOWN
+            // TOTAL KEMITRAAN PT = JUMLAH BARIS YANG PUNYA "NO SURAT" & VALID!
+            let totalPtCount = ptListRaw.length;
+
+            // ===============================================
+            // UPDATE TAMPILAN DASHBOARD
+            // ===============================================
+
+            // 1. Update Dropdown Filter
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
                     let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; filterDropdown.appendChild(opt);
                 });
             }
 
-            // ===============================================
-            // 4. RENDER SEMUA KE LAYAR (KOTAK ANGKA & CHART)
-            // ===============================================
+            // 2. Update Kotak Angka (KPI)
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
                 kpiContainer.innerHTML = `
@@ -623,12 +583,14 @@
                 `;
             }
 
+            // 3. Update Label Judul
             const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
             if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `Status Kelola PT ${titleSuffix}`;
             if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
+            // 4. Update Chart Bar (Target Produksi)
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
@@ -646,6 +608,7 @@
                 });
             }
 
+            // 5. Update Chart Pie (Luas Kebun)
             if(document.getElementById('pivot-pie-chart')) {
                 Highcharts.chart('pivot-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
@@ -658,13 +621,14 @@
                 });
             }
 
+            // 6. Update Chart Donut Status (Sudah vs Belum)
             if(document.getElementById('status-pie-chart')) {
                 Highcharts.chart('status-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'], 
+                    colors: ['#3b82f6', '#f43f5e'], // Biru untuk Sudah, Merah/Pink untuk Belum
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
@@ -676,11 +640,13 @@
                 });
             }
             
+            // 7. Render Isi Tabel Daftar PT
             let ptHtml = '';
-            let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
+            // Sort berdasarkan Target terbesar dari list mentah
+            ptListRaw.sort((a,b) => b.target - a.target);
             
-            if (sortedPTs.length > 0) {
-                sortedPTs.forEach(pt => {
+            if (ptListRaw.length > 0) {
+                ptListRaw.forEach(pt => {
                     let stc = pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted');
                     ptHtml += `
                         <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border last:border-0">
@@ -691,12 +657,16 @@
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                         </tr>`;
                 });
-            } else { 
-                ptHtml = `<tr><td colspan="5" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`; 
+            } else {
+                ptHtml = `<tr><td colspan="5" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`;
             }
             
+            // Paste isi tabel ke HTML
             if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
-            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
+            
+            // Sinkronisasi Tema Grafik (Dark/Light)
+            const isLightNow = document.body.classList.contains('light-mode'); 
+            updateChartTheme(isLightNow);
         }
 
         function getFileIcon(fileName) {
@@ -871,7 +841,7 @@
                         
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
-                            const allSheetNames = [...listSheets, "Pivot Table"]; 
+                            const allSheetNames = [...listSheets]; 
                             
                             allSheetNames.forEach(sheet => {
                                 let pivotKey = Object.keys(result.rawData).find(k => k.trim().toLowerCase() === sheet.toLowerCase()) || sheet;
