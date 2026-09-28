@@ -116,14 +116,14 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA (HANYA REKAPITULASI) -->
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -204,6 +204,7 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
+                    <!-- TAMBAHAN BARU: CHART STATUS PENGELOLAAN (SUDAH VS BELUM) -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -463,7 +464,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAP
+            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAPITULASI
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -480,16 +481,25 @@
 
             if (pivotData.length > 0) {
                 // ===============================================
-                // HARDCODE INDEX KOLOM SUPER PRESISI
+                // HARDCODE INDEX KOLOM SUPER PRESISI!
                 // ===============================================
+                // Di Excel Pivot Lu:
+                // Kolom Kiri (Summary Keseluruhan):
+                // 0: CRO, 1: Luas, 2: Luas TM, 3: Target, 4: Counta Nama PT
+                
+                // Kolom Kanan (Summary Nama PT):
+                // 7: CRO, 8: Nama PT, 9: Luas, 10: Luas TM, 11: Target, 12: Counta
+                
                 let pKeysAll = Object.keys(pivotData[0] || {});
                 
+                // TABEL KIRI (SUMMARY KESELURUHAN)
                 let l_Cro = pKeysAll[0];
                 let l_Luas = pKeysAll[1];
                 let l_LuasTM = pKeysAll[2];
                 let l_Target = pKeysAll[3];
                 let l_Count = pKeysAll[4];
 
+                // TABEL KANAN (SUMMARY NAMA PT)
                 let r_Cro = pKeysAll[7];
                 let r_Pt = pKeysAll[8];
                 let r_Luas = pKeysAll[9];
@@ -504,6 +514,7 @@
                     let croValRaw = String(row[l_Cro] || "").replace(/^[+-]\s*/, '').trim();
                     let cL = croValRaw.toLowerCase();
 
+                    // BERHENTI MUTLAK pas nemu "Total Keseluruhan" biar gak bablas!
                     if (cL.includes("total keseluruhan") || cL === "grand total") {
                         if (selectedCRO === 'ALL') {
                             totalLuas = parseNum(row[l_Luas]);
@@ -541,14 +552,18 @@
                     let rawPt = String(row[r_Pt] || "").replace(/^[+-]\s*/, '').trim();
                     let pL = rawPt.toLowerCase();
 
+                    // Simpen nama CRO terakhir biar nempel ke PT di bawahnya
                     if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro" && !rawCro.toLowerCase().includes("summary")) {
                         currentCro = rawCro.toUpperCase();
                     }
 
+                    // BERHENTI MUTLAK pas nemu "Total Keseluruhan" di blok PT
                     if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) break; 
 
+                    // JANGAN MASUKIN JUDUL ATAU BARIS SUBTOTAL KE DAFTAR NAMA PT
                     if (!rawPt || rawPt === "-" || pL === "nama pt" || pL === "nama mitra" || pL.includes('total') || pL.includes('summary')) continue;
 
+                    // Kalau ini beneran list PT
                     if (currentCro.startsWith("CRO")) {
                         if (selectedCRO === 'ALL' || selectedCRO === currentCro) {
                             let l = parseNum(row[r_Luas]);
@@ -655,13 +670,14 @@
                 });
             }
 
+            // CHART DONAT STATUS KELOLA (SUDAH VS BELUM)
             if(document.getElementById('status-pie-chart')) {
                 Highcharts.chart('status-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'], 
+                    colors: ['#3b82f6', '#f43f5e'], // Biru untuk Sudah, Merah/Pink untuk Belum
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
@@ -675,7 +691,6 @@
             
             let ptHtml = '';
             let sortedPTs = Object.keys(ptDataMap).map(k => ({name: k, ...ptDataMap[k]})).sort((a,b) => b.target - a.target);
-            
             if (sortedPTs.length > 0) {
                 sortedPTs.forEach(pt => {
                     let stc = pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted');
@@ -688,14 +703,9 @@
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                         </tr>`;
                 });
-            } else { 
-                ptHtml = `<tr><td colspan="5" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`; 
-            }
-            
+            } else { ptHtml = `<tr><td colspan="5" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada data perusahaan.</td></tr>`; }
             if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
-            
-            const isLightNow = document.body.classList.contains('light-mode'); 
-            updateChartTheme(isLightNow);
+            const isLightNow = document.body.classList.contains('light-mode'); updateChartTheme(isLightNow);
         }
 
         function getFileIcon(fileName) {
