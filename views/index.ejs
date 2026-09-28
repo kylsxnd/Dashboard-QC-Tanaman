@@ -123,7 +123,7 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA (KINI TERMASUK SURAT PEMBATALAN) -->
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -204,6 +204,7 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
+                    <!-- CHART STATUS PENGELOLAAN -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -230,14 +231,14 @@
                 </div>
             </section>
 
-            <!-- 2. MASTER DATA KEBUN & PEMBATALAN -->
+            <!-- 2. MASTER DATA KEBUN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
                 
-                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN (Hanya muncul saat klik menu Surat Pembatalan) -->
+                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN (Hanya muncul di menu Surat Pembatalan) -->
                 <div id="pembatalan-chart-container" class="hidden mb-6 premium-card p-4 md:p-6 w-full relative overflow-hidden">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest flex items-center gap-2">
@@ -303,7 +304,6 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // KINI DITAMBAHKAN "Surat Pembatalan" KE DALAM MENU MASTER DATA
         const listSheets = ["REKAPITULASI", "Surat Pembatalan"];
         
         let currentDataTable = null;
@@ -435,9 +435,6 @@
             }
         }
 
-        // =========================================
-        // FUNGSI KHUSUS BACA ANGKA INDO (Anti Error)
-        // =========================================
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
             if (val === null || val === undefined) return 0;
@@ -457,7 +454,7 @@
         };
 
         // =========================================
-        // DASHBOARD UTAMA (REKAPITULASI ON-FARM)
+        // DASHBOARD UTAMA (REKAPITULASI AJA)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -623,7 +620,7 @@
         }
 
         // =========================================
-        // GRAFIK KHUSUS SURAT PEMBATALAN (RENDER DI MASTER DATA)
+        // GRAFIK PREMIUM SURAT PEMBATALAN
         // =========================================
         function renderPembatalanChart(pembatalanData) {
             let pembatalanCountMap = {};
@@ -655,17 +652,43 @@
             let chartData = categories.map(c => pembatalanCountMap[c]);
 
             Highcharts.chart('chart-pembatalan', {
-                chart: { type: 'column', backgroundColor: 'transparent', marginTop: 20 },
+                chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
                 title: { text: null },
+                legend: { enabled: false }, // Hapus legend biar area grafik makin luas dan gak sumpek
                 tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
-                xAxis: { categories: categories, labels: { style: { color: '#888888', fontWeight: '500' } }, lineWidth: 0, tickWidth: 0 },
-                yAxis: { title: { text: null }, gridLineColor: '#262626', labels: { style: { color: '#888888' } } },
+                xAxis: { 
+                    categories: categories, 
+                    labels: { style: { color: '#a1a1aa', fontWeight: '600', fontSize: '11px' } }, 
+                    lineWidth: 0, 
+                    tickWidth: 0 
+                },
+                yAxis: { 
+                    title: { text: null }, 
+                    gridLineColor: '#262626', 
+                    gridLineDashStyle: 'Dash', // Garis background putus-putus ala modern dashboard
+                    labels: { style: { color: '#52525b' } } 
+                },
                 series: [{ 
                     name: 'Jumlah Surat Pembatalan', 
                     data: chartData, 
-                    color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, 'rgba(239, 68, 68, 0.1)'] ] }
+                    // Gradien merah elegan (Terang ke Gelap)
+                    color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#f87171'], [1, '#991b1b'] ] }
                 }],
-                plotOptions: { column: { borderRadius: 6, borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: 'bold' } } } },
+                plotOptions: { 
+                    column: { 
+                        borderRadius: 6, 
+                        borderWidth: 0, 
+                        pointPadding: 0.1, // Bikin bar lebih "gemuk" / proporsional
+                        groupPadding: 0.1, 
+                        maxPointWidth: 60, // Lebar maksimal bar biar gak aneh di layar ultrawide
+                        dataLabels: { 
+                            enabled: true, 
+                            color: '#ffffff', // Warna font data putih biar kontras
+                            style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, // Angka dibikin lebih gede
+                            y: -5 // Posisi angka pas di atas batang
+                        } 
+                    } 
+                },
                 credits: { enabled: false }
             });
             
