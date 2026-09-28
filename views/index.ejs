@@ -5,90 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Executive Portal - Agrinas</title>
     
-    <!-- Library CSS & Framework -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables & ColReorder Extension -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
-
-    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* =========================================
-           SISTEM TEMA: DARK / LIGHT MODE
-           ========================================= */
         :root {
-            --bg-main: #0a0a0a; 
-            --bg-panel: #111111;
-            --bg-card: #151515;
-            --border-color: #262626;
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            --hover-bg: #27272a;
-            --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.8);
+            --bg-main: #0a0a0a; --bg-panel: #111111; --bg-card: #151515;
+            --border-color: #262626; --text-main: #ffffff; --text-muted: #a1a1aa;
+            --hover-bg: #27272a; --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.8);
             --bg-dropdown: rgba(21, 21, 21, 0.95);
         }
-        
         body.light-mode {
-            --bg-main: #f3f4f6; 
-            --bg-panel: #ffffff;
-            --bg-card: #ffffff;
-            --border-color: #e5e7eb;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --hover-bg: #f8fafc;
-            --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.15);
+            --bg-main: #f3f4f6; --bg-panel: #ffffff; --bg-card: #ffffff;
+            --border-color: #e5e7eb; --text-main: #1f2937; --text-muted: #6b7280;
+            --hover-bg: #f8fafc; --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.15);
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
-
         .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
         .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
         .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
-
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
-        
         .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
-
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
-
         .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
-
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
-        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
-        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
-        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
-
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
-
         table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
         table.dataTable thead th { cursor: grab !important; background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
         table.dataTable thead th:active { cursor: grabbing !important; }
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
         table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
-
         .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
-
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
         ::-webkit-scrollbar { width: 6px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -123,7 +90,6 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA (HANYA REKAPITULASI) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -175,14 +141,12 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-            
-            <!-- 1. DASHBOARD PIVOT UTAMA -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Pivot Table & Rekapitulasi.
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Pivot Table.
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -204,7 +168,6 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- CHART STATUS PENGELOLAAN (SUDAH VS BELUM) -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -230,7 +193,6 @@
                 </div>
             </section>
 
-            <!-- 2. MASTER DATA KEBUN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
@@ -246,7 +208,6 @@
                 </div>
             </section>
 
-            <!-- 3. INBOX EMAIL -->
             <section id="view-inbox" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -265,7 +226,6 @@
         </main>
     </div>
 
-    <!-- MODAL PREVIEW -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
             <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
@@ -288,7 +248,6 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // HANYA REKAPITULASI YANG TERSISA DI MASTER DATA KEBUN
         const listSheets = ["REKAPITULASI"];
         
         let currentDataTable = null;
@@ -420,9 +379,6 @@
             }
         }
 
-        // =========================================
-        // FUNGSI KHUSUS BACA ANGKA INDO (Anti Error)
-        // =========================================
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
             if (val === null || val === undefined) return 0;
@@ -460,14 +416,10 @@
             return isNaN(res) ? 0 : res;
         };
 
-        // =========================================
-        // MESIN UTAMA DASHBOARD PIVOT & STATUS
-        // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // Sedot data dari JSON API Vercel lu
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -480,52 +432,40 @@
             let totalSudahDikelola = 0, totalBelumDikelola = 0;
 
             if (pivotData.length > 0) {
-                
-                // SISTEM "RADAR MURNI" YANG ANTI ERROR KOLOM BERGESER
-                // Abaikan nama kolom (karena diganti '__EMPTY' sama sistem lu)
-                // Kita langsung looping semua isinya pake Object.values
-                
-                let ptListLagiBuka = false; // Flag buat ngebaca tabel PT
-                let currentCroBawah = ""; // Nyimpen CRO untuk tabel daftar PT
+                let ptListLagiBuka = false; 
+                let currentCroBawah = ""; 
 
                 for (let i = 0; i < pivotData.length; i++) {
                     let rowVals = Object.values(pivotData[i]);
-                    
-                    if (rowVals.length < 4) continue; // Skip baris ga jelas
+                    if (rowVals.length < 4) continue; 
 
-                    // Cek sel pertama (biasanya isi CRO atau Total Keseluruhan)
                     let cell0 = String(rowVals[0] || "").replace(/^[+-]\s*/, '').trim();
                     let cell0Low = cell0.toLowerCase();
 
                     // ===========================================
                     // TABEL KIRI (ANGKA KPI & GRAFIK TARGET/LUAS)
                     // ===========================================
-                    
                     if (cell0Low.includes("total keseluruhan") || cell0Low === "grand total") {
-                        // Kalau lagi liat "Semua CRO", ambil langsung Grand Total-nya biar akurat 100%
                         if (selectedCRO === 'ALL' && totalTarget === 0) {
                             totalLuas = parseNum(rowVals[1]);
                             totalLuasTM = parseNum(rowVals[2]);
                             totalTarget = parseNum(rowVals[3]);
                             totalPtCount = parseNum(rowVals[4]);
                         }
-                        // Terus set supaya tau ini udah mau masuk ke area list PT
                         ptListLagiBuka = true; 
                     }
                     
-                    // Kalau ini beneran nama CRO (CRO I, CRO III, dsb) dan belum masuk list PT
                     if (cell0Low.startsWith("cro") && cell0Low !== "cro" && !cell0Low.includes("summary") && !cell0Low.includes("tahap") && !ptListLagiBuka) {
                         let cName = cell0.toUpperCase();
-                        croList.add(cName); // Simpan nama CRO buat di-filter
+                        croList.add(cName); 
                         
                         if (selectedCRO === 'ALL' || selectedCRO === cName) {
-                            if (selectedCRO !== 'ALL') { // Kalo cuma liat 1 CRO, hitung manual angkanya
+                            if (selectedCRO !== 'ALL') { 
                                 totalLuas += parseNum(rowVals[1]);
                                 totalLuasTM += parseNum(rowVals[2]);
                                 totalTarget += parseNum(rowVals[3]);
                                 totalPtCount += parseNum(rowVals[4]);
                             }
-                            // Simpen angka buat digambar di Grafik
                             chartBarDataMap[cName] = parseNum(rowVals[3]);
                             chartPieDataMap[cName] = parseNum(rowVals[1]);
                         }
@@ -534,10 +474,6 @@
                     // ===========================================
                     // TABEL KANAN (DAFTAR NAMA PT & LUASNYA)
                     // ===========================================
-                    // Di Excel lu, daftar PT ada di kolom agak kanan. Di JSON, posisinya di Object.values ujung.
-                    
-                    // Cari di mana letak cell yang memuat nama PT (kolom yang isinya PT / Koperasi / CV)
-                    // Karena urutannya pasti: [..., CRO, Nama PT, Luas, Luas TM, Target]
                     let idxPt = -1;
                     for (let j = 1; j < rowVals.length; j++) {
                         let text = String(rowVals[j]).toLowerCase();
@@ -547,24 +483,20 @@
                         }
                     }
 
-                    // Kalo ketemu letak Nama PT di baris ini
                     if (idxPt !== -1 && idxPt + 3 <= rowVals.length) {
                         let rawPt = String(rowVals[idxPt]).replace(/^[+-]\s*/, '').trim();
                         let rawCro = String(rowVals[idxPt - 1] || "").replace(/^[+-]\s*/, '').trim();
                         
-                        // Kalau sel kirinya berisi nama CRO, simpen sebagai patokan
                         if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro" && !rawCro.toLowerCase().includes("summary")) {
                             currentCroBawah = rawCro.toUpperCase();
                         }
 
-                        // JANGAN MASUKIN JIKA PT NYA KOSONG ATAU CUMA JUDUL
                         if (rawPt && rawPt !== "-" && rawPt.toLowerCase() !== "nama pt" && !rawPt.toLowerCase().includes("total keseluruhan")) {
-                            
                             if (currentCroBawah.startsWith("CRO")) {
                                 if (selectedCRO === 'ALL' || selectedCRO === currentCroBawah) {
-                                    let l = parseNum(rowVals[idxPt + 1]); // Kolom kanan PT (Luas)
-                                    let lTM = parseNum(rowVals[idxPt + 2]); // Kolom kanan+2 (Luas TM)
-                                    let t = parseNum(rowVals[idxPt + 3]); // Kolom kanan+3 (Target)
+                                    let l = parseNum(rowVals[idxPt + 1]); 
+                                    let lTM = parseNum(rowVals[idxPt + 2]); 
+                                    let t = parseNum(rowVals[idxPt + 3]); 
 
                                     if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCroBawah, luas: 0, luasTM: 0, target: 0, status: '-' };
                                     ptDataMap[rawPt].luas += l;
@@ -580,7 +512,6 @@
             // ===============================================
             // 3. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
             // ===============================================
-            // Logika buat ngisi Tulisan "Sudah Dikelola" atau "Belum" + Ngisi Chart Donat
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let rCroIdx = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro')) || rCols[0];
@@ -593,14 +524,12 @@
                         let pt = String(row[rNamaPtIdx] || "").trim();
                         let s = String(row[rStatusIdx] || "").trim().toLowerCase();
 
-                        // 1. Kasih status "Sudah/Belum" ke tabel list PT
                         if (ptDataMap[pt]) {
                             ptDataMap[pt].status = String(row[rStatusIdx] || "").trim() || '-';
                         }
 
                         if (!c.startsWith('CRO') || c.includes('TOTAL') || c.includes('SUMMARY')) return;
                         
-                        // 2. Ngitung angka buat Chart Donat (kiri-bawah)
                         if (selectedCRO === 'ALL' || selectedCRO === c) {
                             if (s.includes('sudah')) totalSudahDikelola++;
                             else if (s.includes('belum')) totalBelumDikelola++;
@@ -609,16 +538,12 @@
                 }
             }
 
-            // UPDATE PILIHAN DROPDOWN
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
                     let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; filterDropdown.appendChild(opt);
                 });
             }
 
-            // ===============================================
-            // 4. RENDER SEMUA KE LAYAR (KOTAK ANGKA & CHART)
-            // ===============================================
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
                 kpiContainer.innerHTML = `
@@ -681,7 +606,7 @@
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'], // Biru (Sudah), Merah/Pink (Belum)
+                    colors: ['#3b82f6', '#f43f5e'], 
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
