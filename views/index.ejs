@@ -64,7 +64,6 @@
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
-        /* Child Links (Sub-menu) Master Data yang Diperbagus */
         .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
         .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
@@ -170,7 +169,6 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
-            <!-- Container untuk Sub-menu Master Data -->
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
@@ -236,7 +234,7 @@
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
                         <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter CRO:</span>
                         <select id="cro-filter" onchange="renderPivotDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer">
-                            <option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>
+                            <!-- Opsi akan diisi otomatis lewat JS (Tidak Ada ALL) -->
                         </select>
                     </div>
                 </div>
@@ -252,14 +250,12 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- CHART STATUS PENGELOLAAN -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
-                <!-- DAFTAR PERUSAHAAN (PT) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
                     <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Daftar Perusahaan (PT)</h3>
                     <div class="overflow-x-auto">
@@ -279,14 +275,14 @@
                 </div>
             </section>
 
-            <!-- 2. MASTER DATA KEBUN & PEMBATALAN -->
+            <!-- 2. MASTER DATA KEBUN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
                 
-                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN (Hanya muncul saat klik menu Surat Pembatalan) -->
+                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN -->
                 <div id="pembatalan-chart-container" class="hidden mb-6 premium-card p-5 md:p-8 w-full relative overflow-hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest flex items-center gap-2">
@@ -297,7 +293,6 @@
                             Total: 0 Surat
                         </div>
                     </div>
-                    <!-- Area Chart Batang -->
                     <div id="chart-pembatalan" style="height: 350px; width: 100%;"></div>
                 </div>
 
@@ -357,16 +352,13 @@
             const loginOverlay = document.getElementById('login-overlay');
             
             if (loggedInUser) {
-                // User sudah login, sembunyikan form login
                 loginOverlay.style.opacity = '0';
                 setTimeout(() => { loginOverlay.style.display = 'none'; }, 500);
                 
-                // Ubah data profil di pojok kiri bawah
                 const userObj = JSON.parse(loggedInUser);
                 document.getElementById('pic-name-display').innerText = userObj.name;
                 document.getElementById('pic-email-display').innerText = userObj.email;
             } else {
-                // Belum login, tampilkan form login
                 loginOverlay.style.display = 'flex';
                 setTimeout(() => { loginOverlay.style.opacity = '1'; }, 10);
             }
@@ -378,7 +370,7 @@
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
             
-            // Hardcode 2 Akun (Admin & CEO). Kalau mau konek ke DB Backend, masukin logikanya disini.
+            // Hardcode Akun Admin & CEO
             if ((email === 'admin@agrinas.id' && password === 'admin123') || 
                 (email === 'ceo@agrinas.id' && password === 'ceo123')) {
                 
@@ -387,14 +379,10 @@
                     name: email === 'ceo@agrinas.id' ? 'BOD Agrinas' : 'Staf PIC HO' 
                 };
                 
-                // Simpan sesi login ke LocalStorage (Otomatis nyangkut di HP/Laptop user)
                 localStorage.setItem('agrinas_user', JSON.stringify(userData));
                 errorMsg.classList.add('hidden');
-                
-                // Refresh Status
                 checkLoginState();
             } else {
-                // Kalau salah email/password
                 errorMsg.classList.remove('hidden');
             }
         }
@@ -567,16 +555,58 @@
         };
 
         // =========================================
-        // DASHBOARD UTAMA (REKAPITULASI ON-FARM)
+        // DASHBOARD UTAMA (REKAPITULASI ON-FARM SAJA - TANPA "SEMUA CRO")
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
-            const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             const rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
+
+            // LAKUKAN SCANNING CRO TERLEBIH DAHULU UNTUK DROPDOWN
+            if (rekapData.length > 0) {
+                let rCols = Object.keys(rekapData[0] || {});
+                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
+                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
+                let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
+
+                rekapData.forEach(row => {
+                    let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
+                    let cro = rawCro.toUpperCase();
+                    let pt = String(row[cPt] || "").trim();
+                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
+
+                    if (cNoSurat && (!noSurat || noSurat === "-" || noSurat.toLowerCase().includes("no surat"))) return;
+                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
+                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
+
+                    croList.add(cro);
+                });
+            }
+
+            // BIKIN DROPDOWN OTOMATIS & SET DEFAULT KE CRO I
+            if (filterDropdown && filterDropdown.options.length === 0 && croList.size > 0) {
+                let sortedCro = [...croList].sort();
+                sortedCro.forEach(c => {
+                    let opt = document.createElement('option'); 
+                    opt.value = c; 
+                    opt.innerText = c; 
+                    opt.className = "bg-[#111111] text-white"; 
+                    filterDropdown.appendChild(opt);
+                });
+                
+                if (sortedCro.includes("CRO I")) {
+                    filterDropdown.value = "CRO I";
+                } else {
+                    filterDropdown.value = sortedCro[0];
+                }
+            }
+
+            // AMBIL NILAI YANG AKTIF (Pasti spesifik CRO tertentu, default CRO I)
+            const selectedCRO = filterDropdown ? filterDropdown.value : 'CRO I';
+            
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}; 
             let ptListRaw = []; 
@@ -604,9 +634,8 @@
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
 
-                    croList.add(cro);
-
-                    if (selectedCRO === 'ALL' || selectedCRO === cro) {
+                    // HANYA HITUNG UNTUK CRO YANG SEDANG DIPILIH (NO 'ALL')
+                    if (selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
                         let luasTM = parseNum(row[cLuasTM]);
                         let target = parseNum(row[cTarget]);
@@ -627,12 +656,6 @@
             }
 
             let totalPtCount = ptListRaw.length;
-
-            if (filterDropdown && filterDropdown.options.length <= 1) {
-                [...croList].sort().forEach(c => {
-                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; filterDropdown.appendChild(opt);
-                });
-            }
 
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
@@ -655,11 +678,11 @@
                 `;
             }
 
-            const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
+            const titleSuffix = `(Regional ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
             if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `Status Kelola PT ${titleSuffix}`;
-            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
+            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) - ${selectedCRO}`;
 
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
@@ -716,7 +739,7 @@
                     let stc = pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted');
                     ptHtml += `
                         <tr class="hover:bg-[var(--hover-bg)] transition-colors border-b theme-border last:border-0">
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span>` : ''}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} <span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-[var(--bg-main)] px-1.5 md:px-2 py-0.5 rounded border theme-border whitespace-nowrap">${pt.cro}</span></td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center ${stc}">${pt.status}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-purple-400 text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
@@ -946,7 +969,6 @@
             });
         }
 
-        // TRIGGER LOGIN CEK SAAT PERTAMA KALI WEB DIBUKA
         document.addEventListener("DOMContentLoaded", function() {
             // Pastikan Form Login Nahan User
             checkLoginState();
