@@ -182,7 +182,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Master Rekapitulasi.
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Master Rekapitulasi (Filter No Surat).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -204,7 +204,7 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- CHART STATUS PENGELOLAAN -->
+                    <!-- CHART STATUS PENGELOLAAN (SUDAH VS BELUM) -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -462,6 +462,7 @@
 
         // =========================================
         // SISTEM MURNI BACA DARI REKAPITULASI AJA
+        // DENGAN PENYARINGAN "NO SURAT" SEBAGAI VALIDASI PT
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -491,7 +492,7 @@
                 let cTarget = rCols.find(k => k.toLowerCase().includes('target')) || rCols[4];
                 let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[5];
                 
-                // Cari Index Kolom No Surat (Sesuai Permintaan Lu Biar Dihitung Per Baris No Surat!)
+                // CARI KOLOM NO SURAT UNTUK VALIDASI BARIS
                 let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
 
                 // Looping Setiap Baris Data REKAPITULASI (TANPA GROUPING PT NAME)
@@ -502,18 +503,23 @@
                     let status = String(row[cStatus] || "").trim();
                     let sLow = status.toLowerCase();
                     
-                    // Tarik "No Surat" buat filter baris beneran
+                    // Tarik isi kolom "No Surat"
                     let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
 
-                    // KUNCI DEWA: ABAIKAN BARIS GAK JELAS / TOTAL / KOSONG (Cuma ambil yang ada No Suratnya)
+                    // ABAIKAN BARIS JIKA:
+                    // 1. Kolom "No Surat" kosong/tidak valid
                     if (cNoSurat && (!noSurat || noSurat === "-" || noSurat.toLowerCase().includes("no surat"))) return;
+                    
+                    // 2. Kolom "CRO" bukan nama CRO beneran (kosong, total, tahap, dll)
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
+                    
+                    // 3. Kolom "Nama PT" kosong
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
 
                     // Daftar CRO masuk ke Dropdown
                     croList.add(cro);
 
-                    // Proses Jika Memenuhi Filter (Bisa "ALL" atau Pilih 1 CRO)
+                    // Proses Jika Memenuhi Filter Dropdown
                     if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         
                         // Konversi Angka
@@ -526,11 +532,11 @@
                         totalLuasTM += luasTM;
                         totalTarget += target;
 
-                        // Tambahkan ke Chart Bar dan Pie (Ini tetap di-group per CRO)
+                        // Tambahkan ke Chart Bar dan Pie
                         chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
                         chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
 
-                        // SIMPAN KE ARRAY LIST MENTAH (Biar PT Kembar gak nyatu, dihitung masing-masing)
+                        // SIMPAN KE ARRAY LIST MENTAH (Biar PT Kembar dihitung sebagai item terpisah)
                         ptListRaw.push({
                             name: pt,
                             cro: cro,
@@ -891,7 +897,7 @@
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
                             syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
-                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
+                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
                             
                             setTimeout(() => { 
                                 syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
