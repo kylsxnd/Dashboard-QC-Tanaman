@@ -464,7 +464,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAP (BUAT STATUS)
+            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAPITULASI
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -481,85 +481,83 @@
 
             if (pivotData.length > 0) {
                 // ===============================================
-                // 1. CARI ALAMAT KOLOM YANG AKURAT DARI SELURUH ROW AWAL
+                // HARDCODE INDEX KOLOM SUPER PRESISI!
                 // ===============================================
-                let cols = Object.keys(pivotData[0] || {});
-                let leftCroIdx = -1, leftLuasIdx = -1, leftLuasTMIdx = -1, leftTargetIdx = -1, leftCountIdx = -1;
-                let rightPtIdx = -1, rightCroIdx = -1, rightLuasIdx = -1, rightLuasTMIdx = -1, rightTargetIdx = -1;
+                // Di Excel Pivot Lu:
+                // Kolom Kiri (Summary Keseluruhan):
+                // 0: CRO, 1: Luas, 2: Luas TM, 3: Target, 4: Counta Nama PT
+                
+                // Kolom Kanan (Summary Nama PT):
+                // 7: CRO, 8: Nama PT, 9: Luas, 10: Luas TM, 11: Target, 12: Counta
+                
+                let pKeysAll = Object.keys(pivotData[0] || {});
+                
+                // TABEL KIRI (SUMMARY KESELURUHAN)
+                let l_Cro = pKeysAll[0];
+                let l_Luas = pKeysAll[1];
+                let l_LuasTM = pKeysAll[2];
+                let l_Target = pKeysAll[3];
+                let l_Count = pKeysAll[4];
 
-                // NGE-SCAN KE BAWAH SAMPE 10 BARIS BUAT CARI JUDUL KOLOM YANG BENER
-                for(let i=0; i<Math.min(10, pivotData.length); i++) {
-                    let row = pivotData[i];
-                    cols.forEach((col, idx) => {
-                        let v = String(row[col]).toLowerCase().trim();
-                        // KIRI: Summary Keseluruhan
-                        if ((v === 'cro' || v.includes('keseluruhan')) && leftCroIdx === -1) leftCroIdx = idx;
-                        if (v.includes('luas kebun') && leftLuasIdx === -1 && idx < 5) leftLuasIdx = idx;
-                        if (v.includes('luas tm') && leftLuasTMIdx === -1 && idx < 5) leftLuasTMIdx = idx;
-                        if (v.includes('target') && leftTargetIdx === -1 && idx < 5) leftTargetIdx = idx;
-                        if ((v.includes('counta') || v.includes('nama pt')) && leftCountIdx === -1 && idx < 5) leftCountIdx = idx;
-
-                        // KANAN: Summary Nama PT
-                        if (v === 'nama pt' || v === 'perusahaan') {
-                            rightPtIdx = idx;
-                            rightCroIdx = idx - 1;
-                            rightLuasIdx = idx + 1;
-                            rightLuasTMIdx = idx + 2;
-                            rightTargetIdx = idx + 3;
-                        }
-                    });
-                }
-
-                // Fallback darurat kalo pusing
-                if(leftCroIdx === -1) leftCroIdx = 0; if(leftLuasIdx === -1) leftLuasIdx = 1; if(leftLuasTMIdx === -1) leftLuasTMIdx = 2; if(leftTargetIdx === -1) leftTargetIdx = 3; if(leftCountIdx === -1) leftCountIdx = 4;
-                if(rightPtIdx === -1) { rightPtIdx = 8; rightCroIdx = 7; rightLuasIdx = 9; rightLuasTMIdx = 10; rightTargetIdx = 11; }
+                // TABEL KANAN (SUMMARY NAMA PT)
+                let r_Cro = pKeysAll[7];
+                let r_Pt = pKeysAll[8];
+                let r_Luas = pKeysAll[9];
+                let r_LuasTM = pKeysAll[10];
+                let r_Target = pKeysAll[11];
 
                 // ===============================================
-                // 2. PARSING TABEL KIRI (SUMMARY KESELURUHAN) -> UNTUK KPI & GRAFIK
+                // 1. PARSING TABEL KIRI (KPI & GRAFIK)
                 // ===============================================
-                // BACA DARI BARIS 0 (BIAR CRO I GAK KESKIP)
                 for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
-                    let croValRaw = String(row[cols[leftCroIdx]] || "").replace(/^[+-]\s*/, '').trim();
+                    let croValRaw = String(row[l_Cro] || "").replace(/^[+-]\s*/, '').trim();
                     let cL = croValRaw.toLowerCase();
 
-                    // KUNCI DEWA: Berhenti pas nemu "Total Keseluruhan" biar gak bablas ke tabel bawahnya!
-                    if (cL.includes("total keseluruhan") || cL === "grand total") break; 
-
-                    // Kalo depannya CRO (seperti CRO I, CRO III)
-                    if (cL.startsWith("cro") && cL !== "cro" && !cL.includes("summary")) {
+                    // BERHENTI MUTLAK pas nemu "Total Keseluruhan" biar gak bablas!
+                    if (cL.includes("total keseluruhan") || cL === "grand total") {
+                        if (selectedCRO === 'ALL') {
+                            totalLuas = parseNum(row[l_Luas]);
+                            totalLuasTM = parseNum(row[l_LuasTM]);
+                            totalTarget = parseNum(row[l_Target]);
+                            totalPtCount = parseNum(row[l_Count]);
+                        }
+                        break; 
+                    }
+                    
+                    if (cL.startsWith("cro") && cL !== "cro" && !cL.includes("summary") && !cL.includes("tahap")) {
                         let cName = croValRaw.toUpperCase();
-                        croList.add(cName); // Simpan nama CRO buat Dropdown Filter
-
+                        croList.add(cName); 
+                        
                         if (selectedCRO === 'ALL' || selectedCRO === cName) {
-                            // Jumlahin manual angkanya satu per satu (Anti-Nol)
-                            totalLuas += parseNum(row[cols[leftLuasIdx]]);
-                            totalLuasTM += parseNum(row[cols[leftLuasTMIdx]]);
-                            totalTarget += parseNum(row[cols[leftTargetIdx]]);
-                            totalPtCount += parseNum(row[cols[leftCountIdx]]);
-                            
-                            chartBarDataMap[cName] = parseNum(row[cols[leftTargetIdx]]);
-                            chartPieDataMap[cName] = parseNum(row[cols[leftLuasIdx]]);
+                            if (selectedCRO !== 'ALL') {
+                                totalLuas += parseNum(row[l_Luas]);
+                                totalLuasTM += parseNum(row[l_LuasTM]);
+                                totalTarget += parseNum(row[l_Target]);
+                                totalPtCount += parseNum(row[l_Count]);
+                            }
+                            chartBarDataMap[cName] = parseNum(row[l_Target]);
+                            chartPieDataMap[cName] = parseNum(row[l_Luas]);
                         }
                     }
                 }
 
                 // ===============================================
-                // 3. PARSING TABEL KANAN (SUMMARY NAMA PT) -> UNTUK DAFTAR PT DI BAWAH
+                // 2. PARSING TABEL KANAN (DAFTAR NAMA PT BAWAH)
                 // ===============================================
                 let currentCro = "";
                 for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
-                    let rawCro = String(row[cols[rightCroIdx]] || "").replace(/^[+-]\s*/, '').trim();
-                    let rawPt = String(row[cols[rightPtIdx]] || "").replace(/^[+-]\s*/, '').trim();
+                    let rawCro = String(row[r_Cro] || "").replace(/^[+-]\s*/, '').trim();
+                    let rawPt = String(row[r_Pt] || "").replace(/^[+-]\s*/, '').trim();
                     let pL = rawPt.toLowerCase();
 
                     // Simpen nama CRO terakhir biar nempel ke PT di bawahnya
-                    if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro") {
+                    if (rawCro && rawCro !== "-" && rawCro.toLowerCase() !== "cro" && !rawCro.toLowerCase().includes("summary")) {
                         currentCro = rawCro.toUpperCase();
                     }
 
-                    // KUNCI DEWA 2: Berhenti pas nemu "Total Keseluruhan" di blok PT
+                    // BERHENTI MUTLAK pas nemu "Total Keseluruhan" di blok PT
                     if (currentCro.toLowerCase().includes("total keseluruhan") || pL.includes("total keseluruhan")) break; 
 
                     // JANGAN MASUKIN JUDUL ATAU BARIS SUBTOTAL KE DAFTAR NAMA PT
@@ -568,9 +566,9 @@
                     // Kalau ini beneran list PT
                     if (currentCro.startsWith("CRO")) {
                         if (selectedCRO === 'ALL' || selectedCRO === currentCro) {
-                            let l = parseNum(row[cols[rightLuasIdx]]);
-                            let lTM = parseNum(row[cols[rightLuasTMIdx]]);
-                            let t = parseNum(row[cols[rightTargetIdx]]);
+                            let l = parseNum(row[r_Luas]);
+                            let lTM = parseNum(row[r_LuasTM]);
+                            let t = parseNum(row[r_Target]);
 
                             if (!ptDataMap[rawPt]) ptDataMap[rawPt] = { cro: currentCro, luas: 0, luasTM: 0, target: 0, status: '-' };
                             ptDataMap[rawPt].luas += l;
@@ -582,8 +580,7 @@
             }
 
             // ===============================================
-            // 4. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
-            // (Untuk mengisi Pie Chart Sudah vs Belum Dikelola)
+            // 3. SEDOT STATUS KELOLA DARI SHEET "REKAPITULASI"
             // ===============================================
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
@@ -597,15 +594,12 @@
                         let pt = String(row[rNamaPtIdx] || "").trim();
                         let s = String(row[rStatusIdx] || "").trim().toLowerCase();
 
-                        // Update Status di Data Map PT bawah
                         if (ptDataMap[pt]) {
                             ptDataMap[pt].status = String(row[rStatusIdx] || "").trim() || '-';
                         }
 
-                        // JANGAN HITUNG BARIS TOTAL/SUMMARY DARI REKAPITULASI
                         if (!c.startsWith('CRO') || c.includes('TOTAL') || c.includes('SUMMARY')) return;
                         
-                        // Hitung jumlah PT Sudah vs Belum untuk chart Donat (Sesuai Filter CRO)
                         if (selectedCRO === 'ALL' || selectedCRO === c) {
                             if (s.includes('sudah')) totalSudahDikelola++;
                             else if (s.includes('belum')) totalBelumDikelola++;
@@ -676,7 +670,7 @@
                 });
             }
 
-            // TAMBAHAN BARU: CHART DONAT STATUS KELOLA (SUDAH VS BELUM)
+            // CHART DONAT STATUS KELOLA (SUDAH VS BELUM)
             if(document.getElementById('status-pie-chart')) {
                 Highcharts.chart('status-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
