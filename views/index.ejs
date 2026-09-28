@@ -123,7 +123,7 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
+            <!-- KATEGORI MASTER DATA (HANYA REKAPITULASI) -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -204,7 +204,7 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- TAMBAHAN BARU: CHART STATUS PENGELOLAAN -->
+                    <!-- TAMBAHAN BARU: CHART STATUS PENGELOLAAN (SUDAH VS BELUM) -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -464,7 +464,7 @@
             const filterDropdown = document.getElementById('cro-filter');
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // SEDOT DATA LANGSUNG DARI PIVOT & REKAP
+            // SEDOT DATA LANGSUNG DARI SHEET PIVOT & REKAPITULASI
             let pivotKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "pivot table") || "Pivot Table";
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             
@@ -480,6 +480,10 @@
                 // ===============================================
                 // SUPER HARDCODE INDEKS
                 // ===============================================
+                // Di Excel Pivot Lu:
+                // KIRI: 0: CRO, 1: Luas, 2: Luas TM, 3: Target, 4: Counta Nama PT
+                // KANAN: 7: CRO, 8: Nama PT, 9: Luas, 10: Luas TM, 11: Target
+                
                 let pKeysAll = Object.keys(pivotData[0] || {});
                 
                 let l_Cro = pKeysAll[0];
@@ -495,7 +499,7 @@
                 let r_Target = pKeysAll[11];
 
                 // ===============================================
-                // 1. KIRI - SUMMARY KESELURUHAN (Mulai dari Baris 0)
+                // 1. KIRI - SUMMARY KESELURUEM (Mulai dari Baris 0 BIAR CRO I NGGAK KELEWAT)
                 // ===============================================
                 for (let i = 0; i < pivotData.length; i++) {
                     let row = pivotData[i];
