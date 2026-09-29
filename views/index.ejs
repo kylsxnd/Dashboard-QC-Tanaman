@@ -191,7 +191,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Master Rekapitulasi (Semua CRO & Total Akurat).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis live dari Master Rekapitulasi.
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -502,7 +502,7 @@
         };
 
         // =========================================
-        // DASHBOARD UTAMA (REKAPITULASI ON-FARM) - SEMUA CRO / TOTAL AKURAT
+        // DASHBOARD UTAMA (REKAPITULASI ON-FARM) - LIVE DYNAMIC (SEMUA CRO + TOTAL AKURAT)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -516,7 +516,6 @@
             let chartBarDataMap = {}, chartPieDataMap = {}; 
             let ptListRaw = []; 
             let totalSudahDikelola = 0, totalBelumDikelola = 0;
-            let rowCounter = 0; // Batasi maksimum 213 baris data valid sesuai Excel
 
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
@@ -529,8 +528,6 @@
                 let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
 
                 rekapData.forEach(row => {
-                    if (rowCounter >= 213) return;
-
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
@@ -543,7 +540,6 @@
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
 
                     croList.add(cro);
-                    rowCounter++;
 
                     if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
@@ -912,7 +908,7 @@
                         renderNotifications();
                         if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) renderPivotDashboard(); 
                         else if (listSheets.includes(currentActiveSheet)) {
-                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
+                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || sheetRealKey;
                             loadTable(sheetRealKey);
                         }
                     }
