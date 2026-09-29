@@ -20,49 +20,76 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* =========================================
+           SISTEM TEMA: DARK / LIGHT MODE
+           ========================================= */
         :root {
-            --bg-main: #0a0a0a; --bg-panel: #111111; --bg-card: #151515;
-            --border-color: #262626; --text-main: #ffffff; --text-muted: #a1a1aa;
-            --hover-bg: #27272a; --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.8);
+            --bg-main: #0a0a0a; 
+            --bg-panel: #111111;
+            --bg-card: #151515;
+            --border-color: #262626;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --hover-bg: #27272a;
+            --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.8);
             --bg-dropdown: rgba(21, 21, 21, 0.95);
         }
+        
         body.light-mode {
-            --bg-main: #f3f4f6; --bg-panel: #ffffff; --bg-card: #ffffff;
-            --border-color: #e5e7eb; --text-main: #1f2937; --text-muted: #6b7280;
-            --hover-bg: #f8fafc; --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.15);
+            --bg-main: #f3f4f6; 
+            --bg-panel: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --hover-bg: #f8fafc;
+            --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.15);
             --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
+
         .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
         .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
         .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
+
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
+        
         .premium-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
+
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
+
         .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
         .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
+
+        /* Child Links (Sub-menu) Master Data yang Diperbagus */
         .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
         .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
+
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
         .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: var(--bg-main) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
+
         table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid var(--border-color) !important; }
         table.dataTable thead th { cursor: grab !important; background-color: var(--bg-card) !important; color: var(--text-muted) !important; border-bottom: 1px solid var(--border-color) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
         table.dataTable thead th:active { cursor: grabbing !important; }
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
         table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
+
         .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--hover-bg) !important; color: var(--text-main) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; font-weight: 600; }
+
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
         ::-webkit-scrollbar { width: 6px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -71,12 +98,16 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative">
 
-    <!-- LOGIN SCREEN -->
+    <!-- ==========================================
+         LOGIN OVERLAY (PREMIUM SECURITY SCREEN)
+         ========================================== -->
     <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
+        <!-- Background Ornaments -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
             <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-600 opacity-10 blur-[120px] rounded-full"></div>
         </div>
+        
         <div class="premium-card w-full max-w-md p-8 md:p-10 relative z-10 mx-4 border-t-4 border-t-[#83b765]">
             <div class="flex justify-center mb-6">
                 <div class="w-14 h-14 rounded-2xl bg-[#83b765]/10 border border-[#83b765]/30 flex items-center justify-center shadow-[0_0_20px_rgba(131,183,101,0.2)]">
@@ -85,6 +116,7 @@
             </div>
             <h2 class="text-2xl font-bold text-center theme-text-main mb-1">Executive Portal</h2>
             <p class="text-xs text-center theme-text-muted mb-8">Masuk ke Sistem Keamanan Agrinas</p>
+            
             <form id="login-form" onsubmit="handleLogin(event)">
                 <div class="mb-5">
                     <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Email Akun</label>
@@ -102,8 +134,9 @@
             </form>
         </div>
     </div>
+    <!-- ========================================== -->
 
-    <!-- MAIN APP -->
+
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -130,12 +163,15 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
+            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
+            <!-- Container untuk Sub-menu Master Data -->
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
+        <!-- AREA PROFIL & LOGOUT -->
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300 group cursor-pointer hover:bg-red-500/5" onclick="logout()" title="Klik untuk keluar (Logout)">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -191,7 +227,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Summary</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis live dari Master Rekapitulasi.
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari Master Rekapitulasi (Filter No Surat).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 theme-bg-panel border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -219,6 +255,7 @@
                     </div>
                 </div>
 
+                <!-- DAFTAR PERUSAHAAN (PT) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
                     <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Daftar Perusahaan (PT)</h3>
                     <div class="overflow-x-auto">
@@ -238,13 +275,14 @@
                 </div>
             </section>
 
-            <!-- 2. MASTER DATA -->
+            <!-- 2. MASTER DATA KEBUN & PEMBATALAN -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
                     <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
                 
+                <!-- CONTAINER CHART KHUSUS SURAT PEMBATALAN -->
                 <div id="pembatalan-chart-container" class="hidden mb-6 premium-card p-5 md:p-8 w-full relative overflow-hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest flex items-center gap-2">
@@ -255,6 +293,7 @@
                             Total: 0 Surat
                         </div>
                     </div>
+                    <!-- Area Chart Batang -->
                     <div id="chart-pembatalan" style="height: 350px; width: 100%;"></div>
                 </div>
 
@@ -306,16 +345,24 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
+        // ==========================================
+        // 1. SISTEM AUTENTIKASI / LOGIN (LOCAL STORAGE)
+        // ==========================================
         function checkLoginState() {
             const loggedInUser = localStorage.getItem('agrinas_user');
             const loginOverlay = document.getElementById('login-overlay');
+            
             if (loggedInUser) {
+                // User sudah login, sembunyikan form login
                 loginOverlay.style.opacity = '0';
                 setTimeout(() => { loginOverlay.style.display = 'none'; }, 500);
+                
+                // Ubah data profil di pojok kiri bawah
                 const userObj = JSON.parse(loggedInUser);
                 document.getElementById('pic-name-display').innerText = userObj.name;
                 document.getElementById('pic-email-display').innerText = userObj.email;
             } else {
+                // Belum login, tampilkan form login
                 loginOverlay.style.display = 'flex';
                 setTimeout(() => { loginOverlay.style.opacity = '1'; }, 10);
             }
@@ -327,13 +374,23 @@
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
             
+            // Hardcode 2 Akun (Admin & CEO). Kalau mau konek ke DB Backend, masukin logikanya disini.
             if ((email === 'admin@agrinas.id' && password === 'admin123') || 
                 (email === 'ceo@agrinas.id' && password === 'ceo123')) {
-                const userData = { email: email, name: email === 'ceo@agrinas.id' ? 'BOD Agrinas' : 'Staf PIC HO' };
+                
+                const userData = { 
+                    email: email, 
+                    name: email === 'ceo@agrinas.id' ? 'BOD Agrinas' : 'Staf PIC HO' 
+                };
+                
+                // Simpan sesi login ke LocalStorage (Otomatis nyangkut di HP/Laptop user)
                 localStorage.setItem('agrinas_user', JSON.stringify(userData));
                 errorMsg.classList.add('hidden');
+                
+                // Refresh Status
                 checkLoginState();
             } else {
+                // Kalau salah email/password
                 errorMsg.classList.remove('hidden');
             }
         }
@@ -347,11 +404,15 @@
             }
         }
 
+        // ==========================================
+        // 2. DATA PENGATURAN AWAL
+        // ==========================================
         let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
         const listSheets = ["REKAPITULASI", "Surat Pembatalan"];
+        
         let currentDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
@@ -502,7 +563,7 @@
         };
 
         // =========================================
-        // DASHBOARD UTAMA (REKAPITULASI ON-FARM) - LIVE DYNAMIC (SEMUA CRO + TOTAL AKURAT)
+        // DASHBOARD UTAMA (REKAPITULASI ON-FARM)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -535,7 +596,7 @@
                     let sLow = status.toLowerCase();
                     let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
 
-                    if (cNoSurat && (!noSurat || noSurat === "-" || noSurat.toLowerCase().includes("no surat") || !noSurat.includes("/"))) return;
+                    if (cNoSurat && (!noSurat || noSurat === "-" || noSurat.toLowerCase().includes("no surat"))) return;
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
 
@@ -565,11 +626,7 @@
 
             if (filterDropdown && filterDropdown.options.length <= 1) {
                 [...croList].sort().forEach(c => {
-                    let opt = document.createElement('option'); 
-                    opt.value = c; 
-                    opt.innerText = c; 
-                    opt.className = "bg-[#111111] text-white"; 
-                    filterDropdown.appendChild(opt);
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; filterDropdown.appendChild(opt);
                 });
             }
 
@@ -578,13 +635,13 @@
                 kpiContainer.innerHTML = `
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[#111111] to-[#151515] border-t-[3px] border-t-blue-500 shadow-[0_4px_20px_-4px_rgba(59,130,246,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.25)]">
                         <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2 flex items-center justify-between">Total Target Produksi</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ton</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 2})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ton</span></div>
                         <div class="text-[10px] text-gray-500 italic mt-2 opacity-60">(Data Kalkulasi Akurat)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[#111111] to-[#151515] border-t-[3px] border-t-purple-500 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.25)]">
                         <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Total Luas Kebun / Luas TM</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ha</span></div>
-                        <div class="text-[10px] font-semibold text-purple-400 mt-2 bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">Luas TM: ${totalLuasTM.toLocaleString('id-ID', {minimumFractionDigits: 2})} Ha</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 2})} <span class="text-lg text-gray-500 font-medium tracking-normal">Ha</span></div>
+                        <div class="text-[10px] font-semibold text-purple-400 mt-2 bg-purple-500/10 inline-block px-2 py-0.5 rounded border border-purple-500/20">Luas TM: ${totalLuasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})} Ha</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[#111111] to-[#151515] border-t-[3px] border-t-orange-500 shadow-[0_4px_20px_-4px_rgba(249,115,22,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(249,115,22,0.25)]">
                         <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Total Kemitraan PT</div>
@@ -594,7 +651,7 @@
                 `;
             }
 
-            const titleSuffix = selectedCRO === 'ALL' ? 'se-Indonesia (Semua CRO)' : `(Regional ${selectedCRO})`;
+            const titleSuffix = selectedCRO === 'ALL' ? 'per CRO' : `(Regional ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
             if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `Status Kelola PT ${titleSuffix}`;
@@ -635,7 +692,7 @@
                     title: { text: `<span style="font-size: 10px; color: #888888; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#a1a1aa', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: '#333' } } },
-                    colors: ['#3b82f6', '#f43f5e'], 
+                    colors: ['#3b82f6', '#f43f5e'], // Biru untuk Sudah, Merah/Pink untuk Belum
                     series: [{ 
                         name: 'Jumlah PT', 
                         data: [
@@ -672,7 +729,7 @@
         }
 
         // =========================================
-        // GRAFIK PREMIUM SURAT PEMBATALAN
+        // GRAFIK PREMIUM SURAT PEMBATALAN (LEBIH ELEGAN & GEMUK)
         // =========================================
         function renderPembatalanChart(pembatalanData) {
             let pembatalanCountMap = {};
@@ -706,19 +763,39 @@
             Highcharts.chart('chart-pembatalan', {
                 chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
                 title: { text: null },
-                legend: { enabled: false },
+                legend: { enabled: false }, // Hapus legend biar area grafik luas & rapi
                 tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
-                xAxis: { categories: categories, labels: { style: { color: '#a1a1aa', fontWeight: '600', fontSize: '11px' } }, lineWidth: 0, tickWidth: 0 },
-                yAxis: { title: { text: null }, gridLineColor: '#262626', gridLineDashStyle: 'Dash', labels: { style: { color: '#52525b' } } },
+                xAxis: { 
+                    categories: categories, 
+                    labels: { style: { color: '#a1a1aa', fontWeight: '600', fontSize: '11px' } }, 
+                    lineWidth: 0, 
+                    tickWidth: 0 
+                },
+                yAxis: { 
+                    title: { text: null }, 
+                    gridLineColor: '#262626', 
+                    gridLineDashStyle: 'Dash', // Garis putus-putus modern
+                    labels: { style: { color: '#52525b' } } 
+                },
                 series: [{ 
                     name: 'Jumlah Surat Batal', 
                     data: chartData, 
-                    color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#f87171'], [1, '#991b1b'] ] }
+                    // Warna merah terang gradasi ke gelap
+                    color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] }
                 }],
                 plotOptions: { 
                     column: { 
-                        borderRadius: 6, borderWidth: 0, pointPadding: 0.15, groupPadding: 0.1, maxPointWidth: 70, 
-                        dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, y: -5 } 
+                        borderRadius: 6, 
+                        borderWidth: 0, 
+                        pointPadding: 0.15, // Biar bar lebih gemuk
+                        groupPadding: 0.1, 
+                        maxPointWidth: 70, // Maksimal lebar bar
+                        dataLabels: { 
+                            enabled: true, 
+                            color: '#ffffff', // Warna font atas putih 
+                            style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, // Angka lebih besar
+                            y: -5
+                        } 
                     } 
                 },
                 credits: { enabled: false }
@@ -745,6 +822,7 @@
             
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('modalContent');
+            
             modal.classList.remove('hidden');
             setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
         }
@@ -759,9 +837,11 @@
         $(document).on('click', '.hide-col-btn', function(e) {
             e.stopPropagation(); 
             e.preventDefault();
+            
             let th = $(this).closest('th');
             let wrapper = $(this).closest('.dataTables_wrapper');
             let mainTable = wrapper.find('.dataTables_scrollBody table');
+            
             if(mainTable.length > 0) {
                 let tableId = mainTable.attr('id');
                 let table = $('#' + tableId).DataTable();
@@ -774,6 +854,7 @@
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             
+            // TAMPILKAN CHART KALAU LAGI DI MENU SURAT PEMBATALAN
             const pembatalanContainer = document.getElementById('pembatalan-chart-container');
             if (sheetName.toLowerCase() === 'surat pembatalan') {
                 pembatalanContainer.classList.remove('hidden');
@@ -861,7 +942,9 @@
             });
         }
 
+        // TRIGGER LOGIN CEK SAAT PERTAMA KALI WEB DIBUKA
         document.addEventListener("DOMContentLoaded", function() {
+            // Pastikan Form Login Nahan User
             checkLoginState();
 
             if (localStorage.getItem('theme') === 'light') {
@@ -904,18 +987,108 @@
                     const result = await response.json();
                     
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
+                        
+                        if (Object.keys(rawData).length > 0) {
+                            let detectedChanges = [];
+                            const allSheetNames = [...listSheets]; 
+                            
+                            allSheetNames.forEach(sheet => {
+                                let pivotKey = Object.keys(result.rawData).find(k => k.trim().toLowerCase() === sheet.toLowerCase()) || sheet;
+                                let oldSheet = rawData[sheet] || [];
+                                let newSheet = result.rawData[pivotKey] || [];
+                                let maxRows = Math.max(oldSheet.length, newSheet.length);
+
+                                for (let i = 0; i < maxRows; i++) {
+                                    let oldRow = oldSheet[i] || {};
+                                    let newRow = newSheet[i] || {};
+                                    let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
+
+                                    allKeys.forEach(key => {
+                                        if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
+
+                                        let oldVal = String(oldRow[key] || "").trim();
+                                        let newVal = String(newRow[key] || "").trim();
+
+                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
+
+                                        if (oldVal !== newVal) {
+                                            detectedChanges.push({ sheet: sheet, waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), baris: i + 2, kolom: key, lama: oldVal === "" ? "(Kosong)" : oldVal, baru: newVal === "" ? "(Kosong)" : newVal });
+                                        }
+                                    });
+                                }
+                            });
+
+                            if(detectedChanges.length > 0) {
+                                logsData = [...detectedChanges, ...logsData];
+                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
+                            }
+                            isUnread = true; 
+                        }
+
                         rawData = result.rawData;
                         renderNotifications();
-                        if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) renderPivotDashboard(); 
+                        
+                        if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) {
+                            renderPivotDashboard(); 
+                        }
                         else if (listSheets.includes(currentActiveSheet)) {
-                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || sheetRealKey;
+                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
                             loadTable(sheetRealKey);
                         }
+
+                        if(syncText && syncDot) {
+                            syncText.innerText = "UPDATING...";
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
+                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
+                            
+                            setTimeout(() => { 
+                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
+                                syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
+                            }, 3000);
+                        }
                     }
-                } catch (err) {}
+                } catch (err) { 
+                    console.error("Gagal sinkronisasi background:", err); 
+                    if(syncText && syncDot) {
+                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
+                        syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
+                    }
+                }
+            }
+
+            if (Object.keys(rawData).length === 0) {
+                syncData();
+                let retryInterval = setInterval(() => {
+                    if(Object.keys(rawData).length > 0) {
+                        clearInterval(retryInterval);
+                        if (currentActiveSheet) {
+                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
+                            if (listSheets.includes(currentActiveSheet)) loadTable(sheetRealKey);
+                        } else {
+                            renderPivotDashboard();
+                        }
+                    }
+                    else syncData();
+                }, 2000);
             }
 
             setInterval(syncData, 10000); 
+
+            setInterval(async () => {
+                try {
+                    const response = await fetch('/api/check-emails?t=' + new Date().getTime());
+                    const result = await response.json();
+                    if (JSON.stringify(emailsData) !== JSON.stringify(result.emails)) {
+                        emailsData = result.emails;
+                        renderEmailsUI();
+                        const badge = document.getElementById('sidebar-email-badge');
+                        if (result.unreadCount > 0 && badge) {
+                            badge.innerText = result.unreadCount; badge.classList.remove('hidden'); badge.classList.remove('badge-pop'); void badge.offsetWidth; badge.classList.add('badge-pop');
+                        }
+                    }
+                } catch (err) {}
+            }, 5000); 
         });
     </script>
 </body>
