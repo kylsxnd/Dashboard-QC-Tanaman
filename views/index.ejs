@@ -131,14 +131,13 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Dashboard Pembatalan
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
@@ -158,7 +157,6 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.55;"></div>
         <div class="bg-overlay"></div>
@@ -169,7 +167,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard Rekapitulasi</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -186,7 +184,7 @@
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
             
-            <!-- 1. DASHBOARD REKAPITULASI (RENTANG CELL 2 s.d 207) -->
+            <!-- 1. DASHBOARD REKAPITULASI (CELL 2 s.d 207 EXACT) -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -201,7 +199,6 @@
                     </div>
                 </div>
 
-                <!-- 2 KOTAK KPI UTAMA DENGAN EFEK HOVER GLOW -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
@@ -238,7 +235,7 @@
                 </div>
             </section>
 
-            <!-- 2. DASHBOARD PEMBATALAN -->
+            <!-- 2. DASHBOARD PEMBATALAN (LIMIT BARIS 97) -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -249,17 +246,12 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] cursor-default">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8">
+                    <!-- KOTAK KPI: TOTAL SURAT PEMBATALAN -->
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-total-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
-                        <div class="text-[10px] text-red-400 font-semibold mt-2 bg-red-500/20 inline-block px-2 py-0.5 rounded border border-red-500/30">Arsip Terpusat</div>
-                    </div>
-                    
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">REGIONAL TERDAMPAK</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-cro-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">CRO</span></div>
-                        <div class="text-[10px] text-amber-400 font-semibold mt-2 bg-amber-500/20 inline-block px-2 py-0.5 rounded border border-amber-500/30">Monitoring Aktif</div>
+                        <div class="text-[10px] text-red-400 font-semibold mt-2 bg-red-500/20 inline-block px-2 py-0.5 rounded border border-red-500/30">Arsip Terpusat (Baris 2 s.d 97)</div>
                     </div>
                 </div>
 
@@ -307,7 +299,6 @@
         </main>
     </div>
 
-    <!-- MODAL PREVIEW -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
             <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
@@ -333,8 +324,6 @@
         }
 
         let rawData = <%- sheetData %> || {};
-        let logsData = <%- logsData %> || []; 
-        
         let currentDataTable = null;
         let currentActiveSheet = null; 
 
@@ -389,12 +378,12 @@
             
             const headerTitle = document.getElementById('header-title');
             if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Rekapitulasi";
+                headerTitle.innerText = "Dashboard Rekapitulasi";
                 currentActiveSheet = 'dashboard';
                 renderDashboardCharts(); 
             }
             else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
+                headerTitle.innerText = "Dashboard Pembatalan";
                 currentActiveSheet = 'pembatalan';
                 renderPembatalanDashboard();
             }
@@ -440,20 +429,20 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (RENTANG CELL 2 s.d 207 EXACT)
+        // DASHBOARD 1: REKAPITULASI (CELL 2 s.d 207 EXACT)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
             
-            // Pencarian nama sheet yang adaptif
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") 
+            // Auto search key REKAPITULASI
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
                         || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
-                        || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) 
+                        || Object.keys(rawData).find(k => k.toLowerCase().includes("rekapitulasi") && !k.toLowerCase().includes("batal")) 
                         || Object.keys(rawData)[0];
             
             let rekapDataRaw = rawData[rekapKey] || [];
             
-            // KUNCI CELL 2 SAMPAI 207 (Index 0 s.d 205 = 206 baris data)
+            // KUNCI CELL 2 SAMPAI 207 EXCEL (Index 0 s.d 205 = 206 baris)
             let rekapData = rekapDataRaw.slice(0, 206);
             
             let croList = new Set();
@@ -474,7 +463,7 @@
                     let pt = String(row[cPt] || "").trim();
                     
                     if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
-                        break; // Berhenti otomatis jika bertemu total
+                        break;
                     }
                     
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
@@ -622,13 +611,16 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN
+        // DASHBOARD 2: PEMBATALAN (LIMIT BARIS 2 s.d 97 EXACT)
         // =========================================
         function renderPembatalanDashboard() {
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") 
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan"))
                         || "REKAPITULASI PEMBATALAN";
-            let pembatalanData = rawData[batalKey] || [];
+            let pembatalanDataRaw = rawData[batalKey] || [];
+            
+            // LIMIT BARIS 2 s.d 97 EXCEL (Index 0 s.d 95 = 96 Baris)
+            let pembatalanData = pembatalanDataRaw.slice(0, 96); 
             
             let pembatalanCountMap = {};
             let totalSuratBatal = 0;
@@ -672,7 +664,6 @@
             }
 
             document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
-            document.getElementById('kpi-cro-batal').innerHTML = `${croSet.size} <span class="text-lg text-gray-400 font-medium tracking-normal">CRO</span>`;
 
             let categories = Object.keys(pembatalanCountMap).sort();
             let chartData = categories.map(c => pembatalanCountMap[c]);
@@ -705,12 +696,54 @@
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
+        function getFileIcon(fileName) {
+            const ext = fileName.toLowerCase();
+            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
+            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
+            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
+        }
+
+        function openPreview(rawUrl) {
+            let previewUrl = rawUrl.trim();
+            if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
+            else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
+            
+            document.getElementById('documentIframe').src = previewUrl;
+            document.getElementById('modalExternalLink').href = rawUrl;
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
+        }
+
+        function closePreview() {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.add('opacity-0'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
+        }
+
+        $(document).on('click', '.hide-col-btn', function(e) {
+            e.stopPropagation(); 
+            e.preventDefault();
+            let th = $(this).closest('th');
+            let wrapper = $(this).closest('.dataTables_wrapper');
+            let mainTable = wrapper.find('.dataTables_scrollBody table');
+            if(mainTable.length > 0) {
+                let tableId = mainTable.attr('id');
+                let table = $('#' + tableId).DataTable();
+                let colIdx = table.column(th).index();
+                table.column(colIdx).visible(false);
+                setTimeout(() => { table.columns.adjust(); }, 50);
+            }
+        });
+
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
             
             if (sheetName === "REKAPITULASI") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") 
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
                             || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
                             || "REKAPITULASI PENUGASAN";
             } else if (sheetName === "REKAPITULASI PEMBATALAN") {
@@ -718,6 +751,8 @@
             }
 
             const dataFull = rawData[actualKey] || [];
+            
+            // AUTO STOP LIMIT UNTUK DATATABLE BIAR BERSIH DARI SAMPAH BAWAH TOTAL
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
                 let rowStr = JSON.stringify(dataFull[i]).toLowerCase();
@@ -829,6 +864,50 @@
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
             });
+            
+            async function syncData() {
+                const syncText = document.getElementById('sync-text');
+                const syncDot = document.getElementById('sync-dot');
+
+                try {
+                    const response = await fetch('/api/check-updates?t=' + new Date().getTime());
+                    const result = await response.json();
+                    
+                    if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
+                        
+                        rawData = result.rawData;
+                        
+                        if (currentActiveSheet === 'dashboard') {
+                            renderDashboardCharts(); 
+                        }
+                        else if (currentActiveSheet === 'pembatalan') {
+                            renderPembatalanDashboard(); 
+                        }
+                        else {
+                            loadTable(currentActiveSheet);
+                        }
+
+                        if(syncText && syncDot) {
+                            syncText.innerText = "UPDATING...";
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
+                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
+                            
+                            setTimeout(() => { 
+                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
+                                syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
+                            }, 3000);
+                        }
+                    }
+                } catch (err) { 
+                    console.error("Gagal sinkronisasi background:", err); 
+                    if(syncText && syncDot) {
+                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
+                        syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
+                    }
+                }
+            }
+
+            setInterval(syncData, 10000); 
         });
     </script>
 </body>
