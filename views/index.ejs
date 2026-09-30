@@ -67,9 +67,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
         }
 
-        .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
-        .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
-
         .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; margin-bottom: 6px; position: relative; border: 1px solid transparent; }
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.05); transform: translateX(4px); }
         .sidebar-link.active { color: #ffffff; background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); border-left: 3px solid #83b765; border-color: transparent; border-left-color: #83b765; font-weight: 600; }
@@ -79,9 +76,6 @@
         .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
         .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
 
-        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -138,12 +132,10 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
-            <!-- 1. DASHBOARD REKAPITULASI -->
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
-            <!-- 2. DASHBOARD PEMBATALAN -->
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Dashboard Pembatalan
             </button>
@@ -168,12 +160,9 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT JELAS -->
+    <!-- CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
-        
-        <!-- BACKGROUND GAMBAR DENGAN OPACITY YANG PAS AGAR TERLIHAT JELAS -->
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.45;"></div>
-        
         <div class="bg-overlay"></div>
 
         <header class="h-16 border-b border-gray-600/30 flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300 relative" style="background: rgba(17,17,17,0.7); backdrop-filter: blur(10px);">
@@ -205,43 +194,44 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari sheet REKAPITULASI (terbatas max 207 baris).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data setara sheet PIVOT (Otomatis Filter Baris 1-207).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
-                        <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">Filter CRO:</span>
+                        <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">FILTER CRO:</span>
                         <select id="cro-filter" onchange="renderPivotDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
+                <!-- KPI CARDS REKAPITULASI -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-5 mb-8" id="pivot-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Target Produksi (Ton)</h3>
+                        <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">TARGET PRODUKSI (TON) SE-INDONESIA</h3>
                         <div id="pivot-bar-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha)</h3>
+                        <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS KEBUN (HA) SE-INDONESIA</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT</h3>
+                        <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">STATUS KELOLA PT SE-INDONESIA</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Daftar Perusahaan (PT)</h3>
+                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">DAFTAR PERUSAHAAN (PT)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
                                 <tr>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase">Nama Perusahaan (PT)</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">Status Kelola</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas Kebun (Ha)</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas TM (Ha)</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Target Produksi (Ton)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase">NAMA PERUSAHAAN (PT)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">STATUS KELOLA</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">LUAS KEBUN (HA)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">LUAS TM (HA)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">TARGET PRODUKSI (TON)</th>
                                 </tr>
                             </thead>
                             <tbody id="pt-list-body" class="divide-y divide-gray-600/30"></tbody>
@@ -256,53 +246,53 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pembatalan</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik dari sheet REKAPITULASI PEMBATALAN (terbatas max 97 baris).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari sheet REKAPITULASI PEMBATALAN (Limitasi max baris 97).
                         </p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5 mb-8">
-                    <!-- Selesai / Dokumen -->
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-500 shadow-[0_4px_15px_-4px_rgba(239,68,68,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Total Surat Pembatalan</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-total-batal">0</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
+                    <!-- KPI 1: TOTAL SURAT (DOKUMEN VALID) -->
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-total-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
                         <div class="text-[10px] text-red-400 font-semibold mt-2 bg-red-500/20 inline-block px-2 py-0.5 rounded border border-red-500/30">Arsip Terpusat</div>
                     </div>
                     
-                    <!-- Pending / Proses TTD -->
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Dokumen Proses TTD</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-proses-ttd-batal">0</div>
-                        <div class="text-[10px] text-orange-400 font-semibold mt-2 bg-orange-500/20 inline-block px-2 py-0.5 rounded border border-orange-500/30">Menunggu Tanda Tangan</div>
+                    <!-- KPI 2: REGIONAL TERDAMPAK -->
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">REGIONAL TERDAMPAK</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-cro-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">CRO</span></div>
+                        <div class="text-[10px] text-amber-400 font-semibold mt-2 bg-amber-500/20 inline-block px-2 py-0.5 rounded border border-amber-500/30">Monitoring Aktif</div>
                     </div>
 
-                    <!-- Regional Terdampak -->
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-400 shadow-[0_4px_15px_-4px_rgba(251,191,36,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(251,191,36,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Regional Terdampak</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-cro-batal">0 CRO</div>
-                        <div class="text-[10px] text-amber-300 font-semibold mt-2 bg-amber-500/20 inline-block px-2 py-0.5 rounded border border-amber-500/30">Monitoring Aktif</div>
+                    <!-- KPI 3: PROSES TTD (BARU) -->
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">DOKUMEN PROSES TTD</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-ttd-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Berkas</span></div>
+                        <div class="text-[10px] text-orange-400 font-semibold mt-2 bg-orange-500/20 inline-block px-2 py-0.5 rounded border border-orange-500/30">Menunggu Tanda Tangan</div>
                     </div>
                 </div>
 
                 <div class="premium-card p-5 md:p-8 w-full relative overflow-hidden mb-8">
                     <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Statistik Surat Pembatalan per CRO
+                        STATISTIK SURAT PEMBATALAN PER CRO
                     </h3>
                     <div id="dash-chart-pembatalan" style="height: 350px; width: 100%;"></div>
                 </div>
 
                 <!-- DAFTAR PERUSAHAAN (PEMBATALAN) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Daftar Perusahaan Terkait Pembatalan</h3>
+                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">DAFTAR PERUSAHAAN PEMBATALAN</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
                                 <tr>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase">Nama Perusahaan / Mitra</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase">NAMA PERUSAHAAN / MITRA</th>
                                     <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">CRO</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">Luas TM (Ha)</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">Status Berkas</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">LUAS TM (HA)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">STATUS DOKUMEN</th>
                                 </tr>
                             </thead>
                             <tbody id="pembatalan-pt-list-body" class="divide-y divide-gray-600/30"></tbody>
@@ -456,46 +446,39 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI
+        // DASHBOARD 1: REKAPITULASI (SYNC WITH PIVOT DATA)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
-            // Menarik dari log data sheet REKAPITULASI
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
             
-            // ATURAN 1: Membatasi data Rekapitulasi maksimal baris 207 (indeks 206)
-            const rekapDataRaw = rawData[rekapKey] || [];
-            const rekapData = rekapDataRaw.slice(0, 206); 
+            // Kita tetap memakai sheet REKAPITULASI karena disinilah terdapat rincian nama PT untuk tabel.
+            // Sesuai dengan instruksi, kita melimit baris hingga 207 untuk mendapatkan angka persis dengan PIVOT (208 PT).
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
+            let rekapDataRaw = rawData[rekapKey] || [];
+            
+            // LIMITASI HINGGA BARIS 207 EXCEL
+            let rekapData = rekapDataRaw.slice(0, 206); 
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
             let chartBarDataMap = {}, chartPieDataMap = {}; 
             let ptListRaw = []; 
-            let totalSudahDikelola = 0, totalBelumDikelola = 0;
-            let totalProsesTTDRekap = 0; // Tambahan KPI Proses TTD
+            let totalSudahDikelola = 0, totalBelumDikelola = 0, totalProsesTTD = 0;
 
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
                 let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
-                let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
-
+                
                 rekapData.forEach(row => {
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
-                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
-                    let linkSurat = String(row['Link Surat'] || "").trim();
-
+                    
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
-
-                    let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
-
-                    if (isValidRow || isProsesTTD) {
-                        croList.add(cro);
-                    }
+                    
+                    croList.add(cro);
                 });
             }
 
@@ -521,6 +504,7 @@
                 let cTarget = rCols.find(k => k.toLowerCase().includes('target')) || rCols[4];
                 let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[5];
                 let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
+                let cLink = rCols.find(k => k.toLowerCase().includes('link surat')) || rCols.find(k => k.toLowerCase().includes('link'));
 
                 rekapData.forEach(row => {
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
@@ -530,14 +514,15 @@
                     let sLow = status.toLowerCase();
                     
                     let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
-                    let linkSurat = String(row['Link Surat'] || "").trim();
+                    let linkSurat = cLink ? String(row[cLink] || "").trim() : "";
+                    
+                    // Deteksi "Proses TTD" dari teks No Surat atau Link
                     let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
 
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
 
-                    if ((isValidRow || isProsesTTD) && (selectedCRO === 'ALL' || selectedCRO === cro)) {
+                    if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
                         let luasTM = parseNum(row[cLuasTM]);
                         let target = parseNum(row[cTarget]);
@@ -545,18 +530,16 @@
                         totalLuas += luas;
                         totalLuasTM += luasTM;
                         totalTarget += target;
-                        
-                        if (isProsesTTD) {
-                            totalProsesTTDRekap++;
-                        } else {
-                            chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
-                            chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
-                        }
 
-                        ptListRaw.push({ name: pt, cro: cro, luas: luas, luasTM: luasTM, target: target, status: isProsesTTD ? "Proses TTD" : (status || '-') });
+                        chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
+                        chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
 
-                        if (sLow.includes('sudah') && !isProsesTTD) totalSudahDikelola++;
-                        else if ((sLow.includes('belum') || status === "" || status === "-") && !isProsesTTD) totalBelumDikelola++;
+                        let finalStatus = isProsesTTD ? "Proses TTD" : (status || '-');
+                        ptListRaw.push({ name: pt, cro: cro, luas: luas, luasTM: luasTM, target: target, status: finalStatus });
+
+                        if (isProsesTTD) totalProsesTTD++;
+                        else if (sLow.includes('sudah')) totalSudahDikelola++;
+                        else totalBelumDikelola++;
                     }
                 });
             }
@@ -565,35 +548,31 @@
 
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
+                // UI Sesuai Screenshot Rekapitulasi (Gambar ke 6)
                 kpiContainer.innerHTML = `
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Total Target Produksi</div>
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL TARGET PRODUKSI</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data Kalkulasi Akurat)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan data filter)</div>
                     </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Total Luas Kebun / Luas TM</div>
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
-                        <div class="text-[10px] font-semibold text-purple-300 mt-2 bg-purple-500/20 inline-block px-2 py-0.5 rounded border border-purple-500/30">Luas TM: ${totalLuasTM.toLocaleString('id-ID', {minimumFractionDigits: 2})} Ha</div>
+                        <div class="text-[10px] font-semibold text-purple-300 mt-2 bg-purple-500/20 inline-block px-2 py-0.5 rounded border border-purple-500/30">Luas TM ${totalLuasTM.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} Ha</div>
                     </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-emerald-500 shadow-[0_4px_15px_-4px_rgba(16,185,129,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Total Kemitraan PT</div>
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL KEMITRAAN PT</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalPtCount.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data Kalkulasi Akurat)</div>
-                    </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Dokumen Proses TTD</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalProsesTTDRekap.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
-                        <div class="text-[10px] font-semibold text-orange-400 mt-2 bg-orange-500/20 inline-block px-2 py-0.5 rounded border border-orange-500/30">Menunggu Tanda Tangan</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data Filter Berdasarkan Pivot)</div>
                     </div>
                 `;
             }
 
-            const titleSuffix = selectedCRO === 'ALL' ? 'se-Indonesia' : `(Regional ${selectedCRO})`;
-            if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `Target Produksi (Ton) ${titleSuffix}`;
-            if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `Luas Kebun (Ha) ${titleSuffix}`;
-            if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `Status Kelola PT ${titleSuffix}`;
-            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `Daftar Perusahaan (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
+            const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
+            if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `TARGET PRODUKSI (TON) ${titleSuffix}`;
+            if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS KEBUN (HA) ${titleSuffix}`;
+            if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `STATUS KELOLA PT ${titleSuffix}`;
+            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `DAFTAR PERUSAHAAN (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
             if(document.getElementById('pivot-bar-chart')) {
                 Highcharts.chart('pivot-bar-chart', {
@@ -623,11 +602,15 @@
             if(document.getElementById('status-pie-chart')) {
                 Highcharts.chart('status-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL PT (FIXED)</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudahDikelola + totalBelumDikelola + totalProsesTTD}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#e5e7eb', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: 'rgba(255,255,255,0.2)' } } },
-                    colors: ['#3b82f6', '#f43f5e'], 
-                    series: [{ name: 'Jumlah PT', data: [{name: 'Sudah Dikelola', y: totalSudahDikelola}, {name: 'Belum Dikelola', y: totalBelumDikelola}] }],
+                    colors: ['#3b82f6', '#f43f5e', '#f59e0b'], 
+                    series: [{ name: 'Jumlah PT', data: [
+                        {name: 'Sudah Dikelola', y: totalSudahDikelola}, 
+                        {name: 'Belum Dikelola', y: totalBelumDikelola},
+                        {name: 'Proses TTD', y: totalProsesTTD}
+                    ]}],
                     credits: { enabled: false }
                 });
             }
@@ -636,8 +619,7 @@
             ptListRaw.sort((a,b) => b.target - a.target);
             if (ptListRaw.length > 0) {
                 ptListRaw.forEach(pt => {
-                    let isTtd = pt.status === "Proses TTD";
-                    let stc = isTtd ? 'text-orange-400 font-bold' : (pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted'));
+                    let stc = pt.status === 'Proses TTD' ? 'text-amber-400 font-bold' : (pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted'));
                     ptHtml += `
                         <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
                             <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-black/40 px-1.5 md:px-2 py-0.5 rounded border border-gray-600/50 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
@@ -658,16 +640,15 @@
         // DASHBOARD 2: PEMBATALAN (DEDICATED VIEW)
         // =========================================
         function renderPembatalanDashboard() {
-            // Menarik dari log data khusus sheet REKAPITULASI PEMBATALAN
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            
-            // ATURAN 2: Membatasi data Rekapitulasi Pembatalan maksimal baris 97 (indeks 96)
             let pembatalanDataRaw = rawData[batalKey] || [];
-            let pembatalanData = pembatalanDataRaw.slice(0, 96);
+            
+            // LIMITASI DATA HINGGA BARIS 97
+            let pembatalanData = pembatalanDataRaw.slice(0, 96); 
             
             let pembatalanCountMap = {};
-            let totalSuratBatal = 0; // Dokumen Selesai
-            let totalProsesTTDBatal = 0; // Masih Proses TTD
+            let totalSuratBatal = 0;
+            let totalTtdProses = 0; // Tambahan KPI Proses TTD
             let croSet = new Set();
             let ptListBatal = [];
 
@@ -685,41 +666,38 @@
                     let linkSurat = String(row['Link Surat Pembatalan'] || row['Status Kirim Dokumen'] || "").trim();
                     let luas = parseNum(row['Luas TM (Ha)']);
                     
-                    // Deteksi jika isinya 'Proses TTD' pada kolom no surat atau kolom link
+                    // Deteksi "Proses TTD"
                     let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
+                    let isSelesai = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
 
-                    if (isValidRow || isProsesTTD) {
+                    if (isProsesTTD || isSelesai) {
                         if (croBatal && !croBatal.startsWith("CRO") && croBatal !== "-" && croBatal !== "CRO") {
                             croBatal = "CRO " + croBatal;
                         }
-                        
-                        // Increment logis
+
                         if (isProsesTTD) {
-                            totalProsesTTDBatal++;
-                        } else if (isValidRow) {
+                            totalTtdProses++;
+                        } else {
                             totalSuratBatal++;
                             pembatalanCountMap[croBatal] = (pembatalanCountMap[croBatal] || 0) + 1;
                         }
+                        
                         croSet.add(croBatal);
 
-                        // Menyusun Array untuk Table list pembatalan
                         ptListBatal.push({
                             name: pt || mitra || "-",
                             cro: croBatal,
                             luas: luas,
-                            status: isProsesTTD ? "Proses TTD" : "Selesai"
+                            status: isProsesTTD ? "Proses TTD" : "Telah Terbit"
                         });
                     }
                 });
             }
 
-            // Memperbarui KPI Boxes
-            document.getElementById('kpi-total-batal').innerText = totalSuratBatal.toLocaleString('id-ID') + " Surat";
-            document.getElementById('kpi-proses-ttd-batal').innerText = totalProsesTTDBatal.toLocaleString('id-ID') + " Berkas";
-            document.getElementById('kpi-cro-batal').innerText = croSet.size + " CRO";
+            document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
+            document.getElementById('kpi-cro-batal').innerHTML = `${croSet.size} <span class="text-lg text-gray-400 font-medium tracking-normal">CRO</span>`;
+            document.getElementById('kpi-ttd-batal').innerHTML = `${totalTtdProses.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Berkas</span>`;
 
-            // Chart Logic
             let categories = Object.keys(pembatalanCountMap).sort();
             let chartData = categories.map(c => pembatalanCountMap[c]);
 
@@ -731,7 +709,7 @@
                 xAxis: { categories: categories, labels: { style: { color: '#e5e7eb', fontWeight: '600', fontSize: '11px' } }, lineWidth: 0, tickWidth: 0 },
                 yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', gridLineDashStyle: 'Dash', labels: { style: { color: '#a1a1aa' } } },
                 series: [{ 
-                    name: 'Jumlah Surat Batal', 
+                    name: 'Jumlah Surat Selesai', 
                     data: chartData, 
                     color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] }
                 }],
@@ -744,16 +722,16 @@
                 credits: { enabled: false }
             });
 
-            // List Perusahaan Pembatalan Logic
+            // Daftar PT Pembatalan
             let ptBatalHtml = '';
             ptListBatal.forEach(pt => {
-                let badgeColor = pt.status === 'Proses TTD' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                let badgeColor = pt.status === 'Proses TTD' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30';
                 ptBatalHtml += `
                     <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
                         <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name}</td>
                         <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-center theme-text-muted">${pt.cro}</td>
                         <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center"><span class="inline-block px-2 py-1 rounded border ${badgeColor} font-semibold">${pt.status}</span></td>
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center"><span class="inline-block px-2 py-1 rounded border ${badgeColor} font-semibold shadow-sm">${pt.status}</span></td>
                     </tr>
                 `;
             });
@@ -906,7 +884,6 @@
                 if(themeIcon) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
             }
 
-            // GENERATE SIDEBAR MASTER DATA KEBUN ("REKAPITULASI" & "REKAPITULASI PEMBATALAN")
             const sidebarMaster = document.getElementById('sidebar-master-data');
             if(sidebarMaster) {
                 const masterItems = [
