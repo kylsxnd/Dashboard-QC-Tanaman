@@ -85,6 +85,11 @@
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
         table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
+        
+        body.light-mode table.dataTable { border-bottom: 1px solid var(--border-color) !important; }
+        body.light-mode table.dataTable thead th { background-color: #f9fafb !important; border-bottom: 1px solid var(--border-color) !important; }
+        body.light-mode table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
+        body.light-mode table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; }
@@ -111,6 +116,7 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
 
+    <!-- SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -169,7 +175,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard Rekapitulasi</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -186,13 +192,13 @@
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
             
-            <!-- 1. DASHBOARD REKAPITULASI -->
+            <!-- 1. DASHBOARD REKAPITULASI (STRICT ROW 2 - 207) -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Auto-Stop: Kalkulasi otomatis berhenti di baris "Total" Excel.
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Limitasi Baris 2 sampai 207 sesuai Excel).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -201,7 +207,7 @@
                     </div>
                 </div>
 
-                <!-- 2 KOTAK UTAMA DENGAN EFEK GLOW SAAT HOVER (SESUAI REQUEST) -->
+                <!-- 2 KOTAK UTAMA DENGAN EFEK GLOW SAAT HOVER -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
@@ -389,12 +395,12 @@
             
             const headerTitle = document.getElementById('header-title');
             if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Rekapitulasi";
+                headerTitle.innerText = "Dashboard Rekapitulasi";
                 currentActiveSheet = 'dashboard';
                 renderDashboardCharts(); 
             }
             else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
+                headerTitle.innerText = "Dashboard Pembatalan";
                 currentActiveSheet = 'pembatalan';
                 renderPembatalanDashboard();
             }
@@ -440,18 +446,16 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (AUTO-STOP KETIKA KETEMU BARIS "TOTAL")
+        // DASHBOARD 1: REKAPITULASI (STRICT ROW 2 s.d 207 EXACT)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
             
-            // KODE SAKTI: Auto-search nama sheet yang ada kata "REKAPITULASI PENUGASAN" atau "REKAPITULASI"
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
-                        || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
-                        || Object.keys(rawData).find(k => k.toLowerCase().includes("rekapitulasi") && !k.toLowerCase().includes("batal")) 
-                        || "REKAPITULASI PENUGASAN";
-            
-            let rekapData = rawData[rekapKey] || [];
+            // SEDOT DATA DARI SHEET "REKAPITULASI"
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
+                        || Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
+                        || "REKAPITULASI";
+            let rekapDataRaw = rawData[rekapKey] || [];
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
@@ -459,70 +463,53 @@
             let ptListRaw = []; 
             let totalSudahDikelola = 0, totalBelumDikelola = 0;
 
-            if (rekapData.length > 0) {
-                let rCols = Object.keys(rekapData[0] || {});
+            if (rekapDataRaw.length > 0) {
+                let rCols = Object.keys(rekapDataRaw[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
-                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
-
-                // CEK CRO LIST DENGAN LOGIKA AUTO-STOP
-                for (let i = 0; i < rekapData.length; i++) {
-                    let row = rekapData[i];
-                    let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
-                    let cro = rawCro.toUpperCase();
-                    let pt = String(row[cPt] || "").trim();
-                    
-                    // AUTO-STOP: BERHENTI KETIKA MENDETEKSI BARIS TOTAL
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
-                        break; 
-                    }
-                    
-                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
-                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
-                    
-                    croList.add(cro);
-                }
-            }
-
-            if (filterDropdown && filterDropdown.options.length <= 1 && croList.size > 0) {
-                filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
-                let sortedCro = [...croList].sort();
-                sortedCro.forEach(c => {
-                    let opt = document.createElement('option'); 
-                    opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
-                    filterDropdown.appendChild(opt);
-                });
-                filterDropdown.value = "ALL";
-            }
-
-            const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
-
-            if (rekapData.length > 0) {
-                let rCols = Object.keys(rekapData[0] || {});
-                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
-                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
+                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[1];
                 let cLuas = rCols.find(k => k.toLowerCase().includes('luas kebun')) || rCols[2];
                 let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[3];
                 let cTarget = rCols.find(k => k.toLowerCase().includes('target')) || rCols[4];
                 let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[5];
 
-                // HITUNG DATA DENGAN LOGIKA AUTO-STOP
-                for (let i = 0; i < rekapData.length; i++) {
-                    let row = rekapData[i];
+                // BATAS EXACT BARIS 2 SAMPAI 207 EXCEL (INDEX ARRAY 0 SAMPAI 205)
+                let limitRow = Math.min(206, rekapDataRaw.length);
+
+                // 1. Ambil List CRO Dulu untuk Filter
+                for (let i = 0; i < limitRow; i++) {
+                    let row = rekapDataRaw[i];
+                    let cro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
+                    if (cro && cro !== "-" && cro !== "CRO" && !cro.includes("TOTAL") && !cro.includes("SUMMARY") && !cro.includes("TAHAP")) {
+                        croList.add(cro);
+                    }
+                }
+
+                // 2. Render Dropdown Filter
+                if (filterDropdown && filterDropdown.options.length <= 1 && croList.size > 0) {
+                    filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
+                    let sortedCro = [...croList].sort();
+                    sortedCro.forEach(c => {
+                        let opt = document.createElement('option'); 
+                        opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
+                        filterDropdown.appendChild(opt);
+                    });
+                    filterDropdown.value = "ALL";
+                }
+
+                const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
+
+                // 3. Kalkulasi Data (Strict Row 2 to 207)
+                for (let i = 0; i < limitRow; i++) {
+                    let row = rekapDataRaw[i];
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
                     let status = String(row[cStatus] || "").trim();
-                    let sLow = status.toLowerCase();
 
-                    // AUTO-STOP: BERHENTI KETIKA MENDETEKSI BARIS TOTAL
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
-                        break; 
-                    }
+                    let isMatchCro = (selectedCRO === 'ALL' || selectedCRO === cro);
 
-                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
-                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
-
-                    if (selectedCRO === 'ALL' || selectedCRO === cro) {
+                    if (isMatchCro) {
+                        // SUM ANGKA TANPA SYARAT APAPUN AGAR 1000% IDENTIK DENGAN RUMUS =SUM() DI EXCEL
                         let luas = parseNum(row[cLuas]);
                         let luasTM = parseNum(row[cLuasTM]);
                         let target = parseNum(row[cTarget]);
@@ -531,13 +518,17 @@
                         totalLuasTM += luasTM;
                         totalTarget += target;
 
-                        chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
-                        chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
+                        // FILTER UNTUK TABEL & CHART (HANYA YANG PUNYA NAMA PT VALID YANG DIGAMBAR)
+                        if (pt && pt !== "-" && pt.toLowerCase() !== "nama pt" && pt.toLowerCase() !== "total") {
+                            if (cro && cro !== "-" && cro !== "CRO" && !cro.includes("TOTAL") && !cro.includes("SUMMARY") && !cro.includes("TAHAP")) {
+                                chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
+                                chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
+                                ptListRaw.push({ name: pt, cro: cro, luas: luas, luasTM: luasTM, target: target, status: status || '-' });
 
-                        ptListRaw.push({ name: pt, cro: cro, luas: luas, luasTM: luasTM, target: target, status: status || '-' });
-
-                        if (sLow.includes('sudah')) totalSudahDikelola++;
-                        else totalBelumDikelola++;
+                                if (status.toLowerCase().includes('sudah')) totalSudahDikelola++;
+                                else totalBelumDikelola++;
+                            }
+                        }
                     }
                 }
             }
@@ -548,7 +539,7 @@
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL TARGET PRODUKSI</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Batas Akurat Auto-Stop Excel)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Baris 2 s.d 207)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
@@ -558,6 +549,7 @@
                 `;
             }
 
+            const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `TARGET PRODUKSI (TON) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS KEBUN (HA) ${titleSuffix}`;
@@ -627,7 +619,15 @@
         // =========================================
         function renderPembatalanDashboard() {
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            let pembatalanData = rawData[batalKey] || [];
+            let pembatalanDataRaw = rawData[batalKey] || [];
+            
+            // LIMIT JAGA-JAGA BIAR BERSIH DARI SAMPAH BAWAH TOTAL
+            let pembatalanData = [];
+            for(let i=0; i<pembatalanDataRaw.length; i++) {
+                let rowStr = JSON.stringify(pembatalanDataRaw[i]).toLowerCase();
+                if(rowStr.includes('"nama pt":"total"') || rowStr.includes('"cro":"total"')) break;
+                pembatalanData.push(pembatalanDataRaw[i]);
+            }
             
             let pembatalanCountMap = {};
             let totalSuratBatal = 0;
@@ -639,16 +639,10 @@
                 let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || pCols[4];
                 let pNoSuratBatal = pCols.find(k => k.toLowerCase().includes('no surat pembatalan') || k.toLowerCase().includes('surat')) || pCols[1];
 
-                for (let i = 0; i < pembatalanData.length; i++) {
-                    let row = pembatalanData[i];
-                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
-                    
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) {
-                        break; // Auto stop logic
-                    }
-
+                pembatalanData.forEach(row => {
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
+                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
                     let noSurat = String(row[pNoSuratBatal] || "").trim();
                     let luas = parseNum(row['Luas TM (Ha)']);
                     
@@ -667,7 +661,7 @@
                             status: "Telah Terbit"
                         });
                     }
-                }
+                });
             }
 
             document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
@@ -751,11 +745,13 @@
             let actualKey = sheetName;
             
             if (sheetName === "REKAPITULASI") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
-                            || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
-                            || "REKAPITULASI PENUGASAN";
-            } else if (sheetName === "REKAPITULASI PEMBATALAN") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
+                            || Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
+                            || "REKAPITULASI";
+            } else if (sheetName === "Surat Pembatalan") {
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") 
+                            || Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) 
+                            || "Surat Pembatalan";
             }
 
             const dataFull = rawData[actualKey] || [];
@@ -858,7 +854,7 @@
             if(sidebarMaster) {
                 const masterItems = [
                     { id: "REKAPITULASI", display: "REKAPITULASI" },
-                    { id: "REKAPITULASI PEMBATALAN", display: "REKAPITULASI PEMBATALAN" }
+                    { id: "Surat Pembatalan", display: "Surat Pembatalan" }
                 ];
                 masterItems.forEach((item, idx) => {
                     const btn = document.createElement('button'); 
