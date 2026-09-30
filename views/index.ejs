@@ -219,9 +219,9 @@
         </div>
     </aside>
 
-    <!-- CONTAINER UTAMA DENGAN BACKGROUND FOTO KELAPA SAWIT -->
-    <!-- PATH SUDAH DIUBAH KE /bgkelapasawit.jpeg -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative" style="background-image: url('/bgkelapasawit.jpeg'); background-size: cover; background-position: center;">
+    <!-- CONTAINER UTAMA DENGAN BACKGROUND ABSOLUTE GITHUB -->
+    <!-- LINK DIUBAH PAKE GITHUB RAW BIAR 1000% NONGOL DI VERCEL -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); background-size: cover; background-position: center;">
         
         <!-- OVERLAY GELAP UNTUK BACKGROUND -->
         <div class="bg-overlay"></div>
@@ -430,8 +430,8 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // NAMA SHEET DI-UPDATE SESUAI EXCEL TERBARU (REKAPITULASI & REKAPITULASI PEMBATALAN)
-        const listSheets = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"];
+        // NAMA SHEET DI-UPDATE SESUAI EXCEL TERBARU (REKAPITULASI PENUGASAN & REKAPITULASI PEMBATALAN)
+        const listSheets = ["REKAPITULASI PENUGASAN", "REKAPITULASI PEMBATALAN"];
         let currentDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
@@ -589,8 +589,8 @@
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             
-            // SEDOT DATA DARI SHEET "REKAPITULASI"
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
+            // SEDOT DATA DARI SHEET "REKAPITULASI PENUGASAN"
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi penugasan") || "REKAPITULASI PENUGASAN";
             const rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
@@ -884,7 +884,7 @@
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             
-            // TAMPILKAN CHART KALAU LAGI DI MENU SURAT PEMBATALAN YANG BARU
+            // TAMPILKAN CHART KALAU LAGI DI MENU SURAT PEMBATALAN
             const pembatalanContainer = document.getElementById('pembatalan-chart-container');
             if (sheetName.toLowerCase() === 'rekapitulasi pembatalan') {
                 pembatalanContainer.classList.remove('hidden');
