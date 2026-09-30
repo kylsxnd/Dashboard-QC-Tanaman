@@ -67,9 +67,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
         }
 
-        .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
-        .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
-
         .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; margin-bottom: 6px; position: relative; border: 1px solid transparent; }
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.05); transform: translateX(4px); }
         .sidebar-link.active { color: #ffffff; background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); border-left: 3px solid #83b765; border-color: transparent; border-left-color: #83b765; font-weight: 600; }
@@ -134,12 +131,10 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
-            <!-- 1. DASHBOARD REKAPITULASI -->
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
-            <!-- 2. DASHBOARD PEMBATALAN -->
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Dashboard Pembatalan
             </button>
@@ -198,7 +193,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data setara sheet PIVOT (Otomatis menyesuaikan raw data).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Limitasi Baris 2 sampai 207 sesuai Excel).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -426,31 +421,23 @@
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
         }
 
-        // FUNGSI PARSING ANGKA YANG DIPERBAIKI (Membaca format 262.972,56 dan 130.816,51 secara akurat)
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
             if (val === null || val === undefined) return 0;
             
             let s = String(val).trim();
-            // Abaikan string khusus yang sering muncul atau kosong
             if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
 
-            // Buang simbol mata uang dan spasi
             s = s.replace(/Rp|\$|€|\s/gi, '');
             
             let lastDot = s.lastIndexOf('.');
             let lastComma = s.lastIndexOf(',');
 
-            // Jika format Indonesia: 262.972,56 (koma setelah titik)
             if (lastComma > lastDot && lastDot !== -1) {
                 s = s.replace(/\./g, '').replace(',', '.');
-            } 
-            // Jika format US: 262,972.56 (titik setelah koma)
-            else if (lastDot > lastComma && lastComma !== -1) {
+            } else if (lastDot > lastComma && lastComma !== -1) {
                 s = s.replace(/,/g, '');
-            } 
-            // Jika hanya ada koma: 1234,56
-            else if (lastComma !== -1 && lastDot === -1) {
+            } else if (lastComma !== -1 && lastDot === -1) {
                 s = s.replace(',', '.');
             }
 
@@ -459,13 +446,16 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (TANPA LIMIT BARIS)
+        // DASHBOARD 1: REKAPITULASI (LIMIT BARIS 207 EXACT)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
             
             let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
-            let rekapData = rawData[rekapKey] || [];
+            let rekapDataRaw = rawData[rekapKey] || [];
+            
+            // DIBATASI PERSIS SAMPAI BARIS 207 EXCEL (indeks 206)
+            let rekapData = rekapDataRaw.slice(0, 206); 
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
@@ -477,22 +467,16 @@
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
                 let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
-                let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
-                let cLink = rCols.find(k => k.toLowerCase().includes('link surat')) || rCols.find(k => k.toLowerCase().includes('link'));
 
                 rekapData.forEach(row => {
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
-                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
-                    let linkSurat = cLink ? String(row[cLink] || "").trim() : "";
                     
-                    let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
-
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt" || pt.toLowerCase() === "total") return;
-                    if (isValidRow || isProsesTTD) croList.add(cro);
+                    
+                    croList.add(cro);
                 });
             }
 
@@ -527,16 +511,17 @@
                     let status = String(row[cStatus] || "").trim();
                     let sLow = status.toLowerCase();
                     
-                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
+                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : ""; 
                     let linkSurat = cLink ? String(row[cLink] || "").trim() : "";
                     
-                    let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
+                    // Deteksi "Proses TTD" / "TTD Dirops"
+                    let combinedText = (noSurat + " " + linkSurat + " " + status).toLowerCase();
+                    let isProsesTTD = combinedText.includes("proses ttd") || combinedText.includes("ttd dirops");
 
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt" || pt.toLowerCase() === "total") return;
 
-                    if ((isValidRow || isProsesTTD) && (selectedCRO === 'ALL' || selectedCRO === cro)) {
+                    if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
                         let luasTM = parseNum(row[cLuasTM]);
                         let target = parseNum(row[cTarget]);
@@ -566,7 +551,7 @@
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL TARGET PRODUKSI</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan data filter)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Baris 2 s.d 207)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
@@ -576,12 +561,12 @@
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-emerald-500 shadow-[0_4px_15px_-4px_rgba(16,185,129,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL KEMITRAAN PT</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalPtCount.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan data filter)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Baris 2 s.d 207)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">DOKUMEN PROSES TTD</div>
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">DOKUMEN PROSES TTD / TTD DIROPS</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalProsesTTD.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
-                        <div class="text-[10px] font-semibold text-orange-400 mt-2 bg-orange-500/20 inline-block px-2 py-0.5 rounded border border-orange-500/30">Menunggu Tanda Tangan</div>
+                        <div class="text-[10px] font-semibold text-orange-400 mt-2 bg-orange-500/20 inline-block px-2 py-0.5 rounded border border-orange-500/30">Otomatis Berkurang jika Link PDF Diisi</div>
                     </div>
                 `;
             }
@@ -655,11 +640,12 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (TANPA LIMIT BARIS)
+        // DASHBOARD 2: PEMBATALAN (LIMIT BARIS 97 EXACT)
         // =========================================
         function renderPembatalanDashboard() {
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            let pembatalanData = rawData[batalKey] || [];
+            let pembatalanDataRaw = rawData[batalKey] || [];
+            let pembatalanData = pembatalanDataRaw.slice(0, 96); 
             
             let pembatalanCountMap = {};
             let totalSuratBatal = 0;
@@ -681,7 +667,8 @@
                     let linkSurat = String(row['Link Surat Pembatalan'] || row['Status Kirim Dokumen'] || "").trim();
                     let luas = parseNum(row['Luas TM (Ha)']);
                     
-                    let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
+                    let combinedText = (noSurat + " " + linkSurat).toLowerCase();
+                    let isProsesTTD = combinedText.includes("proses ttd") || combinedText.includes("ttd dirops");
                     let isSelesai = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
 
                     if (croBatal === "-" || croBatal.includes("TOTAL") || croBatal.includes("SUMMARY") || croBatal.includes("TAHAP")) return;
