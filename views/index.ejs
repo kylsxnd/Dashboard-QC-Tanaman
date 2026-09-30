@@ -85,11 +85,6 @@
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
         table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
-        
-        body.light-mode table.dataTable { border-bottom: 1px solid var(--border-color) !important; }
-        body.light-mode table.dataTable thead th { background-color: #f9fafb !important; border-bottom: 1px solid var(--border-color) !important; }
-        body.light-mode table.dataTable tbody tr:hover { background-color: var(--hover-bg) !important; }
-        body.light-mode table.dataTable tbody td { border-bottom: 1px solid var(--border-color) !important; }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; }
@@ -116,7 +111,6 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
 
-    <!-- SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -137,7 +131,7 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
@@ -164,7 +158,7 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT TERANG & GLOW EFFECT -->
+    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.55;"></div>
         <div class="bg-overlay"></div>
@@ -175,7 +169,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -192,13 +186,13 @@
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
             
-            <!-- 1. DASHBOARD REKAPITULASI (STRICT ROW 2 - 207) -->
+            <!-- 1. DASHBOARD REKAPITULASI (RENTANG CELL 2 s.d 207) -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Limitasi Baris 2 sampai 207 sesuai Excel).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Rentang Baris 2 s.d 207 / Cell I2:K207 sesuai Excel).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -207,7 +201,7 @@
                     </div>
                 </div>
 
-                <!-- 2 KOTAK UTAMA DENGAN EFEK GLOW SAAT HOVER -->
+                <!-- 2 KOTAK KPI UTAMA DENGAN EFEK HOVER GLOW -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
@@ -395,12 +389,12 @@
             
             const headerTitle = document.getElementById('header-title');
             if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Dashboard Rekapitulasi";
+                headerTitle.innerText = "Executive On-Farm > Dashboard Rekapitulasi";
                 currentActiveSheet = 'dashboard';
                 renderDashboardCharts(); 
             }
             else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Dashboard Pembatalan";
+                headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
                 currentActiveSheet = 'pembatalan';
                 renderPembatalanDashboard();
             }
@@ -446,16 +440,21 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (STRICT ROW 2 s.d 207 EXACT)
+        // DASHBOARD 1: REKAPITULASI (RENTANG CELL 2 s.d 207 EXACT)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
             
-            // SEDOT DATA DARI SHEET "REKAPITULASI"
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
-                        || Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
-                        || "REKAPITULASI";
+            // Pencarian nama sheet yang adaptif
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") 
+                        || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
+                        || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) 
+                        || Object.keys(rawData)[0];
+            
             let rekapDataRaw = rawData[rekapKey] || [];
+            
+            // KUNCI CELL 2 SAMPAI 207 (Index 0 s.d 205 = 206 baris data)
+            let rekapData = rekapDataRaw.slice(0, 206);
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
@@ -463,53 +462,66 @@
             let ptListRaw = []; 
             let totalSudahDikelola = 0, totalBelumDikelola = 0;
 
-            if (rekapDataRaw.length > 0) {
-                let rCols = Object.keys(rekapDataRaw[0] || {});
-                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
-                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[1];
-                let cLuas = rCols.find(k => k.toLowerCase().includes('luas kebun')) || rCols[2];
-                let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[3];
-                let cTarget = rCols.find(k => k.toLowerCase().includes('target')) || rCols[4];
-                let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[5];
+            if (rekapData.length > 0) {
+                let rCols = Object.keys(rekapData[0] || {});
+                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
+                let cPt = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
 
-                // BATAS EXACT BARIS 2 SAMPAI 207 EXCEL (INDEX ARRAY 0 SAMPAI 205)
-                let limitRow = Math.min(206, rekapDataRaw.length);
-
-                // 1. Ambil List CRO Dulu untuk Filter
-                for (let i = 0; i < limitRow; i++) {
-                    let row = rekapDataRaw[i];
-                    let cro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
-                    if (cro && cro !== "-" && cro !== "CRO" && !cro.includes("TOTAL") && !cro.includes("SUMMARY") && !cro.includes("TAHAP")) {
-                        croList.add(cro);
+                for (let i = 0; i < rekapData.length; i++) {
+                    let row = rekapData[i];
+                    let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
+                    let cro = rawCro.toUpperCase();
+                    let pt = String(row[cPt] || "").trim();
+                    
+                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
+                        break; // Berhenti otomatis jika bertemu total
                     }
+                    
+                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
+                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
+                    
+                    croList.add(cro);
                 }
+            }
 
-                // 2. Render Dropdown Filter
-                if (filterDropdown && filterDropdown.options.length <= 1 && croList.size > 0) {
-                    filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
-                    let sortedCro = [...croList].sort();
-                    sortedCro.forEach(c => {
-                        let opt = document.createElement('option'); 
-                        opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
-                        filterDropdown.appendChild(opt);
-                    });
-                    filterDropdown.value = "ALL";
-                }
+            if (filterDropdown && filterDropdown.options.length <= 1 && croList.size > 0) {
+                filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
+                let sortedCro = [...croList].sort();
+                sortedCro.forEach(c => {
+                    let opt = document.createElement('option'); 
+                    opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
+                    filterDropdown.appendChild(opt);
+                });
+                filterDropdown.value = "ALL";
+            }
 
-                const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
+            const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
 
-                // 3. Kalkulasi Data (Strict Row 2 to 207)
-                for (let i = 0; i < limitRow; i++) {
-                    let row = rekapDataRaw[i];
+            if (rekapData.length > 0) {
+                let rCols = Object.keys(rekapData[0] || {});
+                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
+                let cPt = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
+                let cLuas = rCols.find(k => k.toLowerCase().includes('luas kebun')) || rCols[8] || rCols[2];
+                let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[9] || rCols[3];
+                let cTarget = rCols.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || rCols[10] || rCols[4];
+                let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[24] || rCols[5];
+
+                for (let i = 0; i < rekapData.length; i++) {
+                    let row = rekapData[i];
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
                     let status = String(row[cStatus] || "").trim();
+                    let sLow = status.toLowerCase();
 
-                    let isMatchCro = (selectedCRO === 'ALL' || selectedCRO === cro);
+                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
+                        break; 
+                    }
 
-                    if (isMatchCro) {
-                        // SUM ANGKA TANPA SYARAT APAPUN AGAR 1000% IDENTIK DENGAN RUMUS =SUM() DI EXCEL
+                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
+                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
+
+                    if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
                         let luasTM = parseNum(row[cLuasTM]);
                         let target = parseNum(row[cTarget]);
@@ -518,17 +530,13 @@
                         totalLuasTM += luasTM;
                         totalTarget += target;
 
-                        // FILTER UNTUK TABEL & CHART (HANYA YANG PUNYA NAMA PT VALID YANG DIGAMBAR)
-                        if (pt && pt !== "-" && pt.toLowerCase() !== "nama pt" && pt.toLowerCase() !== "total") {
-                            if (cro && cro !== "-" && cro !== "CRO" && !cro.includes("TOTAL") && !cro.includes("SUMMARY") && !cro.includes("TAHAP")) {
-                                chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
-                                chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
-                                ptListRaw.push({ name: pt, cro: cro, luas: luas, luasTM: luasTM, target: target, status: status || '-' });
+                        chartBarDataMap[cro] = (chartBarDataMap[cro] || 0) + target;
+                        chartPieDataMap[cro] = (chartPieDataMap[cro] || 0) + luas;
 
-                                if (status.toLowerCase().includes('sudah')) totalSudahDikelola++;
-                                else totalBelumDikelola++;
-                            }
-                        }
+                        ptListRaw.push({ name: pt, cro: cro, luas: luas, luasTM: luasTM, target: target, status: status || '-' });
+
+                        if (sLow.includes('sudah')) totalSudahDikelola++;
+                        else totalBelumDikelola++;
                     }
                 }
             }
@@ -539,7 +547,7 @@
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL TARGET PRODUKSI</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Baris 2 s.d 207)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Cell K2 s.d K207)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
@@ -549,7 +557,6 @@
                 `;
             }
 
-            const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `TARGET PRODUKSI (TON) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS KEBUN (HA) ${titleSuffix}`;
@@ -618,16 +625,10 @@
         // DASHBOARD 2: PEMBATALAN
         // =========================================
         function renderPembatalanDashboard() {
-            let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            let pembatalanDataRaw = rawData[batalKey] || [];
-            
-            // LIMIT JAGA-JAGA BIAR BERSIH DARI SAMPAH BAWAH TOTAL
-            let pembatalanData = [];
-            for(let i=0; i<pembatalanDataRaw.length; i++) {
-                let rowStr = JSON.stringify(pembatalanDataRaw[i]).toLowerCase();
-                if(rowStr.includes('"nama pt":"total"') || rowStr.includes('"cro":"total"')) break;
-                pembatalanData.push(pembatalanDataRaw[i]);
-            }
+            let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") 
+                        || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan"))
+                        || "REKAPITULASI PEMBATALAN";
+            let pembatalanData = rawData[batalKey] || [];
             
             let pembatalanCountMap = {};
             let totalSuratBatal = 0;
@@ -639,10 +640,16 @@
                 let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || pCols[4];
                 let pNoSuratBatal = pCols.find(k => k.toLowerCase().includes('no surat pembatalan') || k.toLowerCase().includes('surat')) || pCols[1];
 
-                pembatalanData.forEach(row => {
+                for (let i = 0; i < pembatalanData.length; i++) {
+                    let row = pembatalanData[i];
+                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
+                    
+                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) {
+                        break;
+                    }
+
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
-                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
                     let noSurat = String(row[pNoSuratBatal] || "").trim();
                     let luas = parseNum(row['Luas TM (Ha)']);
                     
@@ -661,7 +668,7 @@
                             status: "Telah Terbit"
                         });
                     }
-                });
+                }
             }
 
             document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
@@ -698,65 +705,19 @@
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
-        function getFileIcon(fileName) {
-            const ext = fileName.toLowerCase();
-            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
-            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
-            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
-        }
-
-        function openPreview(rawUrl) {
-            let previewUrl = rawUrl.trim();
-            if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
-            else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
-            
-            document.getElementById('documentIframe').src = previewUrl;
-            document.getElementById('modalExternalLink').href = rawUrl;
-            const modal = document.getElementById('previewModal');
-            const content = document.getElementById('modalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
-        }
-
-        function closePreview() {
-            const modal = document.getElementById('previewModal');
-            const content = document.getElementById('modalContent');
-            modal.classList.add('opacity-0'); content.classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
-        }
-
-        $(document).on('click', '.hide-col-btn', function(e) {
-            e.stopPropagation(); 
-            e.preventDefault();
-            let th = $(this).closest('th');
-            let wrapper = $(this).closest('.dataTables_wrapper');
-            let mainTable = wrapper.find('.dataTables_scrollBody table');
-            if(mainTable.length > 0) {
-                let tableId = mainTable.attr('id');
-                let table = $('#' + tableId).DataTable();
-                let colIdx = table.column(th).index();
-                table.column(colIdx).visible(false);
-                setTimeout(() => { table.columns.adjust(); }, 50);
-            }
-        });
-
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
             
             if (sheetName === "REKAPITULASI") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
-                            || Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
-                            || "REKAPITULASI";
-            } else if (sheetName === "Surat Pembatalan") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") 
-                            || Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) 
-                            || "Surat Pembatalan";
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") 
+                            || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
+                            || "REKAPITULASI PENUGASAN";
+            } else if (sheetName === "REKAPITULASI PEMBATALAN") {
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
             }
 
             const dataFull = rawData[actualKey] || [];
-            
-            // AUTO STOP LIMIT UNTUK DATATABLE BIAR BERSIH DARI SAMPAH BAWAH TOTAL
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
                 let rowStr = JSON.stringify(dataFull[i]).toLowerCase();
@@ -777,7 +738,6 @@
             let allKeys = Array.from(allKeysSet);
 
             allKeys.forEach(key => {
-                let title = key.trim();
                 let isGhost = true;
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
@@ -822,14 +782,9 @@
                             if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
                             return val.toLocaleString('id-ID');
                         }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                        if (typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                            return `<a href="${val}" target="_blank" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
                         }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
                         return val;
                     }
                 };
@@ -843,7 +798,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
@@ -854,7 +808,7 @@
             if(sidebarMaster) {
                 const masterItems = [
                     { id: "REKAPITULASI", display: "REKAPITULASI" },
-                    { id: "Surat Pembatalan", display: "Surat Pembatalan" }
+                    { id: "REKAPITULASI PEMBATALAN", display: "REKAPITULASI PEMBATALAN" }
                 ];
                 masterItems.forEach((item, idx) => {
                     const btn = document.createElement('button'); 
