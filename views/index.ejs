@@ -67,6 +67,9 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
         }
 
+        .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
+        .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
+
         .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; margin-bottom: 6px; position: relative; border: 1px solid transparent; }
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.05); transform: translateX(4px); }
         .sidebar-link.active { color: #ffffff; background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); border-left: 3px solid #83b765; border-color: transparent; border-left-color: #83b765; font-weight: 600; }
@@ -85,13 +88,10 @@
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
         table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
-        
-        /* Pivot Table specific styles */
-        .pivot-group-header { background-color: rgba(131, 183, 101, 0.1) !important; font-weight: 700 !important; color: #83b765 !important; }
-        .pivot-total-row { background-color: rgba(255, 255, 255, 0.08) !important; font-weight: 700 !important; }
-        .pivot-grand-total { background-color: rgba(255, 255, 255, 0.15) !important; font-weight: 800 !important; color: #fff !important;}
-        body.light-mode .pivot-total-row { background-color: rgba(0, 0, 0, 0.05) !important; }
-        body.light-mode .pivot-grand-total { background-color: rgba(0, 0, 0, 0.1) !important; color: #000 !important; }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; border-color: rgba(255,255,255,0.2) !important; font-weight: 600; }
 
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -134,14 +134,9 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
-            <!-- 0. DASHBOARD PIVOT (BARU) -->
-            <button onclick="switchView('view-pivot', 'nav-pivot')" class="w-full sidebar-link active" id="nav-pivot">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Pivot
-            </button>
-
             <!-- 1. DASHBOARD REKAPITULASI -->
-            <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Dashboard Rekapitulasi
+            <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
             <!-- 2. DASHBOARD PEMBATALAN -->
@@ -180,7 +175,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Pivot</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -197,63 +192,13 @@
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
             
-            <!-- 0. DASHBOARD PIVOT (BARU) -->
-            <section id="view-pivot" class="fade-in block">
-                <div class="mb-6">
-                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pivot</h2>
-                    <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Rekapitulasi Data Terpusat (Berdasarkan Kalkulasi Data Mentah)
-                    </p>
-                </div>
-
-                <!-- Pivot Tabel 1: Surat Penugasan -->
-                <div class="premium-card p-4 md:p-6 w-full mb-8">
-                    <h3 class="text-[11px] md:text-xs font-bold theme-text-main uppercase tracking-widest mb-4">REKAPITULASI SURAT PENUGASAN SEMENTARA PENGELOLAAN KEBUN</h3>
-                    <div class="overflow-x-auto rounded-lg border theme-border">
-                        <table class="w-full text-left border-collapse min-w-[500px]">
-                            <thead class="bg-[#2b4c7e] text-white">
-                                <tr>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase border-r border-[#1e3a63]">CRO</th>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase border-r border-[#1e3a63]">Tahap</th>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase text-right border-r border-[#1e3a63]">SUM dari Luas TM (Ha)</th>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase text-center">Jumlah PT (Kebun)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pivot-penugasan-body" class="divide-y divide-gray-600/30 text-sm">
-                                <!-- Data diisi oleh JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Pivot Tabel 2: Surat Pembatalan -->
-                <div class="premium-card p-4 md:p-6 w-full mb-8">
-                    <h3 class="text-[11px] md:text-xs font-bold theme-text-main uppercase tracking-widest mb-4">REKAPITULASI SURAT PEMBATALAN</h3>
-                    <div class="overflow-x-auto rounded-lg border theme-border">
-                        <table class="w-full text-left border-collapse min-w-[500px]">
-                            <thead class="bg-[#59698d] text-white">
-                                <tr>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase border-r border-[#3d4c6a]">CRO</th>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase border-r border-[#3d4c6a]">Tahap</th>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase text-center border-r border-[#3d4c6a]">COUNTA dari No Surat Pembatalan</th>
-                                    <th class="py-3 px-4 text-xs font-semibold uppercase text-right">SUM dari Luas TM (Ha)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pivot-pembatalan-body" class="divide-y divide-gray-600/30 text-sm">
-                                <!-- Data diisi oleh JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
             <!-- 1. DASHBOARD REKAPITULASI -->
-            <section id="view-dashboard" class="fade-in hidden">
+            <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data setara sheet PIVOT (Otomatis Filter Baris 1-207).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data setara sheet PIVOT (Otomatis menyesuaikan raw data).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -262,7 +207,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
@@ -304,7 +249,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pembatalan</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari sheet REKAPITULASI PEMBATALAN (Limitasi max baris 97).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data ditarik otomatis dari sheet REKAPITULASI PEMBATALAN.
                         </p>
                     </div>
                 </div>
@@ -447,7 +392,6 @@
         }
 
         function switchView(viewId, elementId, paramName = null) {
-            document.getElementById('view-pivot').classList.add('hidden');
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-pembatalan').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
@@ -455,12 +399,7 @@
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
-            if(viewId === 'view-pivot') {
-                headerTitle.innerText = "Dashboard Pivot";
-                currentActiveSheet = 'pivot';
-                renderPivotTables(); 
-            }
-            else if(viewId === 'view-dashboard') {
+            if(viewId === 'view-dashboard') {
                 headerTitle.innerText = "Dashboard Rekapitulasi";
                 currentActiveSheet = 'dashboard';
                 renderDashboardCharts(); 
@@ -487,237 +426,46 @@
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
         }
 
+        // FUNGSI PARSING ANGKA YANG DIPERBAIKI (Membaca format 262.972,56 dan 130.816,51 secara akurat)
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
             if (val === null || val === undefined) return 0;
-            let s = String(val).trim().replace(/Rp|\$|€| /gi, '');
-            if (s === '-' || s === '') return 0;
+            
+            let s = String(val).trim();
+            // Abaikan string khusus yang sering muncul atau kosong
+            if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
 
-            if (s.includes(',')) {
+            // Buang simbol mata uang dan spasi
+            s = s.replace(/Rp|\$|€|\s/gi, '');
+            
+            let lastDot = s.lastIndexOf('.');
+            let lastComma = s.lastIndexOf(',');
+
+            // Jika format Indonesia: 262.972,56 (koma setelah titik)
+            if (lastComma > lastDot && lastDot !== -1) {
                 s = s.replace(/\./g, '').replace(',', '.');
-            } else {
-                let lastDot = s.lastIndexOf('.');
-                if (lastDot !== -1 && s.indexOf('.') !== lastDot) {
-                    s = s.substring(0, lastDot).replace(/\./g, '') + s.substring(lastDot);
-                }
+            } 
+            // Jika format US: 262,972.56 (titik setelah koma)
+            else if (lastDot > lastComma && lastComma !== -1) {
+                s = s.replace(/,/g, '');
+            } 
+            // Jika hanya ada koma: 1234,56
+            else if (lastComma !== -1 && lastDot === -1) {
+                s = s.replace(',', '.');
             }
+
             let res = parseFloat(s);
             return isNaN(res) ? 0 : res;
         };
 
         // =========================================
-        // DASHBOARD 0: PIVOT TABLES (Sesuai Gambar Excel)
-        // =========================================
-        function renderPivotTables() {
-            // Kalkulasi Tabel 1: Rekapitulasi Surat Penugasan (Batas Baris 207)
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
-            let rekapData = (rawData[rekapKey] || []).slice(0, 206); 
-            
-            let pivotMap = {};
-            let grandTotalLuas = 0;
-            let grandTotalPT = 0;
-
-            if (rekapData.length > 0) {
-                let rCols = Object.keys(rekapData[0] || {});
-                let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[0];
-                let cTahap = rCols.find(k => k.toLowerCase() === 'tahap') || rCols[4];
-                let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[3];
-                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi') || k.toLowerCase().includes('vendor')) || rCols[1];
-                let cNoSurat = rCols.find(k => k.toLowerCase().includes('no surat')) || rCols.find(k => k.toLowerCase().includes('surat'));
-                let cLink = rCols.find(k => k.toLowerCase().includes('link surat')) || rCols.find(k => k.toLowerCase().includes('link'));
-
-                rekapData.forEach(row => {
-                    let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
-                    let cro = rawCro.toUpperCase();
-                    let pt = String(row[cPt] || "").trim();
-                    let tahap = String(row[cTahap] || "").trim() || "Tahap ?";
-                    
-                    let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
-                    let linkSurat = cLink ? String(row[cLink] || "").trim() : "";
-                    
-                    let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isSelesai = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
-
-                    if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
-                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
-
-                    if (isProsesTTD || isSelesai) {
-                        let luasTM = parseNum(row[cLuasTM]);
-                        
-                        if (!pivotMap[cro]) pivotMap[cro] = {};
-                        if (!pivotMap[cro][tahap]) pivotMap[cro][tahap] = { luasTM: 0, countPT: 0 };
-                        
-                        pivotMap[cro][tahap].luasTM += luasTM;
-                        pivotMap[cro][tahap].countPT += 1;
-                        
-                        grandTotalLuas += luasTM;
-                        grandTotalPT += 1;
-                    }
-                });
-            }
-
-            let pivotHtml = '';
-            let sortedCros = Object.keys(pivotMap).sort((a,b) => {
-                let numA = parseInt(a.replace(/[^\d]/g, '')) || 0;
-                let numB = parseInt(b.replace(/[^\d]/g, '')) || 0;
-                if(numA !== numB) return numA - numB;
-                return a.localeCompare(b);
-            });
-
-            sortedCros.forEach(cro => {
-                let croTotalLuas = 0;
-                let croTotalPT = 0;
-                let tahaps = Object.keys(pivotMap[cro]).sort();
-                
-                tahaps.forEach((tahap, idx) => {
-                    let luas = pivotMap[cro][tahap].luasTM;
-                    let count = pivotMap[cro][tahap].countPT;
-                    croTotalLuas += luas;
-                    croTotalPT += count;
-                    
-                    let croCell = idx === 0 ? `<td class="py-2 px-4 theme-text-main font-semibold border-r border-gray-600/30 w-32 align-top" rowspan="${tahaps.length}"><span class="mr-1 text-gray-500">[-]</span> ${cro}</td>` : '';
-                    
-                    pivotHtml += `
-                        <tr class="hover:bg-white/5 border-b border-gray-600/30">
-                            ${croCell}
-                            <td class="py-2 px-4 theme-text-muted border-r border-gray-600/30">${tahap}</td>
-                            <td class="py-2 px-4 theme-text-main text-right border-r border-gray-600/30">${luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                            <td class="py-2 px-4 theme-text-main text-center">${count}</td>
-                        </tr>
-                    `;
-                });
-                
-                // Subtotal Row
-                pivotHtml += `
-                    <tr class="pivot-total-row border-b border-gray-600/30">
-                        <td class="py-2 px-4 border-r border-gray-600/30">${cro} Total</td>
-                        <td class="py-2 px-4 border-r border-gray-600/30"></td>
-                        <td class="py-2 px-4 text-right border-r border-gray-600/30">${croTotalLuas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        <td class="py-2 px-4 text-center">${croTotalPT}</td>
-                    </tr>
-                `;
-            });
-            
-            // Grand Total Row
-            pivotHtml += `
-                <tr class="pivot-grand-total">
-                    <td class="py-3 px-4 border-r border-gray-600/30">Total Keseluruhan</td>
-                    <td class="py-3 px-4 border-r border-gray-600/30"></td>
-                    <td class="py-3 px-4 text-right border-r border-gray-600/30">${grandTotalLuas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                    <td class="py-3 px-4 text-center">${grandTotalPT}</td>
-                </tr>
-            `;
-            
-            document.getElementById('pivot-penugasan-body').innerHTML = pivotHtml;
-
-
-            // Kalkulasi Tabel 2: Rekapitulasi Surat Pembatalan (Batas Baris 97)
-            let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            let pembatalanData = (rawData[batalKey] || []).slice(0, 96); 
-            
-            let pivotBatalMap = {};
-            let grandBatalLuas = 0;
-            let grandBatalCount = 0;
-
-            if (pembatalanData.length > 0) {
-                let pCols = Object.keys(pembatalanData[0] || {});
-                let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro') || k.toLowerCase().includes('regional')) || pCols[4];
-                let pTahapCol = pCols.find(k => k.toLowerCase() === 'tahap') || pCols[6];
-                let pNoSuratBatal = pCols.find(k => k.toLowerCase().includes('surat pembatalan') || k.toLowerCase().includes('no surat pembatalan')) || pCols[1];
-
-                pembatalanData.forEach(row => {
-                    let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
-                    let croBatal = rawCro.toUpperCase();
-                    let tahapBatal = String(row[pTahapCol] || "").trim() || "Tahap ?";
-                    
-                    let noSurat = String(row[pNoSuratBatal] || "").trim();
-                    let linkSurat = String(row['Link Surat Pembatalan'] || row['Status Kirim Dokumen'] || "").trim();
-                    let luas = parseNum(row['Luas TM (Ha)']);
-                    
-                    let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
-                    let isSelesai = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
-
-                    if (isProsesTTD || isSelesai) {
-                        if (croBatal && !croBatal.startsWith("CRO") && croBatal !== "-" && croBatal !== "CRO") {
-                            croBatal = "CRO " + croBatal;
-                        }
-                        
-                        if (!pivotBatalMap[croBatal]) pivotBatalMap[croBatal] = {};
-                        if (!pivotBatalMap[croBatal][tahapBatal]) pivotBatalMap[croBatal][tahapBatal] = { luasTM: 0, countBatal: 0 };
-                        
-                        pivotBatalMap[croBatal][tahapBatal].luasTM += luas;
-                        pivotBatalMap[croBatal][tahapBatal].countBatal += 1;
-                        
-                        grandBatalLuas += luas;
-                        grandBatalCount += 1;
-                    }
-                });
-            }
-
-            let pivotBatalHtml = '';
-            let sortedBatalCros = Object.keys(pivotBatalMap).sort((a,b) => {
-                let numA = parseInt(a.replace(/[^\d]/g, '')) || 0;
-                let numB = parseInt(b.replace(/[^\d]/g, '')) || 0;
-                if(numA !== numB) return numA - numB;
-                return a.localeCompare(b);
-            });
-
-            sortedBatalCros.forEach(cro => {
-                let croTotalLuas = 0;
-                let croTotalCount = 0;
-                let tahaps = Object.keys(pivotBatalMap[cro]).sort();
-                
-                tahaps.forEach((tahap, idx) => {
-                    let luas = pivotBatalMap[cro][tahap].luasTM;
-                    let count = pivotBatalMap[cro][tahap].countBatal;
-                    croTotalLuas += luas;
-                    croTotalCount += count;
-                    
-                    let croCell = idx === 0 ? `<td class="py-2 px-4 theme-text-main font-semibold border-r border-gray-600/30 w-32 align-top" rowspan="${tahaps.length}"><span class="mr-1 text-gray-500">[-]</span> ${cro}</td>` : '';
-                    
-                    pivotBatalHtml += `
-                        <tr class="hover:bg-white/5 border-b border-gray-600/30">
-                            ${croCell}
-                            <td class="py-2 px-4 theme-text-muted border-r border-gray-600/30">${tahap}</td>
-                            <td class="py-2 px-4 theme-text-main text-center border-r border-gray-600/30">${count}</td>
-                            <td class="py-2 px-4 theme-text-main text-right">${luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        </tr>
-                    `;
-                });
-                
-                // Subtotal Row
-                pivotBatalHtml += `
-                    <tr class="pivot-total-row border-b border-gray-600/30">
-                        <td class="py-2 px-4 border-r border-gray-600/30">${cro} Total</td>
-                        <td class="py-2 px-4 border-r border-gray-600/30"></td>
-                        <td class="py-2 px-4 text-center border-r border-gray-600/30">${croTotalCount}</td>
-                        <td class="py-2 px-4 text-right">${croTotalLuas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                    </tr>
-                `;
-            });
-
-            // Grand Total Row
-            pivotBatalHtml += `
-                <tr class="pivot-grand-total">
-                    <td class="py-3 px-4 border-r border-gray-600/30">Total Keseluruhan</td>
-                    <td class="py-3 px-4 border-r border-gray-600/30"></td>
-                    <td class="py-3 px-4 text-center border-r border-gray-600/30">${grandBatalCount}</td>
-                    <td class="py-3 px-4 text-right">${grandBatalLuas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                </tr>
-            `;
-
-            document.getElementById('pivot-pembatalan-body').innerHTML = pivotBatalHtml;
-        }
-
-        // =========================================
-        // DASHBOARD 1: REKAPITULASI CHARTS & TABLES
+        // DASHBOARD 1: REKAPITULASI (TANPA LIMIT BARIS)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
             
             let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
-            let rekapDataRaw = rawData[rekapKey] || [];
-            let rekapData = rekapDataRaw.slice(0, 206); 
+            let rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
@@ -743,7 +491,7 @@
                     let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
 
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
-                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
+                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt" || pt.toLowerCase() === "total") return;
                     if (isValidRow || isProsesTTD) croList.add(cro);
                 });
             }
@@ -786,7 +534,7 @@
                     let isValidRow = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
 
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("TOTAL") || cro.includes("SUMMARY") || cro.includes("TAHAP")) return;
-                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") return;
+                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt" || pt.toLowerCase() === "total") return;
 
                     if ((isValidRow || isProsesTTD) && (selectedCRO === 'ALL' || selectedCRO === cro)) {
                         let luas = parseNum(row[cLuas]);
@@ -822,13 +570,18 @@
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
+                        <div class="text-3xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
                         <div class="text-[10px] font-semibold text-purple-300 mt-2 bg-purple-500/20 inline-block px-2 py-0.5 rounded border border-purple-500/30">Luas TM ${totalLuasTM.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} Ha</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-emerald-500 shadow-[0_4px_15px_-4px_rgba(16,185,129,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL KEMITRAAN PT</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalPtCount.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data Filter Berdasarkan Pivot)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan data filter)</div>
+                    </div>
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] cursor-default">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">DOKUMEN PROSES TTD</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalProsesTTD.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
+                        <div class="text-[10px] font-semibold text-orange-400 mt-2 bg-orange-500/20 inline-block px-2 py-0.5 rounded border border-orange-500/30">Menunggu Tanda Tangan</div>
                     </div>
                 `;
             }
@@ -855,7 +608,7 @@
             if(document.getElementById('dash-pie-chart')) {
                 Highcharts.chart('dash-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${totalLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#e5e7eb', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: 'rgba(255,255,255,0.2)' } } },
                     colors: ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#6366f1', '#14b8a6', '#f97316', '#84cc16'],
@@ -902,12 +655,11 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN
+        // DASHBOARD 2: PEMBATALAN (TANPA LIMIT BARIS)
         // =========================================
         function renderPembatalanDashboard() {
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            let pembatalanDataRaw = rawData[batalKey] || [];
-            let pembatalanData = pembatalanDataRaw.slice(0, 96); 
+            let pembatalanData = rawData[batalKey] || [];
             
             let pembatalanCountMap = {};
             let totalSuratBatal = 0;
@@ -931,6 +683,9 @@
                     
                     let isProsesTTD = noSurat.toLowerCase().includes("proses ttd") || linkSurat.toLowerCase().includes("proses ttd");
                     let isSelesai = noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat");
+
+                    if (croBatal === "-" || croBatal.includes("TOTAL") || croBatal.includes("SUMMARY") || croBatal.includes("TAHAP")) return;
+                    if (pt.toLowerCase() === "total" || pt.toLowerCase() === "nama pt") return;
 
                     if (isProsesTTD || isSelesai) {
                         if (croBatal && !croBatal.startsWith("CRO") && croBatal !== "-" && croBatal !== "CRO") {
@@ -1138,6 +893,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
@@ -1164,8 +920,7 @@
             Highcharts.setOptions({ colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#06b6d4'], credits: { enabled: false }, chart: { style: { fontFamily: 'Inter' } } });
             updateChartTheme(isLightInit);
 
-            // Default view now set to Pivot
-            switchView('view-pivot', 'nav-pivot'); 
+            switchView('view-dashboard', 'nav-dashboard'); 
             
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
