@@ -74,18 +74,75 @@
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
-        .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
-        .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
-        .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
+        /* =========================================
+           SIDEBAR PREMIUM UI (NEW DESIGN)
+           ========================================= */
+        .sidebar-link { 
+            padding: 11px 16px; 
+            font-size: 13px; 
+            font-weight: 500; 
+            color: var(--text-muted); 
+            border-radius: 10px; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 6px; 
+            position: relative; 
+            border: 1px solid transparent;
+        }
+        .sidebar-link:hover { 
+            color: var(--text-main); 
+            background: rgba(255,255,255,0.04); 
+            border-color: rgba(255,255,255,0.05);
+            transform: translateX(4px); 
+        }
+        .sidebar-link.active { 
+            color: #ffffff; 
+            background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); 
+            border-left: 3px solid #83b765; 
+            border-color: transparent;
+            border-left-color: #83b765;
+            font-weight: 600; 
+        }
+        .sidebar-link.active svg {
+            color: #83b765;
+            filter: drop-shadow(0 0 8px rgba(131,183,101,0.5));
+        }
 
-        /* Child Links (Sub-menu) Master Data yang Diperbagus */
-        .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
-        .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
-        .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
+        .sidebar-child-link { 
+            padding: 9px 16px 9px 40px; 
+            font-size: 11.5px; 
+            font-weight: 500; 
+            color: var(--text-muted); 
+            border-radius: 8px; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 4px; 
+            position: relative; 
+        }
+        .sidebar-child-link:hover { 
+            color: var(--text-main); 
+            background: rgba(255,255,255,0.03); 
+            transform: translateX(4px); 
+        }
+        .sidebar-child-link.active { 
+            color: #83b765; 
+            background: rgba(131, 183, 101, 0.1); 
+            font-weight: 600; 
+        }
+        .sidebar-child-link.active svg {
+            color: #83b765;
+        }
 
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
+        .tab-btn { padding: 8px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-radius: 6px; color: var(--text-muted); font-weight: 500; background: transparent; border: 1px solid transparent; }
+        .tab-active { background: var(--hover-bg) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+        .tab-btn:hover:not(.tab-active) { color: var(--text-main); background: var(--hover-bg); }
+
+        .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; font-size: 12px; margin-top: 16px; margin-bottom: 24px; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
         body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
@@ -179,22 +236,22 @@
         </div>
 
         <div class="flex-1 overflow-y-auto py-5 px-3">
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-3 px-3">Menu Utama</div>
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
-        <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300 group cursor-pointer hover:bg-red-500/5" onclick="logout()">
+        <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300 group cursor-pointer hover:bg-white/5" onclick="logout()">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full border border-[#83b765]/30 flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-[#83b765] to-emerald-700 shadow-sm">PIC</div>
@@ -208,8 +265,8 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT LANGSUNG DARI GITHUB BIAR PASTI MUNCUL -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); background-size: cover; background-position: center;">
+    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative" style="background-image: url('/bgkelapasawit.jpeg'); background-size: cover; background-position: center;">
         
         <div class="bg-overlay"></div>
 
@@ -411,8 +468,16 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // NAMA SHEET DI-UPDATE SESUAI EXCEL TERBARU: "REKAPITULASI" & "REKAPITULASI PEMBATALAN"
-        const listSheets = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"];
+        // AUTO DETECT SHEET NAMES - Bebas lu mau ganti nama apa aja di excel
+        let listSheets = [];
+        if(Object.keys(rawData).length > 0) {
+            let foundRekap = Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) || "REKAPITULASI";
+            let foundBatal = Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) || "REKAPITULASI PEMBATALAN";
+            listSheets = [foundRekap, foundBatal];
+        } else {
+            listSheets = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"];
+        }
+
         let currentDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
@@ -761,7 +826,7 @@
         }
 
         // =========================================
-        // GRAFIK PEMBATALAN
+        // GRAFIK PEMBATALAN (AUTO DETECT SHEET PEMBATALAN)
         // =========================================
         function renderPembatalanChart(pembatalanData) {
             let pembatalanCountMap = {};
@@ -968,8 +1033,8 @@
                 listSheets.forEach((sheet, idx) => {
                     const btn = document.createElement('button'); 
                     btn.id = 'nav-md-' + idx; 
-                    btn.className = 'w-full sidebar-child-link text-left'; 
-                    btn.innerHTML = `<svg class="w-3.5 h-3.5 mr-2.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="truncate tracking-wide">${sheet}</span>`;
+                    btn.className = 'w-full sidebar-child-link text-left group'; 
+                    btn.innerHTML = `<svg class="w-4 h-4 mr-3 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="whitespace-normal leading-snug tracking-wide">${sheet}</span>`;
                     btn.onclick = () => switchView('view-database', btn.id, sheet);
                     sidebarMaster.appendChild(btn);
                 });
@@ -994,18 +1059,92 @@
                     const result = await response.json();
                     
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
+                        
+                        if (Object.keys(rawData).length > 0) {
+                            let detectedChanges = [];
+                            const allSheetNames = [...listSheets]; 
+                            
+                            allSheetNames.forEach(sheet => {
+                                let pivotKey = Object.keys(result.rawData).find(k => k.trim().toLowerCase() === sheet.toLowerCase()) || sheet;
+                                let oldSheet = rawData[sheet] || [];
+                                let newSheet = result.rawData[pivotKey] || [];
+                                let maxRows = Math.max(oldSheet.length, newSheet.length);
+
+                                for (let i = 0; i < maxRows; i++) {
+                                    let oldRow = oldSheet[i] || {};
+                                    let newRow = newSheet[i] || {};
+                                    let allKeys = new Set([...Object.keys(oldRow), ...Object.keys(newRow)]);
+
+                                    allKeys.forEach(key => {
+                                        if(key.startsWith('!') || key.startsWith('__EMPTY')) return;
+
+                                        let oldVal = String(oldRow[key] || "").trim();
+                                        let newVal = String(newRow[key] || "").trim();
+
+                                        if(oldVal.includes('|||')) oldVal = oldVal.split('|||')[0];
+                                        if(newVal.includes('|||')) newVal = newVal.split('|||')[0];
+
+                                        if (oldVal !== newVal) {
+                                            detectedChanges.push({ sheet: sheet, waktu: new Date().toLocaleTimeString('id-ID', { hour12: false }), baris: i + 2, kolom: key, lama: oldVal === "" ? "(Kosong)" : oldVal, baru: newVal === "" ? "(Kosong)" : newVal });
+                                        }
+                                    });
+                                }
+                            });
+
+                            if(detectedChanges.length > 0) {
+                                logsData = [...detectedChanges, ...logsData];
+                                if (logsData.length > 50) logsData = logsData.slice(0, 50); 
+                            }
+                            isUnread = true; 
+                        }
+
                         rawData = result.rawData;
                         renderNotifications();
-                        if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) renderPivotDashboard(); 
+                        
+                        if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) {
+                            renderPivotDashboard(); 
+                        }
                         else if (listSheets.includes(currentActiveSheet)) {
                             let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
                             loadTable(sheetRealKey);
                         }
+
+                        if(syncText && syncDot) {
+                            syncText.innerText = "UPDATING...";
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
+                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
+                            
+                            setTimeout(() => { 
+                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
+                                syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
+                            }, 3000);
+                        }
                     }
-                } catch (err) {}
+                } catch (err) { 
+                    console.error("Gagal sinkronisasi background:", err); 
+                    if(syncText && syncDot) {
+                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
+                        syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
+                    }
+                }
             }
 
             setInterval(syncData, 10000); 
+
+            setInterval(async () => {
+                try {
+                    const response = await fetch('/api/check-emails?t=' + new Date().getTime());
+                    const result = await response.json();
+                    if (JSON.stringify(emailsData) !== JSON.stringify(result.emails)) {
+                        emailsData = result.emails;
+                        renderEmailsUI();
+                        const badge = document.getElementById('sidebar-email-badge');
+                        if (result.unreadCount > 0 && badge) {
+                            badge.innerText = result.unreadCount; badge.classList.remove('hidden'); badge.classList.remove('badge-pop'); void badge.offsetWidth; badge.classList.add('badge-pop');
+                        }
+                    }
+                } catch (err) {}
+            }, 5000); 
         });
     </script>
 </body>
