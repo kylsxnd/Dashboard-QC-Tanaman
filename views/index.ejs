@@ -118,40 +118,6 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-            <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
-            <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-600 opacity-10 blur-[120px] rounded-full"></div>
-        </div>
-        
-        <div class="premium-card w-full max-w-md p-8 md:p-10 relative z-10 mx-4 border-t-4 border-t-[#83b765]">
-            <div class="flex justify-center mb-6">
-                <div class="w-14 h-14 rounded-2xl bg-[#83b765]/10 border border-[#83b765]/30 flex items-center justify-center shadow-[0_0_20px_rgba(131,183,101,0.2)]">
-                    <svg class="w-8 h-8 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                </div>
-            </div>
-            <h2 class="text-2xl font-bold text-center theme-text-main mb-1">Executive Portal</h2>
-            <p class="text-xs text-center theme-text-muted mb-8">Masuk ke Sistem Keamanan Agrinas</p>
-            
-            <form id="login-form" onsubmit="handleLogin(event)">
-                <div class="mb-5">
-                    <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Email Akun</label>
-                    <input type="email" id="login-email" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main focus:border-[#83b765] focus:ring-1 focus:ring-[#83b765] outline-none transition-all" placeholder="email@agrinas.id" required>
-                </div>
-                <div class="mb-8">
-                    <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Kata Sandi</label>
-                    <input type="password" id="login-password" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main focus:border-[#83b765] focus:ring-1 focus:ring-[#83b765] outline-none transition-all" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="w-full bg-[#83b765] hover:bg-[#72a356] text-white font-bold py-3.5 rounded-lg text-sm transition-all shadow-lg shadow-[#83b765]/25 hover:shadow-[#83b765]/40 flex justify-center items-center gap-2">
-                    Masuk Dashboard
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
-                <div id="login-error" class="hidden mt-4 text-center text-xs text-red-500 font-medium bg-red-500/10 py-2.5 rounded border border-red-500/20">Akses Ditolak: Email atau sandi salah!</div>
-            </form>
-        </div>
-    </div>
-
     <!-- SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
@@ -194,8 +160,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full border border-[#83b765]/30 flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-[#83b765] to-emerald-700 shadow-sm">PIC</div>
                     <div class="flex flex-col overflow-hidden">
-                        <span id="pic-name-display" class="text-xs font-semibold theme-text-main truncate">User</span>
-                        <span id="pic-email-display" class="text-[10px] theme-text-muted truncate">email@agrinas.id</span>
+                        <span id="pic-name-display" class="text-xs font-semibold theme-text-main truncate">Staf PIC HO</span>
                     </div>
                 </div>
                 <svg class="w-4 h-4 text-red-500 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
@@ -217,7 +182,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard Rekapitulasi</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -285,7 +250,7 @@
                 </div>
             </section>
 
-            <!-- 2. DASHBOARD PEMBATALAN (BARU) -->
+            <!-- 2. DASHBOARD PEMBATALAN -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -355,52 +320,15 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        function checkLoginState() {
-            const loggedInUser = localStorage.getItem('agrinas_user');
-            const loginOverlay = document.getElementById('login-overlay');
-            if (loggedInUser) {
-                loginOverlay.style.opacity = '0';
-                setTimeout(() => { loginOverlay.style.display = 'none'; }, 500);
-                const userObj = JSON.parse(loggedInUser);
-                document.getElementById('pic-name-display').innerText = userObj.name;
-                document.getElementById('pic-email-display').innerText = userObj.email;
-            } else {
-                loginOverlay.style.display = 'flex';
-                setTimeout(() => { loginOverlay.style.opacity = '1'; }, 10);
-            }
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            const errorMsg = document.getElementById('login-error');
-            
-            if ((email === 'admin@agrinas.id' && password === 'admin123') || 
-                (email === 'ceo@agrinas.id' && password === 'ceo123')) {
-                const userData = { email: email, name: email === 'ceo@agrinas.id' ? 'BOD Agrinas' : 'Staf PIC HO' };
-                localStorage.setItem('agrinas_user', JSON.stringify(userData));
-                errorMsg.classList.add('hidden');
-                checkLoginState();
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        }
-        
         function logout() {
-            if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
-                localStorage.removeItem('agrinas_user');
-                document.getElementById('login-email').value = '';
-                document.getElementById('login-password').value = '';
-                checkLoginState();
+            if(confirm("Apakah Anda yakin ingin memuat ulang sesi ini?")) {
+                window.location.reload();
             }
         }
 
         let rawData = <%- sheetData %> || {};
         let logsData = <%- logsData %> || []; 
         
-        // MASTER DATA LIST SHEET
-        const masterSheets = ["REKAPITULASI", "Surat Pembatalan"];
         let currentDataTable = null;
         let currentActiveSheet = null; 
 
@@ -455,12 +383,12 @@
             
             const headerTitle = document.getElementById('header-title');
             if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Rekapitulasi";
+                headerTitle.innerText = "Dashboard Rekapitulasi";
                 currentActiveSheet = 'dashboard';
                 renderPivotDashboard(); 
             }
             else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
+                headerTitle.innerText = "Dashboard Pembatalan";
                 currentActiveSheet = 'pembatalan';
                 renderPembatalanDashboard();
             }
@@ -504,7 +432,8 @@
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
+            // Menarik dari log data sheet REKAPITULASI
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
             const rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
@@ -527,8 +456,6 @@
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
-                    let status = String(row[cStatus] || "").trim();
-                    let sLow = status.toLowerCase();
                     let noSurat = cNoSurat ? String(row[cNoSurat] || "").trim() : "ADA"; 
 
                     if (cNoSurat && (!noSurat || noSurat === "-" || noSurat.toLowerCase().includes("no surat") || !noSurat.includes("/"))) return;
@@ -685,7 +612,8 @@
         // DASHBOARD 2: PEMBATALAN (DEDICATED VIEW)
         // =========================================
         function renderPembatalanDashboard() {
-            let batalKey = Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) || "Surat Pembatalan";
+            // Menarik dari log data khusus sheet REKAPITULASI PEMBATALAN
+            let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
             let pembatalanData = rawData[batalKey] || [];
             
             let pembatalanCountMap = {};
@@ -694,8 +622,8 @@
 
             if (pembatalanData.length > 0) {
                 let pCols = Object.keys(pembatalanData[0] || {});
-                let pCroCol = pCols.find(k => k.toLowerCase() === 'cro') || pCols[4];
-                let pNoSuratBatal = pCols.find(k => k.toLowerCase().includes('no surat pembatalan')) || pCols[1];
+                let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('cro') || k.toLowerCase().includes('regional')) || pCols[4];
+                let pNoSuratBatal = pCols.find(k => k.toLowerCase().includes('surat pembatalan') || k.toLowerCase().includes('no surat pembatalan')) || pCols[1];
 
                 pembatalanData.forEach(row => {
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
@@ -788,10 +716,11 @@
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
+            // Menyesuaikan logika ke nama sheet terbaru
             if (sheetName === "REKAPITULASI") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
-            } else if (sheetName === "Surat Pembatalan") {
-                actualKey = Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) || "Surat Pembatalan";
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || "REKAPITULASI";
+            } else if (sheetName === "REKAPITULASI PEMBATALAN") {
+                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
             }
 
             const data = rawData[actualKey] || [];
@@ -874,7 +803,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            checkLoginState();
 
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
@@ -882,12 +810,12 @@
                 if(themeIcon) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
             }
 
-            // GENERATE SIDEBAR MASTER DATA KEBUN ("REKAPITULASI" & "Surat Pembatalan")
+            // GENERATE SIDEBAR MASTER DATA KEBUN ("REKAPITULASI" & "REKAPITULASI PEMBATALAN")
             const sidebarMaster = document.getElementById('sidebar-master-data');
             if(sidebarMaster) {
                 const masterItems = [
                     { id: "REKAPITULASI", display: "REKAPITULASI" },
-                    { id: "Surat Pembatalan", display: "Surat Pembatalan" }
+                    { id: "REKAPITULASI PEMBATALAN", display: "REKAPITULASI PEMBATALAN" }
                 ];
                 masterItems.forEach((item, idx) => {
                     const btn = document.createElement('button'); 
