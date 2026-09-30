@@ -57,8 +57,8 @@
         
         /* Modifikasi card untuk support background tembus pandang */
         .premium-card { 
-            background: rgba(21, 21, 21, 0.65); 
-            backdrop-filter: blur(8px);
+            background: rgba(21, 21, 21, 0.7); 
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.05); 
             border-radius: 12px; 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
@@ -74,66 +74,14 @@
         .premium-dropdown { background-color: var(--bg-dropdown); backdrop-filter: blur(12px); border: 1px solid var(--border-color); box-shadow: var(--shadow-drop); z-index: 100 !important; }
         .premium-dropdown-header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); }
 
-        /* =========================================
-           SIDEBAR PREMIUM UI (NEW DESIGN)
-           ========================================= */
-        .sidebar-link { 
-            padding: 11px 16px; 
-            font-size: 13px; 
-            font-weight: 500; 
-            color: var(--text-muted); 
-            border-radius: 10px; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 6px; 
-            position: relative; 
-            border: 1px solid transparent;
-        }
-        .sidebar-link:hover { 
-            color: var(--text-main); 
-            background: rgba(255,255,255,0.04); 
-            border-color: rgba(255,255,255,0.05);
-            transform: translateX(4px); 
-        }
-        .sidebar-link.active { 
-            color: #ffffff; 
-            background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); 
-            border-left: 3px solid #83b765; 
-            border-color: transparent;
-            border-left-color: #83b765;
-            font-weight: 600; 
-        }
-        .sidebar-link.active svg {
-            color: #83b765;
-            filter: drop-shadow(0 0 8px rgba(131,183,101,0.5));
-        }
+        .sidebar-link { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 4px; position: relative; }
+        .sidebar-link:hover { color: var(--text-main); background: var(--hover-bg); }
+        .sidebar-link.active { color: var(--text-main); background: var(--hover-bg); border-left: 3px solid #83b765; }
 
-        .sidebar-child-link { 
-            padding: 9px 16px 9px 40px; 
-            font-size: 11.5px; 
-            font-weight: 500; 
-            color: var(--text-muted); 
-            border-radius: 8px; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 4px; 
-            position: relative; 
-        }
-        .sidebar-child-link:hover { 
-            color: var(--text-main); 
-            background: rgba(255,255,255,0.03); 
-            transform: translateX(4px); 
-        }
-        .sidebar-child-link.active { 
-            color: #83b765; 
-            background: rgba(131, 183, 101, 0.1); 
-            font-weight: 600; 
-        }
-        .sidebar-child-link.active svg {
-            color: #83b765;
-        }
+        /* Child Links (Sub-menu) Master Data yang Diperbagus */
+        .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
+        .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
+        .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
 
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .badge-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -148,7 +96,8 @@
         .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
 
         table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
-        table.dataTable thead th { cursor: grab !important; background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-weight: 600; font-size: 11px; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
+        table.dataTable thead th { cursor: grab !important; background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
+        table.dataTable thead th:active { cursor: grabbing !important; }
         table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
         table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
@@ -169,22 +118,13 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-        
-        /* Overlay khusus background foto */
-        .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background-color: rgba(10, 10, 10, 0.75); 
-            z-index: 0;
-        }
-        body.light-mode .bg-overlay {
-            background-color: rgba(243, 244, 246, 0.85); 
-        }
     </style>
 </head>
-<body class="flex h-screen w-full theme-bg-main theme-text-main relative">
+<body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
 
-    <!-- LOGIN SCREEN -->
+    <!-- ==========================================
+         LOGIN OVERLAY (PREMIUM SECURITY SCREEN)
+         ========================================== -->
     <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
@@ -238,7 +178,7 @@
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard On Farm
             </button>
             <button onclick="switchView('view-inbox', 'nav-inbox')" class="w-full sidebar-link" id="nav-inbox">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Inbox Email
@@ -248,6 +188,7 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
+            <!-- MENU MASTER DATA AKAN DIGENERATE JS DISINI -->
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
@@ -266,11 +207,12 @@
     </aside>
 
     <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative" style="background-image: url('/bgkelapasawit.jpeg'); background-size: cover; background-position: center;">
+    <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         
-        <div class="bg-overlay"></div>
+        <!-- LAYER BACKGROUND FOTO (DIJAMIN MUNCUL 1000%) -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('/bgkelapasawit.jpeg'); opacity: 0.35;"></div>
 
-        <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300 relative">
+        <header class="h-16 border-b border-gray-600/30 flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300 relative" style="background: rgba(17,17,17,0.7); backdrop-filter: blur(10px);">
             <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
                 <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 -ml-2 rounded-lg theme-text-muted hover:bg-[var(--hover-bg)] focus:outline-none shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -468,16 +410,12 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // AUTO DETECT SHEET NAMES - Bebas lu mau ganti nama apa aja di excel
-        let listSheets = [];
-        if(Object.keys(rawData).length > 0) {
-            let foundRekap = Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) || "REKAPITULASI";
-            let foundBatal = Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) || "REKAPITULASI PEMBATALAN";
-            listSheets = [foundRekap, foundBatal];
-        } else {
-            listSheets = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"];
-        }
-
+        // PENGATURAN NAMA MENU KIRI (TIDAK AKAN BERUBAH MESKI NAMA SHEET EXCEL DIGANTI-GANTI)
+        const sidebarDisplayNames = [
+            { id: "REKAPITULASI", display: "REKAPITULASI" },
+            { id: "Surat Pembatalan", display: "Surat Pembatalan" }
+        ];
+        
         let currentDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
@@ -524,7 +462,7 @@
             });
         }
 
-        function switchView(viewId, elementId, sheetName = null) {
+        function switchView(viewId, elementId, sheetIdName = null) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
             document.getElementById('view-inbox').classList.add('hidden');
@@ -538,10 +476,10 @@
                 renderPivotDashboard(); 
             }
             else if(viewId === 'view-database') {
-                headerTitle.innerText = "Master Data > " + sheetName;
-                document.getElementById('database-title').innerText = sheetName;
-                currentActiveSheet = sheetName;
-                loadTable(sheetName);
+                headerTitle.innerText = "Master Data > " + sheetIdName;
+                document.getElementById('database-title').innerText = sheetIdName;
+                currentActiveSheet = sheetIdName;
+                loadTable(sheetIdName);
             }
             else if(viewId === 'view-inbox') {
                 headerTitle.innerText = "Executive On-Farm > Inbox Email";
@@ -630,14 +568,14 @@
         };
 
         // =========================================
-        // DASHBOARD UTAMA (SUPER PINTAR - AUTO DETECT NAMA SHEET)
+        // DASHBOARD UTAMA (REKAPITULASI STRICT)
         // =========================================
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             
-            // KODE SAKTI: Apapun nama sheetnya selama ada unsur "REKAP" dia pasti ketemu
+            // KUNCI PINTAR: Tarik mutlak dari sheet yang ada tulisan 'rekapitulasi' dan BUKAN pembatalan
             let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") 
-                        || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) 
+                        || Object.keys(rawData).find(k => k.toLowerCase().includes("rekapitulasi") && !k.toLowerCase().includes("batal")) 
                         || "REKAPITULASI";
             const rekapData = rawData[rekapKey] || [];
             
@@ -729,18 +667,19 @@
 
             const kpiContainer = document.getElementById('pivot-kpi-container');
             if(kpiContainer) {
+                // EFEK GLOW & BOX HOVER MEWAH UNTUK 3 KPI UTAMA
                 kpiContainer.innerHTML = `
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_20px_-4px_rgba(59,130,246,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.25)]">
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2 flex items-center justify-between">Total Target Produksi</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
                         <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data Kalkulasi Akurat)</div>
                     </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.25)]">
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Total Luas Kebun / Luas TM</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
                         <div class="text-[10px] font-semibold text-purple-300 mt-2 bg-purple-500/20 inline-block px-2 py-0.5 rounded border border-purple-500/30">Luas TM: ${totalLuasTM.toLocaleString('id-ID', {minimumFractionDigits: 2})} Ha</div>
                     </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_20px_-4px_rgba(249,115,22,0.15)] group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(249,115,22,0.25)]">
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-orange-500 shadow-[0_4px_15px_-4px_rgba(249,115,22,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">Total Kemitraan PT</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalPtCount.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
                         <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data Kalkulasi Akurat)</div>
@@ -826,7 +765,109 @@
         }
 
         // =========================================
-        // GRAFIK PEMBATALAN (AUTO DETECT SHEET PEMBATALAN)
+        // DATA TABEL & PREVIEW FILE
+        // =========================================
+        function loadTable(sheetName) {
+            document.getElementById('table-area').classList.remove('hidden');
+            
+            const pembatalanContainer = document.getElementById('pembatalan-chart-container');
+            if (sheetName.toLowerCase().includes('pembatalan')) {
+                pembatalanContainer.classList.remove('hidden');
+                let batalKey = Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) || "Surat Pembatalan";
+                renderPembatalanChart(rawData[batalKey] || []);
+            } else {
+                pembatalanContainer.classList.add('hidden');
+            }
+
+            // AMBIL DATA DENGAN KUNCI YANG SESUAI
+            let actualKey = sheetName;
+            if (sheetName === "REKAPITULASI") {
+                actualKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
+            } else if (sheetName === "Surat Pembatalan") {
+                actualKey = Object.keys(rawData).find(k => k.toLowerCase().includes("batal")) || "Surat Pembatalan";
+            }
+
+            const data = rawData[actualKey] || [];
+            if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
+            
+            if (data.length === 0) { 
+                $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
+                return; 
+            }
+
+            const validKeys = [];
+            let allKeysSet = new Set();
+            data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
+            let allKeys = Array.from(allKeysSet);
+
+            allKeys.forEach(key => {
+                let title = key.trim();
+                let isGhost = true;
+                for(let i=0; i < data.length; i++) {
+                    let v = data[i][key];
+                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                        isGhost = false;
+                        break;
+                    }
+                }
+                if (isGhost) return;
+                validKeys.push(key);
+            });
+
+            const columns = validKeys.map(key => {
+                let displayTitle = key;
+                if (displayTitle.startsWith('__EMPTY')) {
+                    displayTitle = "-"; 
+                } else {
+                    displayTitle = displayTitle.replace(/_\d+$/, '').trim(); 
+                }
+
+                let numTitle = parseFloat(displayTitle);
+                if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
+                    let d = new Date(Math.round((numTitle - 25569) * 86400000));
+                    displayTitle = d.getUTCDate() + '/' + (d.getUTCMonth() + 1);
+                }
+
+                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
+                
+                return { 
+                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
+                    data: key, 
+                    defaultContent: "-", 
+                    render: function(val) {
+                        if (isDateCol && typeof val === 'number') {
+                            let d = new Date(Math.round((val - 25569) * 86400000));
+                            let dd = d.getUTCDate().toString().padStart(2, '0');
+                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                            let yy = d.getUTCFullYear();
+                            return `${dd}/${mm}/${yy}`;
+                        }
+                        if (typeof val === 'number') {
+                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
+                            return val.toLocaleString('id-ID');
+                        }
+                        if (typeof val === 'string' && val.includes('|||')) {
+                            const parts = val.split('|||');
+                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
+                        }
+                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
+                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                        }
+                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
+                        return val;
+                    }
+                };
+            });
+
+            currentDataTable = $('#mainTable').DataTable({
+                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
+                colReorder: true, 
+                language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
+            });
+        }
+
+        // =========================================
+        // GRAFIK PEMBATALAN (AUTO DETECT)
         // =========================================
         function renderPembatalanChart(pembatalanData) {
             let pembatalanCountMap = {};
@@ -925,97 +966,6 @@
             }
         });
 
-        function loadTable(sheetName) {
-            document.getElementById('table-area').classList.remove('hidden');
-            
-            const pembatalanContainer = document.getElementById('pembatalan-chart-container');
-            if (sheetName.toLowerCase().includes('pembatalan')) {
-                pembatalanContainer.classList.remove('hidden');
-                let batalKey = Object.keys(rawData).find(k => k.toLowerCase() === sheetName.toLowerCase()) || sheetName;
-                renderPembatalanChart(rawData[batalKey] || []);
-            } else {
-                pembatalanContainer.classList.add('hidden');
-            }
-
-            const data = rawData[sheetName] || [];
-            if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
-            
-            if (data.length === 0) { 
-                $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
-                return; 
-            }
-
-            const validKeys = [];
-            let allKeysSet = new Set();
-            data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
-            let allKeys = Array.from(allKeysSet);
-
-            allKeys.forEach(key => {
-                let title = key.trim();
-                let isGhost = true;
-                for(let i=0; i < data.length; i++) {
-                    let v = data[i][key];
-                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                        isGhost = false;
-                        break;
-                    }
-                }
-                if (isGhost) return;
-                validKeys.push(key);
-            });
-
-            const columns = validKeys.map(key => {
-                let displayTitle = key;
-                if (displayTitle.startsWith('__EMPTY')) {
-                    displayTitle = "-"; 
-                } else {
-                    displayTitle = displayTitle.replace(/_\d+$/, '').trim(); 
-                }
-
-                let numTitle = parseFloat(displayTitle);
-                if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
-                    let d = new Date(Math.round((numTitle - 25569) * 86400000));
-                    displayTitle = d.getUTCDate() + '/' + (d.getUTCMonth() + 1);
-                }
-
-                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
-                
-                return { 
-                    title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (isDateCol && typeof val === 'number') {
-                            let d = new Date(Math.round((val - 25569) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear();
-                            return `${dd}/${mm}/${yy}`;
-                        }
-                        if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
-                        }
-                        if (typeof val === 'string' && val.includes('|||')) {
-                            const parts = val.split('|||');
-                            return `<a href="javascript:void(0)" onclick="openPreview('${parts[1]}')" class="inline-flex items-center gap-2 theme-text-muted hover:text-blue-500 group transition-colors">${getFileIcon(parts[0])} <span class="group-hover:underline truncate max-w-[200px]" title="${parts[0]}">${parts[0]}</span></a>`;
-                        }
-                        else if(typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="javascript:void(0)" onclick="openPreview('${val}')" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
-                        }
-                        if (typeof val === 'string' && val.includes('\n')) return val.replace(/\n/g, '<br>'); 
-                        return val;
-                    }
-                };
-            });
-
-            currentDataTable = $('#mainTable').DataTable({
-                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
-                colReorder: true, 
-                language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
-            });
-        }
-
         document.addEventListener("DOMContentLoaded", function() {
             checkLoginState();
 
@@ -1028,14 +978,15 @@
             renderNotifications();
             renderEmailsUI(); 
 
+            // GENERATE SIDEBAR MENU SESUAI PERMINTAAN ("REKAPITULASI" & "Surat Pembatalan")
             const sidebarMaster = document.getElementById('sidebar-master-data');
             if(sidebarMaster) {
-                listSheets.forEach((sheet, idx) => {
+                sidebarDisplayNames.forEach((item, idx) => {
                     const btn = document.createElement('button'); 
                     btn.id = 'nav-md-' + idx; 
                     btn.className = 'w-full sidebar-child-link text-left group'; 
-                    btn.innerHTML = `<svg class="w-4 h-4 mr-3 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="whitespace-normal leading-snug tracking-wide">${sheet}</span>`;
-                    btn.onclick = () => switchView('view-database', btn.id, sheet);
+                    btn.innerHTML = `<svg class="w-4 h-4 mr-3 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="whitespace-normal leading-snug tracking-wide">${item.display}</span>`;
+                    btn.onclick = () => switchView('view-database', btn.id, item.id);
                     sidebarMaster.appendChild(btn);
                 });
             }
@@ -1062,7 +1013,8 @@
                         
                         if (Object.keys(rawData).length > 0) {
                             let detectedChanges = [];
-                            const allSheetNames = [...listSheets]; 
+                            // Kita pakai listSheets = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"] untuk log tracking
+                            const allSheetNames = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"]; 
                             
                             allSheetNames.forEach(sheet => {
                                 let pivotKey = Object.keys(result.rawData).find(k => k.trim().toLowerCase() === sheet.toLowerCase()) || sheet;
@@ -1104,9 +1056,8 @@
                         if (currentActiveSheet === 'dashboard' || currentActiveSheet === null) {
                             renderPivotDashboard(); 
                         }
-                        else if (listSheets.includes(currentActiveSheet)) {
-                            let sheetRealKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === currentActiveSheet.toLowerCase()) || currentActiveSheet;
-                            loadTable(sheetRealKey);
+                        else {
+                            loadTable(currentActiveSheet);
                         }
 
                         if(syncText && syncDot) {
