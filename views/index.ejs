@@ -123,7 +123,7 @@
         .bg-overlay {
             position: absolute;
             inset: 0;
-            background-color: rgba(10, 10, 10, 0.75); /* Tingkat kegelapan, bisa dinaikkan ke 0.85 kalau kurang gelap */
+            background-color: rgba(10, 10, 10, 0.75); 
             z-index: 0;
         }
         body.light-mode .bg-overlay {
@@ -137,7 +137,6 @@
          LOGIN OVERLAY (PREMIUM SECURITY SCREEN)
          ========================================== -->
     <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
-        <!-- Background Ornaments -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
             <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-600 opacity-10 blur-[120px] rounded-full"></div>
@@ -197,15 +196,12 @@
                 <span id="sidebar-email-badge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
-            <!-- Container untuk Sub-menu Master Data -->
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
-        <!-- AREA PROFIL & LOGOUT -->
         <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300 group cursor-pointer hover:bg-red-500/5" onclick="logout()" title="Klik untuk keluar (Logout)">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -220,9 +216,10 @@
         </div>
     </aside>
 
+    <!-- CONTAINER UTAMA DENGAN BACKGROUND FOTO KELAPA SAWIT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative" style="background-image: url('bgkelapasawit.jpeg'); background-size: cover; background-position: center;">
         
-        <!-- OVERLAY UNTUK BACKGROUND FOTO BIAR TETAP BISA DIBACA -->
+        <!-- OVERLAY GELAP UNTUK BACKGROUND -->
         <div class="bg-overlay"></div>
 
         <header class="h-16 theme-bg-panel border-b theme-border flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300 relative">
@@ -259,7 +256,7 @@
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
             
-            <!-- 1. DASHBOARD PIVOT UTAMA -->
+            <!-- 1. DASHBOARD UTAMA -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -287,7 +284,6 @@
                         <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Luas Kebun (Ha) per CRO</h3>
                         <div id="pivot-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <!-- CHART STATUS PENGELOLAAN -->
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="chart-title-status" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">Status Kelola PT per CRO</h3>
                         <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
@@ -357,7 +353,7 @@
                 <div class="premium-card overflow-hidden w-full">
                     <div class="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-600/30 bg-black/20">
                         <span class="text-[10px] md:text-xs font-semibold theme-text-muted">Kotak Masuk (Gmail API Sync)</span>
-                        <button class="text-[10px] md:text-xs text-blue-400 hover:underline font-medium">Tandai semua dibaca</button>
+                        <button class="text-[10px] md:text-xs text-blue-500 hover:underline font-medium">Tandai semua dibaca</button>
                     </div>
                     <div id="email-list-container" class="divide-y divide-gray-600/30 flex flex-col max-h-[600px] overflow-y-auto"></div>
                 </div>
@@ -384,9 +380,6 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // ==========================================
-        // SISTEM AUTENTIKASI (LOGIN SCREEN)
-        // ==========================================
         function checkLoginState() {
             const loggedInUser = localStorage.getItem('agrinas_user');
             const loginOverlay = document.getElementById('login-overlay');
@@ -432,8 +425,8 @@
         let logsData = <%- logsData %> || []; 
         let emailsData = <%- emailsData %> || []; 
         
-        // NAMA SHEET DI-UPDATE SESUAI EXCEL TERBARU
-        const listSheets = ["REKAPITULASI PENUGASAN", "REKAPITULASI PEMBATALAN"];
+        // NAMA SHEET DI-UPDATE SESUAI EXCEL TERBARU (REKAPITULASI & REKAPITULASI PEMBATALAN)
+        const listSheets = ["REKAPITULASI", "REKAPITULASI PEMBATALAN"];
         let currentDataTable = null;
         let isUnread = false; 
         let currentActiveSheet = null; 
@@ -591,8 +584,8 @@
         function renderPivotDashboard() {
             const filterDropdown = document.getElementById('cro-filter');
             
-            // SEDOT DATA DARI SHEET "REKAPITULASI PENUGASAN"
-            let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi penugasan") || "REKAPITULASI PENUGASAN";
+            // SEDOT DATA DARI SHEET "REKAPITULASI" (SESUAI UPDATE NAMA TERBARU)
+            let rekapKey = Object.keys(rawData).find(k => k.trim().toLowerCase() === "rekapitulasi") || "REKAPITULASI";
             const rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
