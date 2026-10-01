@@ -158,7 +158,6 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.55;"></div>
         <div class="bg-overlay"></div>
@@ -237,7 +236,7 @@
                 </div>
             </section>
 
-            <!-- 2. DASHBOARD PEMBATALAN DENGAN FILTER & PIE CHART LUAS -->
+            <!-- 2. DASHBOARD PEMBATALAN -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -246,7 +245,6 @@
                             <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Rentang Baris 2 s.d 97 sesuai Excel).
                         </p>
                     </div>
-                    <!-- FILTER KHUSUS PEMBATALAN -->
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
                         <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">FILTER CRO:</span>
                         <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
@@ -254,17 +252,35 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <!-- KPI TOTAL SURAT -->
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-total-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
                         <div class="text-[10px] text-red-400 font-semibold mt-2 bg-red-500/20 inline-block px-2 py-0.5 rounded border border-red-500/30">Arsip Terpusat</div>
                     </div>
-                    <!-- KPI TOTAL LUAS TM BATAL -->
+                    
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM BATAL</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-luas-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
                         <div class="text-[10px] text-amber-400 font-semibold mt-2 bg-amber-500/20 inline-block px-2 py-0.5 rounded border border-amber-500/30">Kerugian Area (Ha)</div>
+                    </div>
+                </div>
+
+                <!-- TABEL SUMMARY KATEGORI DITAMBAHKAN DISINI -->
+                <div class="premium-card p-4 md:p-6 w-full mb-8 relative overflow-hidden">
+                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">REKAPITULASI KATEGORI MITRA</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[400px]">
+                            <thead>
+                                <tr>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase bg-blue-500/20 text-blue-300">KATEGORI</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-blue-500/20 text-blue-300">JUMLAH KEBUN/MITRA</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-blue-500/20 text-blue-300">JUMLAH PT/CV/KOPERASI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pembatalan-summary-body" class="divide-y divide-gray-600/30">
+                                <!-- Bakal di-inject sama JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -315,7 +331,6 @@
         </main>
     </div>
 
-    <!-- MODAL PREVIEW -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
             <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
@@ -627,7 +642,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (LIMIT BARIS 2 s.d 97 EXACT, + PIE CHART LUAS)
+        // DASHBOARD 2: PEMBATALAN (+ SUMMARY KATEGORI OTOMATIS)
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -757,6 +772,48 @@
                 });
             }
 
+            // MENCARI & MERENDER TABEL REKAPITULASI KATEGORI MITRA SECARA OTOMATIS
+            let summaryHtml = '';
+            let validCats = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan", "Total Penugasan"];
+            let extractedData = {};
+
+            pembatalanDataRaw.forEach(row => {
+                let vals = Object.values(row).map(v => String(v).trim());
+                let catMatch = vals.find(v => validCats.includes(v));
+                
+                if (catMatch) {
+                    let nums = vals.filter(v => v !== "" && !isNaN(v));
+                    extractedData[catMatch] = {
+                        val1: nums.length > 0 ? nums[0] : "0",
+                        val2: nums.length > 1 ? nums[1] : (nums.length > 0 ? nums[0] : "0")
+                    };
+                }
+            });
+
+            validCats.forEach(cat => {
+                if (extractedData[cat]) {
+                    let isTotal = cat === "Total Penugasan";
+                    let rowClass = isTotal ? "bg-blue-500/10 font-bold" : "hover:bg-white/5 transition-colors";
+                    let textClass = isTotal ? "text-blue-400" : "theme-text-main";
+
+                    summaryHtml += `
+                        <tr class="${rowClass} border-b border-gray-600/30 last:border-0">
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass}">${cat}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass} text-center">${extractedData[cat].val1}</td>
+                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass} text-center">${extractedData[cat].val2}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if (summaryHtml === '') {
+                summaryHtml = `<tr><td colspan="3" class="text-center py-4 theme-text-muted text-[11px] md:text-sm">Data rekapitulasi kategori tidak ditemukan di dalam sheet.</td></tr>`;
+            }
+
+            if(document.getElementById('pembatalan-summary-body')) {
+                document.getElementById('pembatalan-summary-body').innerHTML = summaryHtml;
+            }
+
             let ptBatalHtml = '';
             ptListBatal.sort((a,b) => b.luas - a.luas);
             ptListBatal.forEach(pt => {
@@ -771,6 +828,7 @@
             });
             if (ptListBatal.length === 0) ptBatalHtml = `<tr><td colspan="4" class="text-center py-6 theme-text-muted text-xs md:text-sm">Tidak ada data perusahaan.</td></tr>`;
             if(document.getElementById('pembatalan-pt-list-body')) document.getElementById('pembatalan-pt-list-body').innerHTML = ptBatalHtml;
+            
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
@@ -830,7 +888,6 @@
 
             const dataFull = rawData[actualKey] || [];
             
-            // AUTO STOP LIMIT UNTUK DATATABLE BIAR BERSIH DARI SAMPAH BAWAH TOTAL
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
                 let rowStr = JSON.stringify(dataFull[i]).toLowerCase();
@@ -942,6 +999,50 @@
             window.addEventListener('resize', () => {
                 if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
             });
+            
+            async function syncData() {
+                const syncText = document.getElementById('sync-text');
+                const syncDot = document.getElementById('sync-dot');
+
+                try {
+                    const response = await fetch('/api/check-updates?t=' + new Date().getTime());
+                    const result = await response.json();
+                    
+                    if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
+                        
+                        rawData = result.rawData;
+                        
+                        if (currentActiveSheet === 'dashboard') {
+                            renderDashboardCharts(); 
+                        }
+                        else if (currentActiveSheet === 'pembatalan') {
+                            renderPembatalanDashboard(); 
+                        }
+                        else {
+                            loadTable(currentActiveSheet);
+                        }
+
+                        if(syncText && syncDot) {
+                            syncText.innerText = "UPDATING...";
+                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
+                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
+                            
+                            setTimeout(() => { 
+                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
+                                syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
+                            }, 3000);
+                        }
+                    }
+                } catch (err) { 
+                    console.error("Gagal sinkronisasi background:", err); 
+                    if(syncText && syncDot) {
+                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
+                        syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
+                    }
+                }
+            }
+
+            setInterval(syncData, 10000); 
         });
     </script>
 </body>
