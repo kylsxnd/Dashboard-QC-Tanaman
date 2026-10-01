@@ -158,6 +158,7 @@
         </div>
     </aside>
 
+    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.55;"></div>
         <div class="bg-overlay"></div>
@@ -168,7 +169,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -265,25 +266,6 @@
                     </div>
                 </div>
 
-                <!-- TABEL SUMMARY KATEGORI DITAMBAHKAN DISINI -->
-                <div class="premium-card p-4 md:p-6 w-full mb-8 relative overflow-hidden">
-                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">REKAPITULASI KATEGORI MITRA</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[400px]">
-                            <thead>
-                                <tr>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase bg-blue-500/20 text-blue-300">KATEGORI</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-blue-500/20 text-blue-300">JUMLAH KEBUN/MITRA</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-blue-500/20 text-blue-300">JUMLAH PT/CV/KOPERASI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pembatalan-summary-body" class="divide-y divide-gray-600/30">
-                                <!-- Bakal di-inject sama JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
                         <h3 id="pembatalan-chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH SURAT PEMBATALAN SE-INDONESIA</h3>
@@ -331,6 +313,7 @@
         </main>
     </div>
 
+    <!-- MODAL PREVIEW -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
             <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
@@ -483,7 +466,7 @@
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
-                let cPt = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
+                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
 
                 for (let i = 0; i < rekapData.length; i++) {
                     let row = rekapData[i];
@@ -518,7 +501,7 @@
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
-                let cPt = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
+                let cPt = rCols.find(k => k.toLowerCase().includes('nama pt') || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
                 let cLuas = rCols.find(k => k.toLowerCase().includes('luas kebun')) || rCols[8] || rCols[2];
                 let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[9] || rCols[3];
                 let cTarget = rCols.find(k => k.toLowerCase().includes('target produksi') || k.toLowerCase().includes('target')) || rCols[10] || rCols[4];
@@ -642,7 +625,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (+ SUMMARY KATEGORI OTOMATIS)
+        // DASHBOARD 2: PEMBATALAN (LIMIT BARIS 2 s.d 97 EXACT)
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -772,48 +755,6 @@
                 });
             }
 
-            // MENCARI & MERENDER TABEL REKAPITULASI KATEGORI MITRA SECARA OTOMATIS
-            let summaryHtml = '';
-            let validCats = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan", "Total Penugasan"];
-            let extractedData = {};
-
-            pembatalanDataRaw.forEach(row => {
-                let vals = Object.values(row).map(v => String(v).trim());
-                let catMatch = vals.find(v => validCats.includes(v));
-                
-                if (catMatch) {
-                    let nums = vals.filter(v => v !== "" && !isNaN(v));
-                    extractedData[catMatch] = {
-                        val1: nums.length > 0 ? nums[0] : "0",
-                        val2: nums.length > 1 ? nums[1] : (nums.length > 0 ? nums[0] : "0")
-                    };
-                }
-            });
-
-            validCats.forEach(cat => {
-                if (extractedData[cat]) {
-                    let isTotal = cat === "Total Penugasan";
-                    let rowClass = isTotal ? "bg-blue-500/10 font-bold" : "hover:bg-white/5 transition-colors";
-                    let textClass = isTotal ? "text-blue-400" : "theme-text-main";
-
-                    summaryHtml += `
-                        <tr class="${rowClass} border-b border-gray-600/30 last:border-0">
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass}">${cat}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass} text-center">${extractedData[cat].val1}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass} text-center">${extractedData[cat].val2}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            if (summaryHtml === '') {
-                summaryHtml = `<tr><td colspan="3" class="text-center py-4 theme-text-muted text-[11px] md:text-sm">Data rekapitulasi kategori tidak ditemukan di dalam sheet.</td></tr>`;
-            }
-
-            if(document.getElementById('pembatalan-summary-body')) {
-                document.getElementById('pembatalan-summary-body').innerHTML = summaryHtml;
-            }
-
             let ptBatalHtml = '';
             ptListBatal.sort((a,b) => b.luas - a.luas);
             ptListBatal.forEach(pt => {
@@ -828,7 +769,6 @@
             });
             if (ptListBatal.length === 0) ptBatalHtml = `<tr><td colspan="4" class="text-center py-6 theme-text-muted text-xs md:text-sm">Tidak ada data perusahaan.</td></tr>`;
             if(document.getElementById('pembatalan-pt-list-body')) document.getElementById('pembatalan-pt-list-body').innerHTML = ptBatalHtml;
-            
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
