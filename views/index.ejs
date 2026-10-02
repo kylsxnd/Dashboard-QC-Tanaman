@@ -401,7 +401,6 @@
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
             
-            // LOGIKA LOGIN: Bisa ketik "admin" atau "admin@agrinas.id"
             if (((email === 'admin@agrinas.id' || email === 'admin') && password === 'admin123') || 
                 ((email === 'ceo@agrinas.id' || email === 'ceo') && password === 'ceo123')) {
                 const userData = { email: email, name: email.includes('ceo') ? 'BOD Agrinas' : 'Staf PIC HO' };
@@ -526,7 +525,7 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (AUTO FULL ROW + SENSOR REM OTOMATIS)
+        // DASHBOARD 1: REKAPITULASI 
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -536,7 +535,6 @@
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) 
                         || Object.keys(rawData)[0];
             
-            // Tanpa Limit Baris
             let rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
@@ -545,7 +543,6 @@
             let ptListRaw = []; 
             let totalSudahDikelola = 0, totalBelumDikelola = 0;
 
-            // 1. Looping Kumpulin Filter CRO
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
@@ -554,10 +551,9 @@
                 for (let i = 0; i < rekapData.length; i++) {
                     let row = rekapData[i];
                     
-                    // SENSOR REM OTOMATIS TINGKAT DEWA
                     let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
                     let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
-                    if (shouldStop) break;
+                    if (shouldStop) break; 
                     
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
@@ -583,7 +579,6 @@
 
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
 
-            // 2. Looping Hitung Angka Rekapitulasi
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
@@ -596,10 +591,9 @@
                 for (let i = 0; i < rekapData.length; i++) {
                     let row = rekapData[i];
                     
-                    // SENSOR REM OTOMATIS TINGKAT DEWA
                     let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
                     let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
-                    if (shouldStop) break; // KUNCI! Mesin otomatis berhenti total di baris ini.
+                    if (shouldStop) break;
 
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
@@ -711,7 +705,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (AUTO FULL ROW + SENSOR REM OTOMATIS)
+        // DASHBOARD 2: PEMBATALAN (PISAH HITUNGAN SURAT & LUAS TTD)
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -720,34 +714,82 @@
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan"))
                         || "REKAPITULASI PEMBATALAN";
             
-            // Tanpa Limit Baris
-            let pembatalanDataRaw = rawData[batalKey] || [];
-            let pembatalanData = pembatalanDataRaw; 
+            let pembatalanData = rawData[batalKey] || [];
             
             let croList = new Set();
+            
+            // Variabel Hitungan
+            let totalSuratBatal = 0; // Cuma buat yang fix/pdf
+            let totalLuasBatal = 0;  // Buat semuanya (termasuk TTD)
+            let ptListBatal = [];
+            let pembatalanCountMap = {}; // Cuma buat grafik batang surat fix
+            let chartPieDataMap = {};    // Buat grafik pie luas (semuanya)
 
             if (pembatalanData.length > 0) {
                 let pCols = Object.keys(pembatalanData[0] || {});
                 let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || pCols[4];
+                let pPtCol = pCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('nama mitra')) || pCols[2];
+                let pLuasTM = pCols.find(k => k.toLowerCase().includes('luas tm')) || pCols[9];
 
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
                     
-                    // SENSOR REM OTOMATIS TINGKAT DEWA
-                    let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
-                    let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
-                    if (shouldStop) break;
+                    // 1. SENSOR REM OTOMATIS: Kalau ketemu total, berhenti.
+                    let rowValsString = Object.values(row).map(v => String(v).trim().toLowerCase()).join(" ");
+                    if (rowValsString.includes("total") || rowValsString.includes("kategori") || rowValsString.includes("jumlah:")) {
+                        break;
+                    }
 
-                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
+                    let pt = String(row[pPtCol] || "-").trim();
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
-                    if (croBatal && croBatal !== "-" && croBatal !== "CRO" && !croBatal.includes("TOTAL")) {
-                        if (!croBatal.startsWith("CRO")) croBatal = "CRO " + croBatal;
-                        croList.add(croBatal);
+                    let luas = parseNum(row[pLuasTM]);
+                    
+                    // 2. TENTUKAN STATUS (TERBIT vs TTD)
+                    let displayStatus = "Telah Terbit";
+                    if (rowValsString.includes("proses ttd")) {
+                        displayStatus = "Proses TTD";
+                    }
+
+                    // 3. CEK APAKAH BARIS INI VALID UNTUK DIHITUNG
+                    let hasData = false;
+                    if (pt !== "-" && pt.toLowerCase() !== "nama pt") hasData = true;
+                    if (displayStatus === "Proses TTD") hasData = true;
+                    if (luas > 0) hasData = true;
+
+                    if (hasData) {
+                        // Perbaikan nama CRO
+                        if (croBatal && croBatal !== "-" && croBatal !== "CRO") {
+                            if (!croBatal.startsWith("CRO")) croBatal = "CRO " + croBatal;
+                            croList.add(croBatal);
+                        } else {
+                            croBatal = "Belum Ada CRO"; 
+                        }
+                        
+                        // JALUR HITUNGAN DIPISAH!
+                        
+                        // A. Luas selalu ditambah ke total luas & Pie Chart (Terbit + TTD)
+                        totalLuasBatal += luas;
+                        chartPieDataMap[croBatal] = (chartPieDataMap[croBatal] || 0) + luas;
+
+                        // B. Surat cuma ditambah ke total surat & Bar Chart kalau "Telah Terbit"
+                        if (displayStatus === "Telah Terbit") {
+                            totalSuratBatal++;
+                            pembatalanCountMap[croBatal] = (pembatalanCountMap[croBatal] || 0) + 1;
+                        }
+
+                        // C. Masukin ke tabel list bawah 
+                        ptListBatal.push({
+                            name: pt === "-" ? "Data Proses" : pt,
+                            cro: croBatal,
+                            luas: luas,
+                            status: displayStatus
+                        });
                     }
                 }
             }
 
+            // FILTER CRO DROPDOWN
             if (filterDropdown && filterDropdown.options.length <= 1 && croList.size > 0) {
                 filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
                 let sortedCro = [...croList].sort();
@@ -760,64 +802,50 @@
             }
 
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
-
-            let pembatalanCountMap = {};
-            let chartPieDataMap = {};
-            let totalSuratBatal = 0;
-            let totalLuasBatal = 0;
-            let ptListBatal = [];
-
-            if (pembatalanData.length > 0) {
-                let pCols = Object.keys(pembatalanData[0] || {});
-                let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || pCols[4];
-                let pLuasTM = pCols.find(k => k.toLowerCase().includes('luas tm')) || pCols[9];
-
-                for (let i = 0; i < pembatalanData.length; i++) {
-                    let row = pembatalanData[i];
-                    
-                    // SENSOR REM OTOMATIS TINGKAT DEWA
-                    let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
-                    let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
-                    if (shouldStop) break; // KUNCI! Mesin otomatis berhenti ngitung disini
-
-                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
-                    let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
-                    let croBatal = rawCro.toUpperCase();
-                    
-                    if (pt && pt !== "-" && pt.toLowerCase() !== "nama pt") {
-                        if (croBatal && !croBatal.startsWith("CRO") && croBatal !== "-" && croBatal !== "CRO") {
-                            croBatal = "CRO " + croBatal;
-                        }
-
-                        if (selectedCRO === 'ALL' || selectedCRO === croBatal) {
-                            pembatalanCountMap[croBatal] = (pembatalanCountMap[croBatal] || 0) + 1;
-                            let luas = parseNum(row[pLuasTM]);
-                            chartPieDataMap[croBatal] = (chartPieDataMap[croBatal] || 0) + luas;
+            
+            // JIKA FILTER BERUBAH, HITUNG ULANG SESUAI LOGIKA SAMA
+            if(selectedCRO !== 'ALL') {
+                totalSuratBatal = 0;
+                totalLuasBatal = 0;
+                let newPtList = [];
+                let newPembatalanCountMap = {};
+                let newChartPieDataMap = {};
+                
+                ptListBatal.forEach(pt => {
+                    if(pt.cro === selectedCRO) {
+                        // Jalur Luas
+                        totalLuasBatal += pt.luas;
+                        newChartPieDataMap[pt.cro] = (newChartPieDataMap[pt.cro] || 0) + pt.luas;
+                        
+                        // Jalur Surat
+                        if (pt.status === "Telah Terbit") {
                             totalSuratBatal++;
-                            totalLuasBatal += luas;
-
-                            ptListBatal.push({
-                                name: pt || "-",
-                                cro: croBatal,
-                                luas: luas,
-                                status: "Telah Terbit"
-                            });
+                            newPembatalanCountMap[pt.cro] = (newPembatalanCountMap[pt.cro] || 0) + 1;
                         }
+                        
+                        newPtList.push(pt);
                     }
-                }
+                });
+                
+                ptListBatal = newPtList;
+                pembatalanCountMap = newPembatalanCountMap;
+                chartPieDataMap = newChartPieDataMap;
             }
 
-            document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
+            // NAMPILIN ANGKA KE KPI DASHBOARD
+            document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat Selesai</span>`;
             
             const luasKpi = document.getElementById('kpi-luas-batal');
             if(luasKpi) {
                 luasKpi.innerHTML = `${totalLuasBatal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
             }
 
+            // SET JUDUL GRAFIK
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
-            if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN ${titleSuffix}`;
-            if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
+            if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN SELESAI ${titleSuffix}`;
+            if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `TOTAL LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
 
+            // RENDER GRAFIK BAR (Cuma yang Telah Terbit)
             let categories = Object.keys(pembatalanCountMap).sort();
             let chartData = categories.map(c => pembatalanCountMap[c]);
 
@@ -835,6 +863,7 @@
                 });
             }
 
+            // RENDER GRAFIK PIE (Semua Luas)
             if(document.getElementById('dash-pie-pembatalan')) {
                 Highcharts.chart('dash-pie-pembatalan', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
@@ -847,13 +876,12 @@
                 });
             }
 
-            // MENCARI & MERENDER TABEL KATEGORI MITRA DARI EXCEL
-            // Mesin ini tetap menyapu semua data (melewati "Total") untuk nangkep tabel kategori yang posisinya di bawah
+            // RENDER TABEL KATEGORI (Tetap sama)
             let summaryHtml = '';
             let validCats = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan", "Total Penugasan"];
             let extractedData = {};
 
-            pembatalanDataRaw.forEach(row => {
+            rawData[batalKey].forEach(row => {
                 let vals = Object.values(row).map(v => String(v).trim());
                 let catMatch = vals.find(v => validCats.includes(v));
                 
@@ -885,20 +913,25 @@
             if (summaryHtml === '') {
                 summaryHtml = `<tr><td colspan="3" class="text-center py-4 theme-text-muted text-[11px] md:text-sm">Data rekapitulasi kategori tidak ditemukan.</td></tr>`;
             }
-
             if(document.getElementById('pembatalan-summary-body')) {
                 document.getElementById('pembatalan-summary-body').innerHTML = summaryHtml;
             }
 
+            // RENDER TABEL LIST PT BAWAH
             let ptBatalHtml = '';
-            ptListBatal.sort((a,b) => b.luas - a.luas);
+            ptListBatal.sort((a,b) => b.luas - a.luas); 
             ptListBatal.forEach(pt => {
+                // Mewarnai status
+                let statusBadge = pt.status === "Proses TTD" 
+                    ? `<span class="inline-block px-2 py-1 rounded border bg-yellow-500/20 text-yellow-400 border-yellow-500/30 font-semibold shadow-sm">${pt.status}</span>`
+                    : `<span class="inline-block px-2 py-1 rounded border bg-red-500/20 text-red-400 border-red-500/30 font-semibold shadow-sm">${pt.status}</span>`;
+
                 ptBatalHtml += `
                     <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-black/40 px-1.5 md:px-2 py-0.5 rounded border border-gray-600/50 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' && pt.cro !== 'Belum Ada CRO' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-black/40 px-1.5 md:px-2 py-0.5 rounded border border-gray-600/50 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
                         <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-center theme-text-muted">${pt.cro}</td>
                         <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center"><span class="inline-block px-2 py-1 rounded border bg-red-500/20 text-red-400 border-red-500/30 font-semibold shadow-sm">${pt.status}</span></td>
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center">${statusBadge}</td>
                     </tr>
                 `;
             });
@@ -908,6 +941,9 @@
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
+        // =========================================
+        // SISA KODE LAINNYA 
+        // =========================================
         function getFileIcon(fileName) {
             const ext = fileName.toLowerCase();
             if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
@@ -950,7 +986,6 @@
             }
         });
 
-        // FILTER TABEL MASTER DATA (Agar "Total" dan tabel bawahnya tidak ikut masuk)
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
@@ -967,11 +1002,9 @@
             
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
-                // SENSOR REM OTOMATIS TINGKAT DEWA UNTUK TABEL BAWAH
                 let rowVals = Object.values(dataFull[i]).map(v => String(v).trim().toLowerCase());
                 let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
-                if (shouldStop) break; // Berhenti nampilin baris sisa di tabel web
-
+                if (shouldStop) break; 
                 data.push(dataFull[i]);
             }
 
