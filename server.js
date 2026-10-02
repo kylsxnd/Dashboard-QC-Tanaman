@@ -16,6 +16,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.json());
 
+// INI DIA KUNCINYA BOS! Biar folder public bisa dibaca buat nampilin PDF & Gambar
+app.use(express.static(path.join(__dirname, 'public')));
+
 let cachedData = {}; 
 let lastFetchTime = 0;
 let changeLogs = [];
