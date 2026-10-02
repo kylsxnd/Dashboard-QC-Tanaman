@@ -171,6 +171,11 @@
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Dashboard Pembatalan
             </button>
 
+            <!-- MENU BARU UNTUK PDF EXECUTIVE -->
+            <button onclick="switchView('view-pdf', 'nav-pdf')" class="w-full sidebar-link" id="nav-pdf">
+                <svg class="w-4 h-4 mr-3 text-red-400 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg> Laporan Seluruh Tahap
+            </button>
+
             <!-- KATEGORI MASTER DATA -->
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
@@ -345,7 +350,21 @@
                 </div>
             </section>
 
-            <!-- 3. MASTER DATA REPOSITORY -->
+            <!-- 3. HALAMAN PDF EXECUTIVE (BARU) -->
+            <section id="view-pdf" class="fade-in hidden h-[80vh] flex flex-col">
+                <div class="mb-4">
+                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Laporan Rekapitulasi Executive</h2>
+                    <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
+                        Laporan Resmi Format Dokumen Seluruh Tahap (Terbaca Otomatis dari file PDF1.pdf).
+                    </p>
+                </div>
+                <div class="premium-card w-full flex-1 relative overflow-hidden rounded-xl border border-gray-600/30">
+                    <iframe src="/PDF1.pdf" class="w-full h-full border-none bg-[#f3f4f6]" title="Laporan PDF"></iframe>
+                </div>
+            </section>
+
+            <!-- 4. MASTER DATA REPOSITORY -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
@@ -401,6 +420,7 @@
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
             
+            // LOGIKA LOGIN: Bisa ketik "admin" atau "admin@agrinas.id"
             if (((email === 'admin@agrinas.id' || email === 'admin') && password === 'admin123') || 
                 ((email === 'ceo@agrinas.id' || email === 'ceo') && password === 'ceo123')) {
                 const userData = { email: email, name: email.includes('ceo') ? 'BOD Agrinas' : 'Staf PIC HO' };
@@ -466,10 +486,13 @@
         }
 
         function switchView(viewId, elementId, paramName = null) {
+            // Sembunyikan semua layar
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-pembatalan').classList.add('hidden');
             document.getElementById('view-database').classList.add('hidden');
+            document.getElementById('view-pdf').classList.add('hidden');
             
+            // Tampilkan layar yang dituju
             document.getElementById(viewId).classList.remove('hidden');
             
             const headerTitle = document.getElementById('header-title');
@@ -482,6 +505,10 @@
                 headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
                 currentActiveSheet = 'pembatalan';
                 renderPembatalanDashboard();
+            }
+            else if(viewId === 'view-pdf') {
+                headerTitle.innerText = "Executive On-Farm > Laporan Seluruh Tahap";
+                currentActiveSheet = 'pdf';
             }
             else if(viewId === 'view-database') {
                 headerTitle.innerText = "Master Data > " + paramName;
@@ -525,7 +552,7 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI 
+        // DASHBOARD 1: REKAPITULASI
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -705,7 +732,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (PISAH HITUNGAN SURAT & LUAS TTD)
+        // DASHBOARD 2: PEMBATALAN (FIX KATEGORI MANUAL + PISAH HITUNGAN SURAT & LUAS)
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -734,7 +761,7 @@
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
                     
-                    // 1. SENSOR REM OTOMATIS: Kalau ketemu total, berhenti.
+                    // SENSOR REM OTOMATIS
                     let rowValsString = Object.values(row).map(v => String(v).trim().toLowerCase()).join(" ");
                     if (rowValsString.includes("total") || rowValsString.includes("kategori") || rowValsString.includes("jumlah:")) {
                         break;
@@ -745,28 +772,25 @@
                     let croBatal = rawCro.toUpperCase();
                     let luas = parseNum(row[pLuasTM]);
                     
-                    // 2. TENTUKAN STATUS (TERBIT vs TTD)
+                    // TENTUKAN STATUS (TERBIT vs TTD)
                     let displayStatus = "Telah Terbit";
                     if (rowValsString.includes("proses ttd")) {
                         displayStatus = "Proses TTD";
                     }
 
-                    // 3. CEK APAKAH BARIS INI VALID UNTUK DIHITUNG
+                    // CEK APAKAH BARIS INI VALID
                     let hasData = false;
                     if (pt !== "-" && pt.toLowerCase() !== "nama pt") hasData = true;
                     if (displayStatus === "Proses TTD") hasData = true;
                     if (luas > 0) hasData = true;
 
                     if (hasData) {
-                        // Perbaikan nama CRO
                         if (croBatal && croBatal !== "-" && croBatal !== "CRO") {
                             if (!croBatal.startsWith("CRO")) croBatal = "CRO " + croBatal;
                             croList.add(croBatal);
                         } else {
                             croBatal = "Belum Ada CRO"; 
                         }
-                        
-                        // JALUR HITUNGAN DIPISAH!
                         
                         // A. Luas selalu ditambah ke total luas & Pie Chart (Terbit + TTD)
                         totalLuasBatal += luas;
@@ -803,7 +827,7 @@
 
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
             
-            // JIKA FILTER BERUBAH, HITUNG ULANG SESUAI LOGIKA SAMA
+            // FILTER CRO RE-CALCULATION
             if(selectedCRO !== 'ALL') {
                 totalSuratBatal = 0;
                 totalLuasBatal = 0;
@@ -813,16 +837,13 @@
                 
                 ptListBatal.forEach(pt => {
                     if(pt.cro === selectedCRO) {
-                        // Jalur Luas
                         totalLuasBatal += pt.luas;
                         newChartPieDataMap[pt.cro] = (newChartPieDataMap[pt.cro] || 0) + pt.luas;
                         
-                        // Jalur Surat
                         if (pt.status === "Telah Terbit") {
                             totalSuratBatal++;
                             newPembatalanCountMap[pt.cro] = (newPembatalanCountMap[pt.cro] || 0) + 1;
                         }
-                        
                         newPtList.push(pt);
                     }
                 });
@@ -840,12 +861,11 @@
                 luasKpi.innerHTML = `${totalLuasBatal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
             }
 
-            // SET JUDUL GRAFIK
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN SELESAI ${titleSuffix}`;
             if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `TOTAL LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
 
-            // RENDER GRAFIK BAR (Cuma yang Telah Terbit)
+            // RENDER GRAFIK BAR
             let categories = Object.keys(pembatalanCountMap).sort();
             let chartData = categories.map(c => pembatalanCountMap[c]);
 
@@ -863,7 +883,7 @@
                 });
             }
 
-            // RENDER GRAFIK PIE (Semua Luas)
+            // RENDER GRAFIK PIE
             if(document.getElementById('dash-pie-pembatalan')) {
                 Highcharts.chart('dash-pie-pembatalan', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
@@ -876,7 +896,7 @@
                 });
             }
 
-            // RENDER TABEL KATEGORI (Fix Angka Sesuai Foto Excel)
+            // RENDER TABEL KATEGORI (Statis Hardcode)
             let summaryHtml = '';
             let dataKategori = [
                 { cat: "PT", val1: 44, val2: 32 },
@@ -910,7 +930,6 @@
             let ptBatalHtml = '';
             ptListBatal.sort((a,b) => b.luas - a.luas); 
             ptListBatal.forEach(pt => {
-                // Mewarnai status
                 let statusBadge = pt.status === "Proses TTD" 
                     ? `<span class="inline-block px-2 py-1 rounded border bg-yellow-500/20 text-yellow-400 border-yellow-500/30 font-semibold shadow-sm">${pt.status}</span>`
                     : `<span class="inline-block px-2 py-1 rounded border bg-red-500/20 text-red-400 border-red-500/30 font-semibold shadow-sm">${pt.status}</span>`;
@@ -1122,7 +1141,8 @@
                         else if (currentActiveSheet === 'pembatalan') {
                             renderPembatalanDashboard(); 
                         }
-                        else {
+                        // Jika ada di sheet PDF, tidak perlu update chart JSON
+                        else if (currentActiveSheet !== 'pdf') {
                             loadTable(currentActiveSheet);
                         }
 
