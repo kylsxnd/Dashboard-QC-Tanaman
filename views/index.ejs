@@ -111,6 +111,39 @@
 </head>
 <body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
 
+    <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+            <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
+            <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-600 opacity-10 blur-[120px] rounded-full"></div>
+        </div>
+        
+        <div class="premium-card w-full max-w-md p-8 md:p-10 relative z-10 mx-4 border-t-4 border-t-[#83b765]">
+            <div class="flex justify-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-[#83b765]/10 border border-[#83b765]/30 flex items-center justify-center shadow-[0_0_20px_rgba(131,183,101,0.2)]">
+                    <svg class="w-8 h-8 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-center theme-text-main mb-1">Executive Portal</h2>
+            <p class="text-xs text-center theme-text-muted mb-8">Masuk ke Sistem Keamanan Agrinas</p>
+            
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-5">
+                    <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Username / Email</label>
+                    <input type="text" id="login-email" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main focus:border-[#83b765] focus:ring-1 focus:ring-[#83b765] outline-none transition-all" placeholder="admin / admin@agrinas.id" required autocomplete="off">
+                </div>
+                <div class="mb-8">
+                    <label class="block text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-2">Kata Sandi</label>
+                    <input type="password" id="login-password" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main focus:border-[#83b765] focus:ring-1 focus:ring-[#83b765] outline-none transition-all" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-[#83b765] hover:bg-[#72a356] text-white font-bold py-3.5 rounded-lg text-sm transition-all shadow-lg shadow-[#83b765]/25 hover:shadow-[#83b765]/40 flex justify-center items-center gap-2">
+                    Masuk Dashboard
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+                <div id="login-error" class="hidden mt-4 text-center text-xs text-red-500 font-medium bg-red-500/10 py-2.5 rounded border border-red-500/20">Akses Ditolak: Username atau sandi salah!</div>
+            </form>
+        </div>
+    </div>
+    <!-- SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -131,7 +164,7 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
@@ -158,6 +191,7 @@
         </div>
     </aside>
 
+    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT TERANG & GLOW EFFECT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.55;"></div>
         <div class="bg-overlay"></div>
@@ -168,7 +202,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
+                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Executive On-Farm > Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
@@ -184,7 +218,6 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
-            
             <!-- 1. DASHBOARD REKAPITULASI -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
@@ -236,7 +269,7 @@
                 </div>
             </section>
 
-            <!-- 2. DASHBOARD PEMBATALAN -->
+            <!-- 2. DASHBOARD PEMBATALAN (TANPA REGIONAL TERDAMPAK) -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
@@ -265,7 +298,7 @@
                     </div>
                 </div>
 
-                <!-- TABEL SUMMARY KATEGORI DITAMBAHKAN DISINI -->
+                <!-- TABEL SUMMARY KATEGORI -->
                 <div class="premium-card p-4 md:p-6 w-full mb-8 relative overflow-hidden">
                     <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">REKAPITULASI KATEGORI MITRA</h3>
                     <div class="overflow-x-auto">
@@ -278,7 +311,6 @@
                                 </tr>
                             </thead>
                             <tbody id="pembatalan-summary-body" class="divide-y divide-gray-600/30">
-                                <!-- Bakal di-inject sama JS -->
                             </tbody>
                         </table>
                     </div>
@@ -331,6 +363,7 @@
         </main>
     </div>
 
+    <!-- MODAL PREVIEW -->
     <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
         <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
             <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
@@ -346,11 +379,43 @@
             <div class="flex-grow bg-white rounded-b-xl overflow-hidden"><iframe id="documentIframe" src="" class="w-full h-full border-none"></iframe></div>
         </div>
     </div>
-
     <!-- SCRIPT LOGIC -->
     <script>
+        function checkLoginState() {
+            const loggedInUser = localStorage.getItem('agrinas_user');
+            const loginOverlay = document.getElementById('login-overlay');
+            if (loggedInUser) {
+                loginOverlay.style.opacity = '0';
+                setTimeout(() => { loginOverlay.style.display = 'none'; }, 500);
+                const userObj = JSON.parse(loggedInUser);
+                if(document.getElementById('pic-name-display')) document.getElementById('pic-name-display').innerText = userObj.name;
+            } else {
+                loginOverlay.style.display = 'flex';
+                setTimeout(() => { loginOverlay.style.opacity = '1'; }, 10);
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            // LOGIKA LOGIN DIPERBARUI: BISA KETIK "admin" DOANG ATAU FULL EMAIL
+            if (((email === 'admin@agrinas.id' || email === 'admin') && password === 'admin123') || 
+                ((email === 'ceo@agrinas.id' || email === 'ceo') && password === 'ceo123')) {
+                const userData = { email: email, name: email.includes('ceo') ? 'BOD Agrinas' : 'Staf PIC HO' };
+                localStorage.setItem('agrinas_user', JSON.stringify(userData));
+                errorMsg.classList.add('hidden');
+                checkLoginState();
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
         function logout() {
-            if(confirm("Apakah Anda yakin ingin memuat ulang sesi ini?")) {
+            if(confirm("Apakah Anda yakin ingin memuat ulang / keluar sesi ini?")) {
+                localStorage.removeItem('agrinas_user');
                 window.location.reload();
             }
         }
@@ -410,12 +475,12 @@
             
             const headerTitle = document.getElementById('header-title');
             if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Dashboard Rekapitulasi";
+                headerTitle.innerText = "Executive On-Farm > Dashboard Rekapitulasi";
                 currentActiveSheet = 'dashboard';
                 renderDashboardCharts(); 
             }
             else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Dashboard Pembatalan";
+                headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
                 currentActiveSheet = 'pembatalan';
                 renderPembatalanDashboard();
             }
@@ -461,7 +526,7 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (CELL 2 s.d 207 EXACT)
+        // DASHBOARD 1: REKAPITULASI (CELL 2 s.d 207 EXACT, FILTER NO SURAT DIHAPUS)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -472,6 +537,7 @@
                         || Object.keys(rawData)[0];
             
             let rekapDataRaw = rawData[rekapKey] || [];
+            // KUNCI CELL 2 SAMPAI 207 EXCEL (Index 0 s.d 205 = 206 baris data)
             let rekapData = rekapDataRaw.slice(0, 206);
             
             let croList = new Set();
@@ -539,6 +605,8 @@
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
 
+                    // FILTER NO SURAT DIHAPUS TOTAL DI SINI AGAR DATA TIDAK ADA YANG KE SKIP
+
                     if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
                         let luasTM = parseNum(row[cLuasTM]);
@@ -558,8 +626,6 @@
                     }
                 }
             }
-
-            let totalPtCount = ptListRaw.length;
 
             const kpiContainer = document.getElementById('dashboard-kpi-container');
             if(kpiContainer) {
@@ -642,7 +708,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (+ SUMMARY KATEGORI OTOMATIS)
+        // DASHBOARD 2: PEMBATALAN (+ KATEGORI MITRA OTOMATIS)
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -707,16 +773,17 @@
 
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
-                    let noSurat = String(row[pNoSuratBatal] || "").trim();
-                    let luas = parseNum(row[pLuasTM]);
                     
-                    if (noSurat && noSurat !== "-" && !noSurat.toLowerCase().includes("no surat")) {
+                    // Filter untuk menghitung yang benar benar baris aktif PT 
+                    // tanpa peduli isi no surat (dijamin tidak ter-skip)
+                    if (pt && pt !== "-" && pt.toLowerCase() !== "nama pt") {
                         if (croBatal && !croBatal.startsWith("CRO") && croBatal !== "-" && croBatal !== "CRO") {
                             croBatal = "CRO " + croBatal;
                         }
 
                         if (selectedCRO === 'ALL' || selectedCRO === croBatal) {
                             pembatalanCountMap[croBatal] = (pembatalanCountMap[croBatal] || 0) + 1;
+                            let luas = parseNum(row[pLuasTM]);
                             chartPieDataMap[croBatal] = (chartPieDataMap[croBatal] || 0) + luas;
                             totalSuratBatal++;
                             totalLuasBatal += luas;
@@ -772,7 +839,7 @@
                 });
             }
 
-            // MENCARI & MERENDER TABEL REKAPITULASI KATEGORI MITRA SECARA OTOMATIS
+            // MENCARI & MERENDER TABEL REKAPITULASI KATEGORI MITRA DARI EXCEL
             let summaryHtml = '';
             let validCats = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan", "Total Penugasan"];
             let extractedData = {};
@@ -782,7 +849,7 @@
                 let catMatch = vals.find(v => validCats.includes(v));
                 
                 if (catMatch) {
-                    let nums = vals.filter(v => v !== "" && !isNaN(v));
+                    let nums = vals.filter(v => v !== "" && !isNaN(parseNum(v)) && v !== catMatch);
                     extractedData[catMatch] = {
                         val1: nums.length > 0 ? nums[0] : "0",
                         val2: nums.length > 1 ? nums[1] : (nums.length > 0 ? nums[0] : "0")
@@ -807,7 +874,7 @@
             });
 
             if (summaryHtml === '') {
-                summaryHtml = `<tr><td colspan="3" class="text-center py-4 theme-text-muted text-[11px] md:text-sm">Data rekapitulasi kategori tidak ditemukan di dalam sheet.</td></tr>`;
+                summaryHtml = `<tr><td colspan="3" class="text-center py-4 theme-text-muted text-[11px] md:text-sm">Data rekapitulasi kategori tidak ditemukan.</td></tr>`;
             }
 
             if(document.getElementById('pembatalan-summary-body')) {
@@ -968,6 +1035,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            checkLoginState(); // PENGECEKAN LOGIN DINYALAKAN KEMBALI
+            
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
                 const themeIcon = document.getElementById('theme-icon');
