@@ -350,17 +350,19 @@
                 </div>
             </section>
 
-            <!-- 3. HALAMAN PDF EXECUTIVE (BARU) -->
-            <section id="view-pdf" class="fade-in hidden h-[80vh] flex flex-col">
+           <!-- 3. HALAMAN PDF EXECUTIVE (BARU) -->
+            <section id="view-pdf" class="fade-in hidden h-[85vh] flex flex-col">
                 <div class="mb-4">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Laporan Rekapitulasi Executive</h2>
                     <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
                         <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
-                        Laporan Resmi Format Dokumen Seluruh Tahap (Terbaca Otomatis dari file PDF1.pdf).
+                        Laporan Resmi Format Dokumen Seluruh Tahap
                     </p>
                 </div>
+                <!-- Box dibikin full menyesuaikan layar -->
                 <div class="premium-card w-full flex-1 relative overflow-hidden rounded-xl border border-gray-600/30">
-                    <iframe src="/PDF1.pdf" class="w-full h-full border-none bg-[#f3f4f6]" title="Laporan PDF"></iframe>
+                    <!-- Rahasianya ada di #toolbar=0&view=FitH untuk menghilangkan menu dan bikin full screen -->
+                    <iframe src="/PDF1.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" class="w-full h-full border-none bg-[#111111]" title="Laporan PDF"></iframe>
                 </div>
             </section>
 
