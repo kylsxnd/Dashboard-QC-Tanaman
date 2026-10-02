@@ -143,7 +143,6 @@
             </form>
         </div>
     </div>
-    <!-- SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -164,7 +163,7 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
@@ -191,7 +190,7 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT TERANG & GLOW EFFECT -->
+    <!-- CONTENT AREA DENGAN BACKGROUND SAWIT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-300 relative bg-black">
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg'); opacity: 0.55;"></div>
         <div class="bg-overlay"></div>
@@ -224,7 +223,7 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Rentang Baris 2 s.d 207 / Cell I2:K207 sesuai Excel).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Sistem Pembacaan Otomatis Hingga Baris Total).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -269,13 +268,13 @@
                 </div>
             </section>
 
-            <!-- 2. DASHBOARD PEMBATALAN (TANPA REGIONAL TERDAMPAK) -->
+            <!-- 2. DASHBOARD PEMBATALAN -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pembatalan</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Rentang Baris 2 s.d 97 sesuai Excel).
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Sistem Pembacaan Otomatis Hingga Baris Total).
                         </p>
                     </div>
                     <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
@@ -526,7 +525,7 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (CELL 2 s.d 207 EXACT, FILTER NO SURAT DIHAPUS)
+        // DASHBOARD 1: REKAPITULASI (AUTO FULL ROW, STOP DI "TOTAL")
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -536,9 +535,8 @@
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) 
                         || Object.keys(rawData)[0];
             
-            let rekapDataRaw = rawData[rekapKey] || [];
-            // KUNCI CELL 2 SAMPAI 207 EXCEL (Index 0 s.d 205 = 206 baris data)
-            let rekapData = rekapDataRaw.slice(0, 206);
+            // BACA SEMUA DATA TANPA LIMIT BARIS (.slice(0, 206) DIHAPUS)
+            let rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
             let totalLuas = 0, totalLuasTM = 0, totalTarget = 0;
@@ -557,6 +555,7 @@
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
                     
+                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL
                     if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
                         break; 
                     }
@@ -598,14 +597,13 @@
                     let status = String(row[cStatus] || "").trim();
                     let sLow = status.toLowerCase();
 
+                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL (Mencegah jumlah melar)
                     if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
                         break; 
                     }
 
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
-
-                    // FILTER NO SURAT DIHAPUS TOTAL DI SINI AGAR DATA TIDAK ADA YANG KE SKIP
 
                     if (selectedCRO === 'ALL' || selectedCRO === cro) {
                         let luas = parseNum(row[cLuas]);
@@ -633,7 +631,7 @@
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL TARGET PRODUKSI</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Cell K2 s.d K207)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan sistem auto-detect)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
@@ -708,7 +706,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (+ KATEGORI MITRA OTOMATIS)
+        // DASHBOARD 2: PEMBATALAN (AUTO FULL ROW, STOP DI "TOTAL")
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -716,10 +714,10 @@
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") 
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan"))
                         || "REKAPITULASI PEMBATALAN";
-            let pembatalanDataRaw = rawData[batalKey] || [];
             
-            // LIMIT BARIS 2 s.d 97 EXCEL (Index 0 s.d 95 = 96 Baris)
-            let pembatalanData = pembatalanDataRaw.slice(0, 96); 
+            // BACA SEMUA DATA TANPA LIMIT BARIS (.slice(0, 96) DIHAPUS)
+            let pembatalanDataRaw = rawData[batalKey] || [];
+            let pembatalanData = pembatalanDataRaw; 
             
             let croList = new Set();
 
@@ -730,7 +728,11 @@
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
                     let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) break;
+                    
+                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL
+                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) {
+                        break;
+                    }
 
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
@@ -769,13 +771,15 @@
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
                     let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) break;
+                    
+                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL
+                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) {
+                        break; 
+                    }
 
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
                     
-                    // Filter untuk menghitung yang benar benar baris aktif PT 
-                    // tanpa peduli isi no surat (dijamin tidak ter-skip)
                     if (pt && pt !== "-" && pt.toLowerCase() !== "nama pt") {
                         if (croBatal && !croBatal.startsWith("CRO") && croBatal !== "-" && croBatal !== "CRO") {
                             croBatal = "CRO " + croBatal;
@@ -839,7 +843,6 @@
                 });
             }
 
-            // MENCARI & MERENDER TABEL REKAPITULASI KATEGORI MITRA DARI EXCEL
             let summaryHtml = '';
             let validCats = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan", "Total Penugasan"];
             let extractedData = {};
@@ -1035,7 +1038,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            checkLoginState(); // PENGECEKAN LOGIN DINYALAKAN KEMBALI
+            checkLoginState(); 
             
             if (localStorage.getItem('theme') === 'light') {
                 document.body.classList.add('light-mode');
