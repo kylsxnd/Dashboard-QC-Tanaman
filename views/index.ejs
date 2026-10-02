@@ -143,6 +143,7 @@
             </form>
         </div>
     </div>
+    <!-- SIDEBAR -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -163,7 +164,7 @@
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
             </button>
             
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
@@ -400,7 +401,7 @@
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
             
-            // LOGIKA LOGIN DIPERBARUI: BISA KETIK "admin" DOANG ATAU FULL EMAIL
+            // LOGIKA LOGIN: Bisa ketik "admin" atau "admin@agrinas.id"
             if (((email === 'admin@agrinas.id' || email === 'admin') && password === 'admin123') || 
                 ((email === 'ceo@agrinas.id' || email === 'ceo') && password === 'ceo123')) {
                 const userData = { email: email, name: email.includes('ceo') ? 'BOD Agrinas' : 'Staf PIC HO' };
@@ -525,7 +526,7 @@
         };
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (AUTO FULL ROW, STOP DI "TOTAL")
+        // DASHBOARD 1: REKAPITULASI (AUTO FULL ROW + SENSOR REM OTOMATIS)
         // =========================================
         function renderDashboardCharts() {
             const filterDropdown = document.getElementById('cro-filter');
@@ -535,7 +536,7 @@
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) 
                         || Object.keys(rawData)[0];
             
-            // BACA SEMUA DATA TANPA LIMIT BARIS (.slice(0, 206) DIHAPUS)
+            // Tanpa Limit Baris
             let rekapData = rawData[rekapKey] || [];
             
             let croList = new Set();
@@ -544,6 +545,7 @@
             let ptListRaw = []; 
             let totalSudahDikelola = 0, totalBelumDikelola = 0;
 
+            // 1. Looping Kumpulin Filter CRO
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
@@ -551,14 +553,15 @@
 
                 for (let i = 0; i < rekapData.length; i++) {
                     let row = rekapData[i];
+                    
+                    // SENSOR REM OTOMATIS TINGKAT DEWA
+                    let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
+                    let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
+                    if (shouldStop) break;
+                    
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
-                    
-                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
-                        break; 
-                    }
                     
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
@@ -580,6 +583,7 @@
 
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
 
+            // 2. Looping Hitung Angka Rekapitulasi
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
@@ -591,16 +595,17 @@
 
                 for (let i = 0; i < rekapData.length; i++) {
                     let row = rekapData[i];
+                    
+                    // SENSOR REM OTOMATIS TINGKAT DEWA
+                    let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
+                    let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
+                    if (shouldStop) break; // KUNCI! Mesin otomatis berhenti total di baris ini.
+
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim();
                     let cro = rawCro.toUpperCase();
                     let pt = String(row[cPt] || "").trim();
                     let status = String(row[cStatus] || "").trim();
                     let sLow = status.toLowerCase();
-
-                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL (Mencegah jumlah melar)
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total") || cro.includes("TOTAL")) {
-                        break; 
-                    }
 
                     if (!cro || cro === "-" || cro === "CRO" || cro.includes("SUMMARY") || cro.includes("TAHAP")) continue;
                     if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
@@ -631,7 +636,7 @@
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL TARGET PRODUKSI</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${totalTarget.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ton</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan sistem auto-detect)</div>
+                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Berdasarkan auto-detect baris)</div>
                     </div>
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS KEBUN / LUAS TM</div>
@@ -706,7 +711,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (AUTO FULL ROW, STOP DI "TOTAL")
+        // DASHBOARD 2: PEMBATALAN (AUTO FULL ROW + SENSOR REM OTOMATIS)
         // =========================================
         function renderPembatalanDashboard() {
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -715,7 +720,7 @@
                         || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan"))
                         || "REKAPITULASI PEMBATALAN";
             
-            // BACA SEMUA DATA TANPA LIMIT BARIS (.slice(0, 96) DIHAPUS)
+            // Tanpa Limit Baris
             let pembatalanDataRaw = rawData[batalKey] || [];
             let pembatalanData = pembatalanDataRaw; 
             
@@ -727,13 +732,13 @@
 
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
-                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
                     
-                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) {
-                        break;
-                    }
+                    // SENSOR REM OTOMATIS TINGKAT DEWA
+                    let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
+                    let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
+                    if (shouldStop) break;
 
+                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
                     if (croBatal && croBatal !== "-" && croBatal !== "CRO" && !croBatal.includes("TOTAL")) {
@@ -765,18 +770,17 @@
             if (pembatalanData.length > 0) {
                 let pCols = Object.keys(pembatalanData[0] || {});
                 let pCroCol = pCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || pCols[4];
-                let pNoSuratBatal = pCols.find(k => k.toLowerCase().includes('no surat pembatalan') || k.toLowerCase().includes('surat')) || pCols[1];
                 let pLuasTM = pCols.find(k => k.toLowerCase().includes('luas tm')) || pCols[9];
 
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
-                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
                     
-                    // BERHENTI OTOMATIS SAAT KETEMU BARIS TOTAL
-                    if (pt.toLowerCase() === "total" || pt.toLowerCase().includes("total")) {
-                        break; 
-                    }
+                    // SENSOR REM OTOMATIS TINGKAT DEWA
+                    let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
+                    let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
+                    if (shouldStop) break; // KUNCI! Mesin otomatis berhenti ngitung disini
 
+                    let pt = String(row['Nama PT'] || row[pCols.find(k => k.toLowerCase().includes('nama pt'))] || "").trim();
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim();
                     let croBatal = rawCro.toUpperCase();
                     
@@ -843,6 +847,8 @@
                 });
             }
 
+            // MENCARI & MERENDER TABEL KATEGORI MITRA DARI EXCEL
+            // Mesin ini tetap menyapu semua data (melewati "Total") untuk nangkep tabel kategori yang posisinya di bawah
             let summaryHtml = '';
             let validCats = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan", "Total Penugasan"];
             let extractedData = {};
@@ -944,6 +950,7 @@
             }
         });
 
+        // FILTER TABEL MASTER DATA (Agar "Total" dan tabel bawahnya tidak ikut masuk)
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
@@ -960,8 +967,11 @@
             
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
-                let rowStr = JSON.stringify(dataFull[i]).toLowerCase();
-                if(rowStr.includes('"nama pt":"total"') || rowStr.includes('"cro":"total"')) break;
+                // SENSOR REM OTOMATIS TINGKAT DEWA UNTUK TABEL BAWAH
+                let rowVals = Object.values(dataFull[i]).map(v => String(v).trim().toLowerCase());
+                let shouldStop = rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"));
+                if (shouldStop) break; // Berhenti nampilin baris sisa di tabel web
+
                 data.push(dataFull[i]);
             }
 
