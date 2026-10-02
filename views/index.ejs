@@ -350,20 +350,98 @@
                 </div>
             </section>
 
-           <!-- 3. HALAMAN PDF EXECUTIVE (BARU) -->
+          <!-- 3. HALAMAN PDF EXECUTIVE (MODE PRESENTASI SLIDESHOW) -->
             <section id="view-pdf" class="fade-in hidden h-[85vh] flex flex-col">
-                <div class="mb-4">
-                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Laporan Rekapitulasi Executive</h2>
-                    <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
-                        Laporan Resmi Format Dokumen Seluruh Tahap
-                    </p>
+                <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Laporan Rekapitulasi Executive</h2>
+                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> 
+                            Mode Presentasi Eksklusif (Gunakan Tombol Prev/Next)
+                        </p>
+                    </div>
+                    <!-- Tombol Navigasi Slide Kanan/Kiri -->
+                    <div class="flex items-center gap-3 premium-card px-4 py-2 rounded-lg shadow-sm border border-gray-600/50">
+                        <button onclick="prevSlide()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white rounded text-xs font-bold transition-all shadow-md active:scale-95">◄ PREV</button>
+                        <span class="text-white text-xs font-bold w-20 text-center tracking-widest">HAL <span id="pdf-page-num" class="text-[#83b765] text-sm">1</span> / <span id="pdf-page-count">-</span></span>
+                        <button onclick="nextSlide()" class="px-3 py-1.5 bg-[#83b765] hover:bg-[#72a356] text-white rounded text-xs font-bold transition-all shadow-md shadow-[#83b765]/20 active:scale-95">NEXT ►</button>
+                    </div>
                 </div>
-                <!-- Box dibikin full menyesuaikan layar -->
-                <div class="premium-card w-full flex-1 relative overflow-hidden rounded-xl border border-gray-600/30">
-                    <!-- Rahasianya ada di #toolbar=0&view=FitH untuk menghilangkan menu dan bikin full screen -->
-                    <iframe src="/PDF1.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" class="w-full h-full border-none bg-[#111111]" title="Laporan PDF"></iframe>
+                
+                <!-- Layar Proyektor Presentasi -->
+                <div class="premium-card w-full flex-1 relative overflow-hidden rounded-xl border border-gray-600/30 flex items-center justify-center" style="background: rgba(10,10,10,0.9);">
+                    <canvas id="pdf-canvas" class="max-w-full max-h-full object-contain shadow-2xl transition-opacity duration-300"></canvas>
+                    <div id="pdf-loading" class="absolute inset-0 flex items-center justify-center text-white text-sm font-semibold tracking-widest bg-black/60 backdrop-blur-sm transition-opacity duration-300">MEMUAT DOKUMEN...</div>
                 </div>
+
+                <!-- Mesin Pemroses PDF ke Gambar (Library JS) -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+                <script>
+                    setTimeout(() => {
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+                        
+                        const url = '/PDF1.pdf';
+                        let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
+                        const scale = 2.0; // Resolusi Tinggi biar HD
+                        const canvas = document.getElementById('pdf-canvas');
+                        const ctx = canvas.getContext('2d');
+                        const loadingIndicator = document.getElementById('pdf-loading');
+
+                        function renderPage(num) {
+                            pageRendering = true;
+                            pdfDoc.getPage(num).then(function(page) {
+                                const viewport = page.getViewport({scale: scale});
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
+
+                                const renderContext = { canvasContext: ctx, viewport: viewport };
+                                page.render(renderContext).promise.then(function() {
+                                    pageRendering = false;
+                                    loadingIndicator.style.opacity = '0'; 
+                                    setTimeout(() => loadingIndicator.style.display = 'none', 300);
+                                    canvas.style.opacity = '1';
+                                    if (pageNumPending !== null) {
+                                        renderPage(pageNumPending);
+                                        pageNumPending = null;
+                                    }
+                                });
+                            });
+                            document.getElementById('pdf-page-num').textContent = num;
+                        }
+
+                        function queueRenderPage(num) {
+                            if (pageRendering) {
+                                pageNumPending = num;
+                            } else {
+                                canvas.style.opacity = '0.5'; // Efek ganti slide
+                                renderPage(num);
+                            }
+                        }
+
+                        window.prevSlide = function() {
+                            if (pageNum <= 1) return;
+                            pageNum--;
+                            queueRenderPage(pageNum);
+                        }
+
+                        window.nextSlide = function() {
+                            if (pageNum >= pdfDoc.numPages) return;
+                            pageNum++;
+                            queueRenderPage(pageNum);
+                        }
+
+                        // Menarik File PDF
+                        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+                            pdfDoc = pdfDoc_;
+                            document.getElementById('pdf-page-count').textContent = pdfDoc.numPages;
+                            renderPage(pageNum);
+                        }).catch(err => {
+                            console.error("Error loading PDF:", err);
+                            loadingIndicator.innerText = "GAGAL MEMUAT PDF";
+                            loadingIndicator.classList.add("text-red-500");
+                        });
+                    }, 800); // Jeda bentar biar loading mulus
+                </script>
             </section>
 
             <!-- 4. MASTER DATA REPOSITORY -->
