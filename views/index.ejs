@@ -10,28 +10,58 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables Extension -->
+    <!-- DataTables & ColReorder Extension -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-main: #0a0a0a; --bg-panel: #111111; --bg-card: #151515;
-            --border-color: #262626; --text-main: #ffffff; --text-muted: #a1a1aa;
+            --bg-main: #0a0a0a; 
+            --bg-panel: #111111;
+            --bg-card: #151515;
+            --border-color: #262626;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
             --hover-bg: #27272a;
         }
+        
         body.light-mode {
-            --bg-main: #f3f4f6; --bg-panel: #ffffff; --bg-card: #ffffff;
-            --border-color: #e5e7eb; --text-main: #1f2937; --text-muted: #6b7280;
+            --bg-main: #f3f4f6; 
+            --bg-panel: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
             --hover-bg: #f8fafc;
         }
+
+        .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
+        .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
+        .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
+        .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
+        .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
+
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        .premium-card { background: rgba(21, 21, 21, 0.72); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); transition: all 0.3s ease; }
-        body.light-mode .premium-card { background: rgba(255, 255, 255, 0.88); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .premium-card { 
+            background: rgba(21, 21, 21, 0.72); 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 12px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); 
+            transition: all 0.3s ease; 
+        }
+        
+        body.light-mode .premium-card {
+            background: rgba(255, 255, 255, 0.88); 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+        }
 
         .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; display: flex; align-items: center; margin-bottom: 6px; border: 1px solid transparent; transition: all 0.2s;}
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); transform: translateX(4px); }
@@ -184,20 +214,26 @@
                     </div>
                 </div>
 
-                <!-- TABEL KATEGORI MITRA BARU (DINAMIS & BISA FILTER) -->
-                <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">REKAPITULASI JUMLAH KEBUN DAN PT/CV/KOPERASI</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[500px]">
-                            <thead>
-                                <tr>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase bg-emerald-500/10 rounded-tl-lg">KATEGORI</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-center bg-emerald-500/10">JUMLAH KEBUN</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-center bg-emerald-500/10 rounded-tr-lg">JUMLAH PT/CV/KOP</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rekap-kategori-body" class="divide-y divide-gray-600/30"></tbody>
-                        </table>
+                <!-- Bagian Kategori Ditambahkan Di Sini -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8 mt-5">
+                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
+                        <h3 id="kategori-chart-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">JUMLAH KEBUN DAN JUMLAH PT/CV/KOPERASI</h3>
+                        <div id="kategori-bar-chart" style="height: 300px; width: 100%;"></div>
+                    </div>
+                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
+                        <h3 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">REKAPITULASI JUMLAH KEBUN DAN PT/CV/KOPERASI</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[300px]">
+                                <thead>
+                                    <tr>
+                                        <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase bg-emerald-500/10 rounded-tl-lg">KATEGORI</th>
+                                        <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-center bg-emerald-500/10">JUMLAH KEBUN</th>
+                                        <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-center bg-emerald-500/10 rounded-tr-lg">JUMLAH PT/CV/KOP</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="kategori-table-body" class="divide-y divide-gray-600/30"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -434,7 +470,7 @@
         }
 
         // =========================================
-        // DASHBOARD 1: RENDER PENUGASAN (DENGAN TABEL KATEGORI BARU)
+        // DASHBOARD 1: RENDER PENUGASAN (TERMASUK TABEL KATEGORI BARU)
         // =========================================
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
@@ -442,7 +478,6 @@
             
             let dataList = Object.keys(pivot.detailsMap).sort();
             
-            // SETUP DROPDOWN
             if (filterDropdown && filterDropdown.options.length <= 1 && dataList.length > 0) {
                 filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
                 dataList.forEach(c => {
@@ -466,16 +501,13 @@
                 }
             }
 
-            // 1. UPDATE KPI
             document.getElementById('dash-kpi-pt').innerHTML = `${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span>`;
             document.getElementById('dash-kpi-luas').innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
 
-            // 2. UPDATE TEXT TITLES
             const titleSuffix = selectedItem === 'ALL' ? 'SE-INDONESIA' : `(KATEGORI ${selectedItem})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `JUMLAH PT (KEBUN) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS TM (HA) ${titleSuffix}`;
 
-            // 3. RENDER CHARTS
             if(document.getElementById('dash-bar-chart')) {
                 Highcharts.chart('dash-bar-chart', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 }, title: { text: null },
@@ -500,7 +532,6 @@
                 });
             }
 
-            // 4. RENDER TABEL PIVOT SUMMARY LAMA
             let ptHtml = '';
             for(let name in tableDataMap) {
                 let data = tableDataMap[name];
@@ -522,15 +553,13 @@
 
             if(document.getElementById('pivot-penugasan-body')) document.getElementById('pivot-penugasan-body').innerHTML = ptHtml;
 
-
             // ========================================================
-            // 5. RENDER TABEL BARU (KATEGORI MITRA) SECARA DINAMIS
+            // EKSTRAK RAW DATA UNTUK TABEL DAN GRAFIK KATEGORI MITRA
             // ========================================================
-            // Baca data raw dari sheet REKAPITULASI buat ngitung dinamis
             let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") || Object.keys(rawData)[0];
             let rekapDataRaw = rawData[rekapKey] || [];
             
-            let filteredPtList = [];
+            let filteredRawList = [];
             
             if (rekapDataRaw.length > 0) {
                 let rCols = Object.keys(rekapDataRaw[0] || {});
@@ -548,12 +577,12 @@
                     if (!rawCro || rawCro === "-" || rawCro === "CRO" || !pt || pt === "-") continue;
 
                     if (selectedItem === 'ALL' || selectedItem === rawCro) {
-                        filteredPtList.push({ name: pt, mitra: mitra, cro: rawCro });
+                        filteredRawList.push({ name: pt, mitra: mitra, cro: rawCro });
                     }
                 }
             }
 
-            // Object buat nampung hitungan Kategori
+            // Hitung Kategori dari Raw Data untuk PT/CV/Koperasi
             let catSummary = {
                 "PT": { kebun: 0, unique: new Set() },
                 "CV": { kebun: 0, unique: new Set() },
@@ -566,8 +595,7 @@
             let totalKebun = 0;
             let allUnique = new Set();
 
-            // Klasifikasi berdasarkan "Nama Mitra"
-            filteredPtList.forEach(p => {
+            filteredRawList.forEach(p => {
                 let mName = (p.mitra || p.name).toUpperCase();
                 let cat = "PT"; // Default
                 
@@ -583,13 +611,38 @@
                 allUnique.add(mName);
             });
 
-            // Susun HTML untuk tabel Kategori Baru
-            let catHtml = '';
             const catOrder = ["PT", "CV", "Koperasi", "Kelompok Tani", "Bumdes", "Perkumpulan"];
             
+            // Render Grafik Kategori (Bar Chart)
+            if(document.getElementById('kategori-bar-chart')) {
+                let chartCategories = [];
+                let kebunData = [];
+                let kopData = [];
+
+                catOrder.forEach(c => {
+                    chartCategories.push(c);
+                    kebunData.push(catSummary[c].kebun);
+                    kopData.push(catSummary[c].unique.size);
+                });
+
+                Highcharts.chart('kategori-bar-chart', {
+                    chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 }, title: { text: null },
+                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
+                    xAxis: { categories: chartCategories, labels: { style: { color: '#a1a1aa', fontWeight: '500' } }, lineWidth: 0, tickWidth: 0 },
+                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', labels: { style: { color: '#a1a1aa' } } },
+                    series: [
+                        { name: 'Jumlah Kebun', data: kebunData, color: '#3b82f6' },
+                        { name: 'Jumlah PT/CV/Kop', data: kopData, color: '#f97316' }
+                    ],
+                    plotOptions: { column: { borderRadius: 4, borderWidth: 0, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold' } } } },
+                    credits: { enabled: false }
+                });
+            }
+
+            // Render Tabel Kategori
+            let catHtml = '';
             catOrder.forEach(c => {
                 let item = catSummary[c];
-                // Tampilkan semua baris agar layout konsisten (seperti foto Excel lu)
                 catHtml += `
                     <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
                         <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] font-semibold">${c}</td>
@@ -599,7 +652,6 @@
                 `;
             });
 
-            // Baris Total Penugasan
             catHtml += `
                 <tr class="bg-emerald-500/10 border-t-2 border-emerald-500/50">
                     <td class="py-3 px-4 text-xs md:text-sm text-emerald-400 font-extrabold uppercase">Total Penugasan</td>
@@ -608,9 +660,7 @@
                 </tr>
             `;
 
-            if(document.getElementById('rekap-kategori-body')) {
-                document.getElementById('rekap-kategori-body').innerHTML = catHtml;
-            }
+            if(document.getElementById('kategori-table-body')) document.getElementById('kategori-table-body').innerHTML = catHtml;
 
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
