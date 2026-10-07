@@ -460,49 +460,41 @@
         };
 
         // =========================================
-        // ENGINE PIVOT TABLE (FOKUS 100% SHEET "PIVOT" DOANG)
+        // ENGINE PIVOT TABLE (BACA DARI SHEET CERMIN "API_PIVOT")
         // =========================================
         function getPivotData() {
-            // 1. KUNCI TARGET: AMBIL SHEET YANG NAMANYA PERSIS "PIVOT"
-            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'PIVOT');
-            
-            // 2. BACKUP: Kalau ada spasi gaib dari API, cari yang ada kata "PIVOT" TAPI TOLAK MENTAH-MENTAH kata "TABLE"
-            if (!pivotSheetKey) {
-                pivotSheetKey = Object.keys(rawData).find(k => 
-                    k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE')
-                );
-            }
-
+            // TARGET: Langsung tembak ke sheet cermin yang barusan kita bikin
+            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT');
             let pivotData = rawData[pivotSheetKey] || [];
 
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
-            let currentSection = 'PENUGASAN'; 
+            
+            if (pivotData.length === 0) {
+                 console.log("Menunggu data dari sheet API_PIVOT...");
+                 return { penugasan, pembatalan };
+            }
+
+            let currentSection = 'PENUGASAN';
 
             for(let i=0; i<pivotData.length; i++) {
                 let row = pivotData[i];
                 let vals = Object.values(row).map(v => String(v).trim());
                 let rowStr = vals.join(" ").toLowerCase();
 
-                // Batas Penugasan & Pembatalan
-                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
+                // Batas Penugasan & Pembatalan (Berdasarkan tulisan di Excel lu)
+                if(rowStr.includes("counta") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
                     currentSection = 'PEMBATALAN';
                 }
 
-                // A. TANGKAP "TOTAL KESELURUHAN"
+                // 1. TANGKAP "TOTAL KESELURUHAN"
                 let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
                 if (grandTotalStr) {
-                    let nums = [];
-                    vals.forEach(v => {
-                        if (v !== grandTotalStr && v !== '') {
-                            let n = parseNum(v);
-                            if(n > 0 || String(n) === '0') nums.push(n);
-                        }
-                    });
-
-                    // Logika Anti-Kebalik: Angka gede pasti Luas (131.184), angka kecil pasti PT (210)
+                    let nums = vals.filter(v => v !== grandTotalStr && v !== '' && !isNaN(parseNum(v)));
                     if (nums.length >= 2) {
-                        let n1 = nums[0]; let n2 = nums[1];
+                        let n1 = parseNum(nums[0]); 
+                        let n2 = parseNum(nums[1]);
+                        // Logika Pasti Jitu: Angka gede = Luas (131.184), Angka kecil = PT (210)
                         if (currentSection === 'PENUGASAN') {
                             penugasan.totalLuas = Math.max(n1, n2);
                             penugasan.totalPT = Math.min(n1, n2);
@@ -514,20 +506,15 @@
                     continue; 
                 }
 
-                // B. TANGKAP "CRO ... TOTAL"
+                // 2. TANGKAP "CRO ... TOTAL" (Untuk ngisi grafik)
                 let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
                 if (croTotalStr && !croTotalStr.toLowerCase().includes("keseluruhan")) {
                     let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
-                    let nums = [];
-                    vals.forEach(v => {
-                        if (v !== croTotalStr && v !== '') {
-                            let n = parseNum(v);
-                            if(n > 0 || String(n) === '0') nums.push(n);
-                        }
-                    });
-
+                    let nums = vals.filter(v => v !== croTotalStr && v !== '' && !isNaN(parseNum(v)));
+                    
                     if (nums.length >= 2) {
-                        let n1 = nums[0]; let n2 = nums[1];
+                        let n1 = parseNum(nums[0]); 
+                        let n2 = parseNum(nums[1]);
                         if (currentSection === 'PENUGASAN') {
                             penugasan.croMap[croName] = { luas: Math.max(n1, n2), pt: Math.min(n1, n2) };
                         } else {
@@ -536,15 +523,8 @@
                     }
                 }
             }
-            
-            // C. AUTO KALKULASI JIKA "TOTAL KESELURUHAN" GAGAL KETARIK API
-            if (penugasan.totalLuas === 0) {
-                Object.values(penugasan.croMap).forEach(val => { penugasan.totalLuas += val.luas; penugasan.totalPT += val.pt; });
-            }
-            if (pembatalan.totalLuas === 0) {
-                Object.values(pembatalan.croMap).forEach(val => { pembatalan.totalLuas += val.luas; pembatalan.totalSurat += val.surat; });
-            }
 
+            console.log("Data berhasil disedot dari API_PIVOT:", {penugasan, pembatalan});
             return { penugasan, pembatalan };
         }
         // =========================================
