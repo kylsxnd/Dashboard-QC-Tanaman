@@ -10,58 +10,28 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables & ColReorder Extension -->
+    <!-- DataTables Extension -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-main: #0a0a0a; 
-            --bg-panel: #111111;
-            --bg-card: #151515;
-            --border-color: #262626;
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
+            --bg-main: #0a0a0a; --bg-panel: #111111; --bg-card: #151515;
+            --border-color: #262626; --text-main: #ffffff; --text-muted: #a1a1aa;
             --hover-bg: #27272a;
         }
-        
         body.light-mode {
-            --bg-main: #f3f4f6; 
-            --bg-panel: #ffffff;
-            --bg-card: #ffffff;
-            --border-color: #e5e7eb;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
+            --bg-main: #f3f4f6; --bg-panel: #ffffff; --bg-card: #ffffff;
+            --border-color: #e5e7eb; --text-main: #1f2937; --text-muted: #6b7280;
             --hover-bg: #f8fafc;
         }
-
-        .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
-        .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
-        .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
-        .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
-        .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
-
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        .premium-card { 
-            background: rgba(21, 21, 21, 0.72); 
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08); 
-            border-radius: 12px; 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); 
-            transition: all 0.3s ease; 
-        }
-        
-        body.light-mode .premium-card {
-            background: rgba(255, 255, 255, 0.88); 
-            border: 1px solid var(--border-color); 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-        }
+        .premium-card { background: rgba(21, 21, 21, 0.72); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); transition: all 0.3s ease; }
+        body.light-mode .premium-card { background: rgba(255, 255, 255, 0.88); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
 
         .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; display: flex; align-items: center; margin-bottom: 6px; border: 1px solid transparent; transition: all 0.2s;}
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); transform: translateX(4px); }
@@ -71,11 +41,9 @@
         .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
         .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
 
-        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
-        table.dataTable thead th { background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-weight: 600; font-size: 11px; padding: 14px 18px !important; white-space: nowrap !important; }
-        table.dataTable tbody tr { background-color: transparent !important; }
-        table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
-        table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; }
+        table.dataTable { border-collapse: collapse !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        table.dataTable thead th { background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; font-size: 11px; padding: 14px 18px !important; white-space: nowrap !important; }
+        table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; }
         body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
 
@@ -83,25 +51,22 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
         ::-webkit-scrollbar { width: 6px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-        
         .bg-overlay { position: absolute; inset: 0; background-color: rgba(10, 10, 10, 0.65); z-index: 0; }
         body.light-mode .bg-overlay { background-color: rgba(243, 244, 246, 0.82); }
     </style>
 </head>
-<body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
+<body class="flex h-screen w-full relative bg-black">
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
 
-    <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-        <div class="h-16 flex items-center px-6 border-b theme-border">
+    <aside id="mobile-sidebar" class="w-64 bg-[var(--bg-panel)] border-r border-[var(--border-color)] flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <div class="h-16 flex items-center px-6 border-b border-[var(--border-color)]">
             <div class="flex items-center gap-3">
                 <svg class="w-6 h-6 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                 <div class="flex flex-col">
-                    <h1 class="text-sm font-bold theme-text-main tracking-wide leading-tight">AGRINAS OPS</h1>
-                    <span class="text-[10px] theme-text-muted">PT Agrinas Nusantara</span>
+                    <h1 class="text-sm font-bold text-[var(--text-main)] tracking-wide leading-tight">AGRINAS OPS</h1>
+                    <span class="text-[10px] text-[var(--text-muted)]">PT Agrinas Nusantara</span>
                 </div>
             </div>
             <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400 hover:text-white focus:outline-none">
@@ -110,7 +75,7 @@
         </div>
 
         <div class="flex-1 overflow-y-auto py-5 px-3">
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
+            <div class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard Rekapitulasi
@@ -120,22 +85,19 @@
                 <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Dashboard Pembatalan
             </button>
 
-            <!-- KATEGORI MASTER DATA -->
-            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6 flex items-center">
+            <div class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-2 px-3 mt-6 flex items-center">
                 <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg> Master Data Kebun
             </div>
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
-        <div class="p-4 border-t theme-border theme-bg-main transition-colors duration-300 group cursor-pointer hover:bg-white/5" onclick="logout()">
+        <div class="p-4 border-t border-[var(--border-color)] cursor-pointer hover:bg-white/5" onclick="logout()">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full border border-[#83b765]/30 flex items-center justify-center text-xs font-bold text-white bg-gradient-to-br from-[#83b765] to-emerald-700 shadow-sm">PIC</div>
-                    <div class="flex flex-col overflow-hidden">
-                        <span id="pic-name-display" class="text-xs font-semibold theme-text-main truncate">Staf PIC HO</span>
-                    </div>
+                    <span class="text-xs font-semibold text-[var(--text-main)] truncate">Staf PIC HO</span>
                 </div>
-                <svg class="w-4 h-4 text-red-500 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <svg class="w-4 h-4 text-red-500 opacity-50 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             </div>
         </div>
     </aside>
@@ -145,19 +107,19 @@
         <div class="bg-overlay"></div>
 
         <header class="h-16 border-b border-gray-600/30 flex items-center justify-between px-4 md:px-6 z-10 flex-shrink-0 transition-colors duration-300 relative" style="background: rgba(17,17,17,0.7); backdrop-filter: blur(10px);">
-            <div class="flex items-center text-sm font-medium theme-text-muted min-w-0">
-                <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 -ml-2 rounded-lg theme-text-muted hover:bg-[var(--hover-bg)] focus:outline-none shrink-0">
+            <div class="flex items-center text-sm font-medium text-[var(--text-muted)] min-w-0">
+                <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 -ml-2 rounded-lg hover:bg-[var(--hover-bg)] focus:outline-none shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <svg class="w-4 h-4 mr-2 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span id="header-title" class="truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
+                <span id="header-title" class="text-[var(--text-main)] truncate max-w-[130px] sm:max-w-xs md:max-w-md">Dashboard Rekapitulasi</span>
             </div>
 
             <div class="flex items-center gap-2 md:gap-4 shrink-0">
-                <button onclick="toggleTheme()" class="relative p-2 theme-text-muted hover:text-[var(--text-main)] transition-colors focus:outline-none" title="Ganti Tema">
+                <button onclick="toggleTheme()" class="relative p-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors focus:outline-none">
                     <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
-                <div class="w-px h-5 theme-border border-l"></div>
+                <div class="w-px h-5 border-l border-[var(--border-color)]"></div>
                 <div class="flex items-center gap-2 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 md:px-3 rounded-full border border-emerald-500/20">
                     <span id="sync-dot" class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span></span>
                     <span id="sync-text" class="hidden sm:inline">LIVE SYSTEM</span>
@@ -165,115 +127,121 @@
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10 text-[var(--text-main)]">
             
-            <!-- 1. DASHBOARD REKAPITULASI (PENUGASAN) -->
+            <!-- ============================================== -->
+            <!-- 1. DASHBOARD REKAPITULASI PENUGASAN (MURNI PIVOT) -->
+            <!-- ============================================== -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
-                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Sumber: Pivot Table Penugasan).
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tight">Dashboard Rekapitulasi (Penugasan)</h2>
+                        <p class="text-[10px] md:text-[11px] text-[var(--text-muted)] mt-1 flex items-center gap-1">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat tersinkronisasi dari Sheet PIVOT.
                         </p>
                     </div>
-                    <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
-                        <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">FILTER CRO:</span>
-                        <select id="cro-filter" onchange="renderDashboardCharts()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
+                    <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border border-[var(--border-color)] px-4 py-2 rounded-lg shadow-sm">
+                        <span class="text-[10px] md:text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">FILTER CRO:</span>
+                        <select id="cro-filter" onchange="renderDashboardCharts()" class="bg-transparent text-[var(--text-main)] text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
                     </div>
                 </div>
 
-                <!-- KPI -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
+                <!-- KPI CARD -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)]">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL JUMLAH PT (KEBUN)</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="dash-kpi-pt">0 <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
+                    </div>
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)]">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM (HA)</div>
+                        <div class="text-3xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1 tracking-tight" id="dash-kpi-luas">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
+                    </div>
+                </div>
 
                 <!-- CHARTS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
-                        <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH PT (KEBUN) PER CRO</h3>
+                        <h3 id="chart-title-bar" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">JUMLAH PT (KEBUN) PER CRO</h3>
                         <div id="dash-bar-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
-                        <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS TM (HA) PER CRO</h3>
+                        <h3 id="chart-title-pie" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">LUAS TM (HA) PER CRO</h3>
                         <div id="dash-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
-                <!-- TABEL SUMMARY PIVOT (MENGGANTIKAN TABEL RAW PT) -->
+                <!-- TABEL PIVOT SUMMARY (MENGGANTIKAN TABEL RAW LAMA) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">REKAPITULASI PIVOT PENUGASAN</h3>
+                    <h3 id="pt-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">REKAPITULASI PIVOT (PENUGASAN)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[500px]">
                             <thead>
                                 <tr>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase bg-blue-500/10 text-blue-300 rounded-tl-lg">CRO</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right bg-blue-500/10 text-blue-300">TOTAL LUAS TM (HA)</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-blue-500/10 text-blue-300 rounded-tr-lg">JUMLAH PT (KEBUN)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase bg-blue-500/10 rounded-tl-lg">CRO</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-right bg-blue-500/10">TOTAL LUAS TM (HA)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-center bg-blue-500/10 rounded-tr-lg">JUMLAH PT (KEBUN)</th>
                                 </tr>
                             </thead>
-                            <tbody id="pivot-penugasan-body" class="divide-y divide-gray-600/30">
-                                <!-- Data inject via JS -->
-                            </tbody>
+                            <tbody id="pivot-penugasan-body" class="divide-y divide-gray-600/30"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- 2. DASHBOARD PEMBATALAN -->
+            <!-- ============================================== -->
+            <!-- 2. DASHBOARD PEMBATALAN (MURNI PIVOT) -->
+            <!-- ============================================== -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pembatalan</h2>
-                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat (Sumber: Pivot Table Pembatalan).
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tight">Dashboard Pembatalan</h2>
+                        <p class="text-[10px] md:text-[11px] text-[var(--text-muted)] mt-1 flex items-center gap-1">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Akurat tersinkronisasi dari Sheet PIVOT.
                         </p>
                     </div>
-                    <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
-                        <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">FILTER CRO:</span>
-                        <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
+                    <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border border-[var(--border-color)] px-4 py-2 rounded-lg shadow-sm">
+                        <span class="text-[10px] md:text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">FILTER CRO:</span>
+                        <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent text-[var(--text-main)] text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
                     </div>
                 </div>
 
-                <!-- KPI -->
+                <!-- KPI CARD -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] hover:-translate-y-1 cursor-default">
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-total-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
-                        <div class="text-[10px] text-red-400 font-semibold mt-2 bg-red-500/20 inline-block px-2 py-0.5 rounded border border-red-500/30">Arsip Terpusat</div>
                     </div>
-                    
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 cursor-default">
+                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM BATAL</div>
                         <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-luas-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
-                        <div class="text-[10px] text-amber-400 font-semibold mt-2 bg-amber-500/20 inline-block px-2 py-0.5 rounded border border-amber-500/30">Kerugian Area (Ha)</div>
                     </div>
                 </div>
 
                 <!-- CHARTS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
-                        <h3 id="pembatalan-chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH SURAT PEMBATALAN PER CRO</h3>
+                        <h3 id="pembatalan-chart-title-bar" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">JUMLAH SURAT PEMBATALAN PER CRO</h3>
                         <div id="dash-chart-pembatalan" style="height: 300px; width: 100%;"></div>
                     </div>
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
-                        <h3 id="pembatalan-chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS TM (HA) PEMBATALAN PER CRO</h3>
+                        <h3 id="pembatalan-chart-title-pie" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">LUAS TM (HA) PEMBATALAN PER CRO</h3>
                         <div id="dash-pie-pembatalan" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
-                <!-- TABEL SUMMARY PIVOT PEMBATALAN (MENGGANTIKAN TABEL RAW) -->
+                <!-- TABEL PIVOT SUMMARY PEMBATALAN (MENGGANTIKAN TABEL RAW LAMA) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">REKAPITULASI PIVOT PEMBATALAN</h3>
+                    <h3 id="pembatalan-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">REKAPITULASI PIVOT (PEMBATALAN)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[500px]">
                             <thead>
                                 <tr>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase bg-red-500/10 text-red-300 rounded-tl-lg">CRO</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-red-500/10 text-red-300">JUMLAH SURAT PEMBATALAN</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right bg-red-500/10 text-red-300 rounded-tr-lg">TOTAL LUAS TM (HA)</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase bg-red-500/10 rounded-tl-lg">CRO / TAHAP</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-center bg-red-500/10">JUMLAH SURAT PEMBATALAN</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase text-right bg-red-500/10 rounded-tr-lg">TOTAL LUAS TM (HA)</th>
                                 </tr>
                             </thead>
-                            <tbody id="pivot-pembatalan-body" class="divide-y divide-gray-600/30">
-                                <!-- Data inject via JS -->
-                            </tbody>
+                            <tbody id="pivot-pembatalan-body" class="divide-y divide-gray-600/30"></tbody>
                         </table>
                     </div>
                 </div>
@@ -282,8 +250,8 @@
             <!-- 3. MASTER DATA REPOSITORY -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
-                    <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
-                    <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
+                    <h2 class="text-xl md:text-2xl font-bold tracking-tight" id="database-title">Master Data Repository</h2>
+                    <p class="text-xs md:text-sm text-[var(--text-muted)] mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
                 
                 <div class="premium-card p-4 md:p-6 w-full">
@@ -297,29 +265,10 @@
         </main>
     </div>
 
-    <!-- MODAL PREVIEW DOCUMENT -->
-    <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
-        <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
-            <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
-                <h3 class="theme-text-main font-medium text-xs md:text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Live Document Viewer
-                </h3>
-                <div class="flex items-center space-x-3 md:space-x-4">
-                    <a id="modalExternalLink" href="#" target="_blank" class="text-[10px] md:text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors flex items-center gap-1.5">Open in Drive <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
-                    <div class="w-px h-4 bg-gray-500"></div>
-                    <button onclick="closePreview()" class="theme-text-muted hover:text-red-500 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                </div>
-            </div>
-            <div class="flex-grow bg-white rounded-b-xl overflow-hidden"><iframe id="documentIframe" src="" class="w-full h-full border-none"></iframe></div>
-        </div>
-    </div>
-
     <!-- SCRIPT LOGIC -->
     <script>
         function logout() {
-            if(confirm("Apakah Anda yakin ingin memuat ulang sesi ini?")) {
-                window.location.reload();
-            }
+            if(confirm("Apakah Anda yakin ingin memuat ulang sesi ini?")) window.location.reload();
         }
 
         let rawData = <%- sheetData %> || {};
@@ -330,11 +279,9 @@
             const sidebar = document.getElementById('mobile-sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
+                sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden');
             } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
+                sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden');
             }
         }
 
@@ -342,9 +289,6 @@
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            const themeIcon = document.getElementById('theme-icon');
-            if (isLight) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
-            else themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
             updateChartTheme(isLight);
         }
 
@@ -375,27 +319,17 @@
             
             const headerTitle = document.getElementById('header-title');
             if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Dashboard Rekapitulasi";
-                currentActiveSheet = 'dashboard';
-                renderDashboardCharts(); 
+                headerTitle.innerText = "Dashboard Rekapitulasi"; currentActiveSheet = 'dashboard'; renderDashboardCharts(); 
             }
             else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Dashboard Pembatalan";
-                currentActiveSheet = 'pembatalan';
-                renderPembatalanDashboard();
+                headerTitle.innerText = "Dashboard Pembatalan"; currentActiveSheet = 'pembatalan'; renderPembatalanDashboard();
             }
             else if(viewId === 'view-database') {
-                headerTitle.innerText = "Master Data > " + paramName;
-                currentActiveSheet = paramName;
-                loadTable(paramName);
+                headerTitle.innerText = "Master Data > " + paramName; currentActiveSheet = paramName; loadTable(paramName);
             }
             
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.sidebar-child-link').forEach(el => el.classList.remove('active'));
-            
-            if (elementId && document.getElementById(elementId)) {
-                document.getElementById(elementId).classList.add('active');
-            }
+            document.querySelectorAll('.sidebar-link, .sidebar-child-link').forEach(el => el.classList.remove('active'));
+            if (elementId && document.getElementById(elementId)) document.getElementById(elementId).classList.add('active');
             
             if (window.innerWidth < 768) toggleSidebar();
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
@@ -403,37 +337,21 @@
 
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
-            if (val === null || val === undefined) return 0;
-            
-            let s = String(val).trim();
-            if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
-
-            s = s.replace(/Rp|\$|€|\s/gi, '');
-            
-            let lastDot = s.lastIndexOf('.');
-            let lastComma = s.lastIndexOf(',');
-
-            if (lastComma > lastDot && lastDot !== -1) {
-                s = s.replace(/\./g, '').replace(',', '.');
-            } else if (lastDot > lastComma && lastComma !== -1) {
-                s = s.replace(/,/g, '');
-            } else if (lastComma !== -1 && lastDot === -1) {
-                s = s.replace(',', '.');
-            }
-
+            if (!val) return 0;
+            let s = String(val).replace(/Rp|\$|€|\s/gi, '').replace(/\./g, '').replace(',', '.');
             let res = parseFloat(s);
             return isNaN(res) ? 0 : res;
         };
 
         // =========================================
-        // ENGINE PIVOT TABLE MASTER 
+        // MESIN EKSTRAKTOR PIVOT (ANTI-NOL)
         // =========================================
         function getPivotData() {
-            // Gunakan API_PIVOT jika ada, jika tidak cari kata PIVOT (kecuali TABLE)
+            // Coba cari nama sheet yang mengandung "PIVOT" tapi bukan "TABLE"
             let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT')
                              || Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE'));
 
-            // Super Fallback: cari isi tulisan "total keseluruhan"
+            // Jalur Darurat: Geledah isi file Excel, cari yang ada tulisan "Total Keseluruhan"
             if (!pivotSheetKey) {
                  pivotSheetKey = Object.keys(rawData).find(k => {
                      let sheet = rawData[k];
@@ -447,57 +365,69 @@
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
             let currentSection = 'PENUGASAN';
 
+            // FUNGSI KHUSUS NGEKSTRAK SEMUA ANGKA DARI BARIS EXCEL
+            const extractNumbers = (rowObj) => {
+                let numbers = [];
+                Object.values(rowObj).forEach(val => {
+                    if (typeof val === 'number') numbers.push(val);
+                    else if (typeof val === 'string') {
+                        let s = val.trim();
+                        // Kalau string ada hurufnya (selain huruf E buat math), buang.
+                        if (/[a-zA-Z]/.test(s.replace(/[eE]/g, ''))) return;
+                        let parsed = parseNum(s);
+                        if (s !== '' && !isNaN(parsed)) numbers.push(parsed);
+                    }
+                });
+                return numbers;
+            };
+
             for(let i=0; i < pivotData.length; i++) {
                 let row = pivotData[i];
-                let vals = Object.values(row).map(v => String(v).trim());
-                let rowStr = vals.join(" ").toLowerCase();
+                let rowStr = Object.values(row).join(" ").toLowerCase();
 
-                // Batas Pemisah Pivot Penugasan vs Pembatalan
+                // Deteksi batas antara tabel penugasan dan pembatalan (Dari Gambar)
                 if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas")) {
                     currentSection = 'PEMBATALAN';
                 }
 
                 // 1. TANGKAP "TOTAL KESELURUHAN"
-                let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
-                if (grandTotalStr) {
-                    let nums = vals.filter(v => v !== grandTotalStr && v !== '' && !isNaN(parseNum(v)));
+                if (rowStr.includes("total keseluruhan")) {
+                    let nums = extractNumbers(row);
                     if (nums.length >= 2) {
-                        let n1 = parseNum(nums[0]); 
-                        let n2 = parseNum(nums[1]);
-                        // Luas selalu angka ribuan, PT/Surat ratusan
+                        // Logika Pasti: Angka gede = Luas TM (Misal 131.184), Angka kecil = PT/Surat (Misal 210)
                         if (currentSection === 'PENUGASAN') {
-                            penugasan.totalLuas = Math.max(n1, n2); 
-                            penugasan.totalPT = Math.min(n1, n2);
+                            penugasan.totalLuas = Math.max(nums[0], nums[1]);
+                            penugasan.totalPT = Math.min(nums[0], nums[1]);
                         } else {
-                            pembatalan.totalLuas = Math.max(n1, n2); 
-                            pembatalan.totalSurat = Math.min(n1, n2);
+                            pembatalan.totalLuas = Math.max(nums[0], nums[1]);
+                            pembatalan.totalSurat = Math.min(nums[0], nums[1]);
                         }
                     }
                     continue;
                 }
 
                 // 2. TANGKAP "CRO ... TOTAL"
-                let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && v.toLowerCase().includes('cro') && !v.toLowerCase().includes("keseluruhan"));
-                if (croTotalStr) {
-                    let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
-                    let nums = vals.filter(v => v !== croTotalStr && v !== '' && !isNaN(parseNum(v)));
+                let isCroTotal = rowStr.includes("total") && rowStr.includes("cro") && !rowStr.includes("keseluruhan");
+                if (isCroTotal) {
+                    let croNameMatch = Object.values(row).find(v => typeof v === 'string' && v.toLowerCase().includes('total') && v.toLowerCase().includes('cro'));
+                    let croName = croNameMatch ? croNameMatch.replace(/Total/ig, '').trim().toUpperCase() : "UNKNOWN";
+                    
+                    let nums = extractNumbers(row);
                     if (nums.length >= 2) {
-                        let n1 = parseNum(nums[0]); 
-                        let n2 = parseNum(nums[1]);
                         if (currentSection === 'PENUGASAN') {
-                            penugasan.croMap[croName] = { luas: Math.max(n1, n2), pt: Math.min(n1, n2) };
+                            penugasan.croMap[croName] = { luas: Math.max(nums[0], nums[1]), pt: Math.min(nums[0], nums[1]) };
                         } else {
-                            pembatalan.croMap[croName] = { luas: Math.max(n1, n2), surat: Math.min(n1, n2) };
+                            pembatalan.croMap[croName] = { luas: Math.max(nums[0], nums[1]), surat: Math.min(nums[0], nums[1]) };
                         }
                     }
                 }
             }
             
-            // Auto Calculate if Total Keseluruhan fails
-            if (penugasan.totalPT === 0) {
+            // Backup Hitung Otomatis jika "Total Keseluruhan" benar-benar gagal kebaca
+            if (penugasan.totalLuas === 0) {
                 Object.values(penugasan.croMap).forEach(v => { penugasan.totalLuas += v.luas; penugasan.totalPT += v.pt; });
             }
-            if (pembatalan.totalSurat === 0) {
+            if (pembatalan.totalLuas === 0) {
                 Object.values(pembatalan.croMap).forEach(v => { pembatalan.totalLuas += v.luas; pembatalan.totalSurat += v.surat; });
             }
 
@@ -505,7 +435,7 @@
         }
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (PENUGASAN MURNI PIVOT)
+        // DASHBOARD 1: REKAPITULASI (PENUGASAN)
         // =========================================
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
@@ -526,12 +456,12 @@
 
             let dispLuas = 0, dispPT = 0;
             let chartBarDataMap = {}, chartPieDataMap = {};
-            let tableDataMap = {}; // Untuk tabel baru
+            let tableDataMap = {};
 
             if (selectedCRO === 'ALL') {
                 dispLuas = pivot.totalLuas; 
                 dispPT = pivot.totalPT;
-                chartBarDataMap = {}; chartPieDataMap = {}; tableDataMap = pivot.croMap;
+                tableDataMap = pivot.croMap;
                 for(let c in pivot.croMap) { 
                     chartBarDataMap[c] = pivot.croMap[c].pt; 
                     chartPieDataMap[c] = pivot.croMap[c].luas; 
@@ -547,27 +477,16 @@
             }
 
             // 1. UPDATE KPI
-            const kpiContainer = document.getElementById('dashboard-kpi-container');
-            if(kpiContainer) {
-                kpiContainer.innerHTML = `
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)]">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL JUMLAH PT (KEBUN)</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
-                    </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)]">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM (HA)</div>
-                        <div class="text-3xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1 tracking-tight">${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
-                    </div>
-                `;
-            }
+            document.getElementById('dash-kpi-pt').innerHTML = `${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span>`;
+            document.getElementById('dash-kpi-luas').innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
 
-            // 2. UPDATE TEKS JUDUL
+            // 2. UPDATE TEXT TITLES
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `JUMLAH PT (KEBUN) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS TM (HA) ${titleSuffix}`;
             if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `REKAPITULASI PIVOT PENUGASAN ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
-            // 3. UPDATE CHARTS
+            // 3. RENDER CHARTS
             if(document.getElementById('dash-bar-chart')) {
                 Highcharts.chart('dash-bar-chart', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
@@ -593,19 +512,18 @@
                 });
             }
 
-            // 4. GENERATE TABEL PIVOT PENUGASAN BARU
+            // 4. GENERATE TABEL SUMMARY PIVOT
             let ptHtml = '';
             for(let croName in tableDataMap) {
                 let data = tableDataMap[croName];
                 ptHtml += `
                     <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
-                        <td class="py-3 px-4 text-xs md:text-sm theme-text-main font-bold">${croName}</td>
+                        <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] font-bold">${croName}</td>
                         <td class="py-3 px-4 text-xs md:text-sm text-purple-400 text-right font-semibold">${data.luas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                        <td class="py-3 px-4 text-xs md:text-sm theme-text-main text-center font-semibold">${data.pt.toLocaleString('id-ID')}</td>
+                        <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] text-center font-semibold">${data.pt.toLocaleString('id-ID')}</td>
                     </tr>`;
             }
             
-            // Baris Total di Bawah Tabel
             if (Object.keys(tableDataMap).length > 0) {
                  ptHtml += `
                     <tr class="bg-blue-500/10 border-t-2 border-blue-500/50">
@@ -614,7 +532,7 @@
                         <td class="py-3 px-4 text-xs md:text-sm text-blue-300 text-center font-extrabold">${dispPT.toLocaleString('id-ID')}</td>
                     </tr>`;
             } else {
-                ptHtml = `<tr><td colspan="3" class="py-6 text-center text-xs md:text-sm theme-text-muted">Tidak ada data Pivot yang tersedia.</td></tr>`;
+                ptHtml = `<tr><td colspan="3" class="py-6 text-center text-xs md:text-sm text-[var(--text-muted)]">Data Pivot kosong atau tidak ditemukan.</td></tr>`;
             }
 
             if(document.getElementById('pivot-penugasan-body')) document.getElementById('pivot-penugasan-body').innerHTML = ptHtml;
@@ -639,52 +557,47 @@
                 });
                 filterDropdown.value = "ALL";
             }
-
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
 
-            let totalSuratBatal = 0;
-            let totalLuasBatal = 0;
-            let chartBarDataMap = {};
-            let chartPieDataMap = {};
-            let tableDataMap = {};
+            let dispLuas = 0, dispSurat = 0;
+            let chartBarDataMap = {}, chartPieDataMap = {}, tableDataMap = {};
 
             if (selectedCRO === 'ALL') {
-                totalSuratBatal = pivot.totalSurat;
-                totalLuasBatal = pivot.totalLuas;
+                dispLuas = pivot.totalLuas; 
+                dispSurat = pivot.totalSurat;
                 tableDataMap = pivot.croMap;
                 for(let c in pivot.croMap) {
                     chartBarDataMap[c] = pivot.croMap[c].surat;
                     chartPieDataMap[c] = pivot.croMap[c].luas;
                 }
             } else if (pivot.croMap[selectedCRO]) {
-                totalSuratBatal = pivot.croMap[selectedCRO].surat;
-                totalLuasBatal = pivot.croMap[selectedCRO].luas;
+                dispLuas = pivot.croMap[selectedCRO].luas; 
+                dispSurat = pivot.croMap[selectedCRO].surat;
                 chartBarDataMap[selectedCRO] = pivot.croMap[selectedCRO].surat;
                 chartPieDataMap[selectedCRO] = pivot.croMap[selectedCRO].luas;
                 tableDataMap = { [selectedCRO]: pivot.croMap[selectedCRO] };
             }
 
-            document.getElementById('kpi-total-batal').innerHTML = `${totalSuratBatal.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat/PT</span>`;
-            
-            const luasKpi = document.getElementById('kpi-luas-batal');
-            if(luasKpi) {
-                luasKpi.innerHTML = `${totalLuasBatal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
-            }
+            // 1. UPDATE KPI
+            document.getElementById('kpi-total-batal').innerHTML = `${dispSurat.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
+            document.getElementById('kpi-luas-batal').innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
 
+            // 2. UPDATE TEXT TITLES
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN ${titleSuffix}`;
             if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
+            if(document.getElementById('pembatalan-list-title')) document.getElementById('pembatalan-list-title').innerText = `REKAPITULASI PIVOT (PEMBATALAN) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
+            // 3. RENDER CHARTS
             if(document.getElementById('dash-chart-pembatalan')) {
                 Highcharts.chart('dash-chart-pembatalan', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
                     title: { text: null },
-                    legend: { enabled: false },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
-                    xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: '#e5e7eb', fontWeight: '600', fontSize: '11px' } }, lineWidth: 0, tickWidth: 0 },
-                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', gridLineDashStyle: 'Dash', labels: { style: { color: '#a1a1aa' } } },
-                    series: [{ name: 'Jumlah Surat Selesai', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
-                    plotOptions: { column: { borderRadius: 6, borderWidth: 0, pointPadding: 0.15, groupPadding: 0.1, maxPointWidth: 70, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, y: -5 } } },
+                    xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: '#a1a1aa', fontWeight: '500' } }, lineWidth: 0, tickWidth: 0 },
+                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', labels: { style: { color: '#a1a1aa' } } },
+                    series: [{ name: 'Jumlah Surat', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
+                    plotOptions: { column: { borderRadius: 6, borderWidth: 0, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold' }, y: -5 } } },
                     credits: { enabled: false }
                 });
             }
@@ -692,7 +605,7 @@
             if(document.getElementById('dash-pie-pembatalan')) {
                 Highcharts.chart('dash-pie-pembatalan', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${totalLuasBatal.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${dispLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
                     plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#e5e7eb', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: 'rgba(255,255,255,0.2)' } } },
                     colors: ['#ef4444', '#f59e0b', '#8b5cf6', '#3b82f6', '#10b981', '#f43f5e', '#06b6d4', '#6366f1', '#14b8a6', '#f97316'],
@@ -701,14 +614,14 @@
                 });
             }
 
-            // MENCARI & MERENDER TABEL PIVOT PEMBATALAN BARU
+            // 4. GENERATE TABEL SUMMARY PIVOT PEMBATALAN
             let ptBatalHtml = '';
             for(let croName in tableDataMap) {
                 let data = tableDataMap[croName];
                 ptBatalHtml += `
                     <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
-                        <td class="py-3 px-4 text-xs md:text-sm theme-text-main font-bold">${croName}</td>
-                        <td class="py-3 px-4 text-xs md:text-sm theme-text-main text-center font-semibold">${data.surat.toLocaleString('id-ID')}</td>
+                        <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] font-bold">${croName}</td>
+                        <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] text-center font-semibold">${data.surat.toLocaleString('id-ID')}</td>
                         <td class="py-3 px-4 text-xs md:text-sm text-red-400 text-right font-semibold">${data.luas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     </tr>`;
             }
@@ -717,11 +630,11 @@
                  ptBatalHtml += `
                     <tr class="bg-red-500/10 border-t-2 border-red-500/50">
                         <td class="py-3 px-4 text-xs md:text-sm text-red-300 font-extrabold uppercase">TOTAL KESELURUHAN</td>
-                        <td class="py-3 px-4 text-xs md:text-sm text-red-300 text-center font-extrabold">${totalSuratBatal.toLocaleString('id-ID')}</td>
-                        <td class="py-3 px-4 text-xs md:text-sm text-red-300 text-right font-extrabold">${totalLuasBatal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 text-xs md:text-sm text-red-300 text-center font-extrabold">${dispSurat.toLocaleString('id-ID')}</td>
+                        <td class="py-3 px-4 text-xs md:text-sm text-red-300 text-right font-extrabold">${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     </tr>`;
             } else {
-                ptBatalHtml = `<tr><td colspan="3" class="text-center py-6 theme-text-muted text-xs md:text-sm">Tidak ada data Pivot Pembatalan.</td></tr>`;
+                ptBatalHtml = `<tr><td colspan="3" class="text-center py-6 text-xs md:text-sm text-[var(--text-muted)]">Data Pivot kosong atau tidak ditemukan.</td></tr>`;
             }
 
             if(document.getElementById('pivot-pembatalan-body')) document.getElementById('pivot-pembatalan-body').innerHTML = ptBatalHtml;
@@ -729,46 +642,16 @@
         }
 
         // =========================================
-        // TOOLS PREVIEW & MASTER DATA
+        // TOOLS MASTER DATA
         // =========================================
-        function getFileIcon(fileName) {
-            const ext = fileName.toLowerCase();
-            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
-            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
-            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
-        }
-
-        function openPreview(rawUrl) {
-            let previewUrl = rawUrl.trim();
-            if (previewUrl.includes("drive.google.com/file/d/")) previewUrl = previewUrl.replace(/\/view.*/, '/preview'); 
-            else if (previewUrl.includes("docs.google.com/document/d/") || previewUrl.includes("docs.google.com/spreadsheets/d/")) previewUrl = previewUrl.replace(/\/edit.*/, '/preview'); 
-            
-            document.getElementById('documentIframe').src = previewUrl;
-            document.getElementById('modalExternalLink').href = rawUrl;
-            const modal = document.getElementById('previewModal');
-            const content = document.getElementById('modalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
-        }
-
-        function closePreview() {
-            const modal = document.getElementById('previewModal');
-            const content = document.getElementById('modalContent');
-            modal.classList.add('opacity-0'); content.classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('documentIframe').src = ""; }, 300);
-        }
-
         $(document).on('click', '.hide-col-btn', function(e) {
-            e.stopPropagation(); 
-            e.preventDefault();
+            e.stopPropagation(); e.preventDefault();
             let th = $(this).closest('th');
             let wrapper = $(this).closest('.dataTables_wrapper');
             let mainTable = wrapper.find('.dataTables_scrollBody table');
             if(mainTable.length > 0) {
-                let tableId = mainTable.attr('id');
-                let table = $('#' + tableId).DataTable();
-                let colIdx = table.column(th).index();
-                table.column(colIdx).visible(false);
+                let table = $('#' + mainTable.attr('id')).DataTable();
+                table.column(table.column(th).index()).visible(false);
                 setTimeout(() => { table.columns.adjust(); }, 50);
             }
         });
@@ -786,7 +669,6 @@
             }
 
             const dataFull = rawData[actualKey] || [];
-            
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
                 let rowStr = JSON.stringify(dataFull[i]).toLowerCase();
@@ -797,7 +679,7 @@
             if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
             
             if (data.length === 0) { 
-                $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
+                $('#mainTable').html(`<tbody><tr><td class="text-center py-12 text-[var(--text-muted)] text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
                 return; 
             }
 
@@ -811,22 +693,14 @@
                 for(let i=0; i < data.length; i++) {
                     let v = data[i][key];
                     if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                        isGhost = false;
-                        break;
+                        isGhost = false; break;
                     }
                 }
-                if (isGhost) return;
-                validKeys.push(key);
+                if (!isGhost) validKeys.push(key);
             });
 
             const columns = validKeys.map(key => {
-                let displayTitle = key;
-                if (displayTitle.startsWith('__EMPTY')) {
-                    displayTitle = "-"; 
-                } else {
-                    displayTitle = displayTitle.replace(/_\d+$/, '').trim(); 
-                }
-
+                let displayTitle = key.startsWith('__EMPTY') ? "-" : key.replace(/_\d+$/, '').trim();
                 let numTitle = parseFloat(displayTitle);
                 if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
                     let d = new Date(Math.round((numTitle - 25569) * 86400000));
@@ -837,22 +711,17 @@
                 
                 return { 
                     title: `<div class="flex justify-between items-center group"><span class="whitespace-nowrap">${displayTitle}</span><button type="button" class="hide-col-btn opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-300 ml-2 px-1 rounded transition-opacity" title="Hapus Kolom">✖</button></div>`, 
-                    data: key, 
-                    defaultContent: "-", 
+                    data: key, defaultContent: "-", 
                     render: function(val) {
                         if (isDateCol && typeof val === 'number') {
                             let d = new Date(Math.round((val - 25569) * 86400000));
-                            let dd = d.getUTCDate().toString().padStart(2, '0');
-                            let mm = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-                            let yy = d.getUTCFullYear();
-                            return `${dd}/${mm}/${yy}`;
+                            return `${d.getUTCDate().toString().padStart(2, '0')}/${(d.getUTCMonth() + 1).toString().padStart(2, '0')}/${d.getUTCFullYear()}`;
                         }
                         if (typeof val === 'number') {
-                            if (val % 1 !== 0) return val.toLocaleString('id-ID', {maximumFractionDigits: 2});
-                            return val.toLocaleString('id-ID');
+                            return val % 1 !== 0 ? val.toLocaleString('id-ID', {maximumFractionDigits: 2}) : val.toLocaleString('id-ID');
                         }
                         if (typeof val === 'string' && (val.includes('http://') || val.includes('https://'))) {
-                            return `<a href="${val}" target="_blank" class="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 group transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg><span class="group-hover:underline">Buka Link</span></a>`;
+                            return `<a href="${val}" target="_blank" class="text-blue-500 hover:underline">Buka Link</a>`;
                         }
                         return val;
                     }
@@ -860,8 +729,7 @@
             });
 
             currentDataTable = $('#mainTable').DataTable({
-                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false,
-                colReorder: true, 
+                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false, colReorder: true, 
                 language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
             });
         }
@@ -880,9 +748,7 @@
                     { id: "REKAPITULASI PEMBATALAN", display: "REKAPITULASI PEMBATALAN" }
                 ];
                 masterItems.forEach((item, idx) => {
-                    const btn = document.createElement('button'); 
-                    btn.id = 'nav-md-' + idx; 
-                    btn.className = 'w-full sidebar-child-link text-left group'; 
+                    const btn = document.createElement('button'); btn.id = 'nav-md-' + idx; btn.className = 'w-full sidebar-child-link text-left group'; 
                     btn.innerHTML = `<svg class="w-4 h-4 mr-3 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="whitespace-normal leading-snug tracking-wide">${item.display}</span>`;
                     btn.onclick = () => switchView('view-database', btn.id, item.id);
                     sidebarMaster.appendChild(btn);
@@ -895,9 +761,7 @@
 
             switchView('view-dashboard', 'nav-dashboard'); 
             
-            window.addEventListener('resize', () => {
-                if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
-            });
+            window.addEventListener('resize', () => { if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200); });
             
             async function syncData() {
                 const syncText = document.getElementById('sync-text');
@@ -908,18 +772,10 @@
                     const result = await response.json();
                     
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
-                        
                         rawData = result.rawData;
-                        
-                        if (currentActiveSheet === 'dashboard') {
-                            renderDashboardCharts(); 
-                        }
-                        else if (currentActiveSheet === 'pembatalan') {
-                            renderPembatalanDashboard(); 
-                        }
-                        else {
-                            loadTable(currentActiveSheet);
-                        }
+                        if (currentActiveSheet === 'dashboard') renderDashboardCharts(); 
+                        else if (currentActiveSheet === 'pembatalan') renderPembatalanDashboard(); 
+                        else loadTable(currentActiveSheet);
 
                         if(syncText && syncDot) {
                             syncText.innerText = "UPDATING...";
@@ -933,14 +789,12 @@
                         }
                     }
                 } catch (err) { 
-                    console.error("Gagal sinkronisasi background:", err); 
                     if(syncText && syncDot) {
                         syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
                         syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
                     }
                 }
             }
-
             setInterval(syncData, 10000); 
         });
     </script>
