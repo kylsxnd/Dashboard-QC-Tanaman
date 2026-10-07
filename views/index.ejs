@@ -43,19 +43,18 @@
         }
         body.light-mode .premium-card { background: rgba(255, 255, 255, 0.88); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
 
-        .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s ease; display: flex; align-items: center; margin-bottom: 6px; border: 1px solid transparent; }
+        .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s ease; display: flex; align-items: center; margin-bottom: 6px; border: 1px solid transparent; cursor: pointer; }
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); transform: translateX(4px); }
         .sidebar-link.active { color: #ffffff; background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); border-left: 3px solid #83b765; font-weight: 600; }
-        .sidebar-link.active svg { color: #83b765; filter: drop-shadow(0 0 8px rgba(131,183,101,0.5)); }
 
-        .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
+        .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; cursor: pointer; }
         .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
 
-        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; margin-top: 10px !important; margin-bottom: 10px !important; }
         table.dataTable thead th { background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-weight: 600; font-size: 11px; padding: 14px 18px !important; white-space: nowrap !important; }
         table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
         table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; }
-        .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; }
+        .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important;}
         body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
 
         .fade-in { animation: fadeIn 0.4s ease forwards; }
@@ -89,41 +88,40 @@
                     <label class="block text-[10px] font-bold theme-text-muted uppercase mb-2">Kata Sandi</label>
                     <input type="password" id="login-password" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main outline-none" required>
                 </div>
-                <button type="submit" class="w-full bg-[#83b765] text-white font-bold py-3.5 rounded-lg text-sm">Masuk Dashboard</button>
-                <div id="login-error" class="hidden mt-4 text-center text-xs text-red-500 bg-red-500/10 py-2.5 rounded">Akses Ditolak: Username/sandi salah!</div>
+                <button type="submit" class="w-full bg-[#83b765] hover:bg-[#72a356] text-white font-bold py-3.5 rounded-lg text-sm transition-all">Masuk Dashboard</button>
+                <div id="login-error" class="hidden mt-4 text-center text-xs text-red-500 bg-red-500/10 py-2.5 rounded border border-red-500/20">Akses Ditolak: Username/sandi salah!</div>
             </form>
         </div>
     </div>
 
     <!-- SIDEBAR -->
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
     <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
         <div class="h-16 flex items-center px-6 border-b theme-border">
             <div class="flex flex-col">
                 <h1 class="text-sm font-bold theme-text-main">AGRINAS OPS</h1>
                 <span class="text-[10px] theme-text-muted">PT Agrinas Nusantara</span>
             </div>
-            <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400">✖</button>
+            <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400 hover:text-white">✖</button>
         </div>
 
         <div class="flex-1 overflow-y-auto py-5 px-3">
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
             
             <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
-                Dashboard Rekapitulasi
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"></path></svg> Dashboard Rekapitulasi
             </button>
             <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
-                Dashboard Pembatalan
+                <svg class="w-4 h-4 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Dashboard Pembatalan
             </button>
-            <!-- MENU PDF DIHAPUS -->
 
             <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6">Master Data Kebun</div>
             <div id="sidebar-master-data" class="mb-2"></div>
         </div>
 
-        <div class="p-4 border-t theme-border theme-bg-main cursor-pointer" onclick="logout()">
+        <div class="p-4 border-t theme-border theme-bg-main cursor-pointer hover:bg-white/5 transition-colors" onclick="logout()">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-[#83b765] flex items-center justify-center text-xs font-bold text-white">PIC</div>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#83b765] to-emerald-700 flex items-center justify-center text-xs font-bold text-white shadow-sm">PIC</div>
                 <span id="pic-name-display" class="text-xs font-semibold theme-text-main">Staf PIC</span>
             </div>
         </div>
@@ -131,16 +129,17 @@
 
     <!-- CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <!-- Background -->
         <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-55" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg');"></div>
         <div class="bg-overlay"></div>
 
         <header class="h-16 border-b border-gray-600/30 flex items-center justify-between px-4 md:px-6 z-10" style="background: rgba(17,17,17,0.7); backdrop-filter: blur(10px);">
             <div class="flex items-center text-sm font-medium theme-text-muted">
-                <button onclick="toggleSidebar()" class="md:hidden mr-3">☰</button>
-                <span id="header-title">Executive On-Farm > Dashboard Rekapitulasi</span>
+                <button onclick="toggleSidebar()" class="md:hidden mr-3 text-gray-300">☰</button>
+                <span id="header-title" class="theme-text-main">Executive On-Farm > Dashboard Rekapitulasi</span>
             </div>
             <div class="flex items-center gap-4">
-                <button onclick="toggleTheme()" class="theme-text-muted" title="Ganti Tema">◐</button>
+                <button onclick="toggleTheme()" class="theme-text-muted hover:text-white" title="Ganti Tema">◐</button>
                 <div class="flex items-center gap-2 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 rounded-full border border-emerald-500/20">
                     <span id="sync-dot" class="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                     <span id="sync-text">LIVE SYSTEM</span>
@@ -156,9 +155,9 @@
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1">Data Terverifikasi (Sumber: Pivot Table Penugasan).</p>
                     </div>
-                    <div class="premium-card px-4 py-2 rounded-lg">
+                    <div class="premium-card px-4 py-2 rounded-lg border theme-border flex items-center gap-2">
                         <span class="text-[10px] font-bold theme-text-muted uppercase">FILTER CRO:</span>
-                        <select id="cro-filter" onchange="renderDashboardCharts()" class="bg-transparent theme-text-main text-sm font-semibold outline-none"></select>
+                        <select id="cro-filter" onchange="renderDashboardCharts()" class="bg-transparent theme-text-main text-sm font-semibold outline-none cursor-pointer"></select>
                     </div>
                 </div>
 
@@ -200,20 +199,20 @@
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pembatalan</h2>
                         <p class="text-[10px] md:text-[11px] theme-text-muted mt-1">Data Terverifikasi (Sumber: Pivot Table Pembatalan).</p>
                     </div>
-                    <div class="premium-card px-4 py-2 rounded-lg">
+                    <div class="premium-card px-4 py-2 rounded-lg border theme-border flex items-center gap-2">
                         <span class="text-[10px] font-bold theme-text-muted uppercase">FILTER CRO:</span>
-                        <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent theme-text-main text-sm font-semibold outline-none"></select>
+                        <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent theme-text-main text-sm font-semibold outline-none cursor-pointer"></select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="premium-card p-6 bg-gradient-to-br border-t-[3px] border-t-red-600">
+                    <div class="premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1" id="kpi-total-batal">0 <span class="text-lg text-gray-400">Surat</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1" id="kpi-total-batal">0 <span class="text-lg text-gray-400 font-medium">Surat</span></div>
                     </div>
-                    <div class="premium-card p-6 bg-gradient-to-br border-t-[3px] border-t-amber-500">
+                    <div class="premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM BATAL</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1" id="kpi-luas-batal">0 <span class="text-lg text-gray-400">Ha</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1" id="kpi-luas-batal">0 <span class="text-lg text-gray-400 font-medium">Ha</span></div>
                     </div>
                 </div>
 
@@ -281,17 +280,17 @@
 
     <!-- SCRIPT LOGIC JAVASCRIPT -->
     <script>
+        // --- 1. CORE LOGIC (Login & Theme) ---
         function checkLoginState() {
             const loggedInUser = localStorage.getItem('agrinas_user');
             const loginOverlay = document.getElementById('login-overlay');
             if (loggedInUser) {
-                loginOverlay.style.opacity = '0';
-                setTimeout(() => { loginOverlay.style.display = 'none'; }, 500);
+                loginOverlay.style.display = 'none';
                 const userObj = JSON.parse(loggedInUser);
                 if(document.getElementById('pic-name-display')) document.getElementById('pic-name-display').innerText = userObj.name;
             } else {
                 loginOverlay.style.display = 'flex';
-                setTimeout(() => { loginOverlay.style.opacity = '1'; }, 10);
+                loginOverlay.style.opacity = '1';
             }
         }
 
@@ -299,21 +298,18 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
-            const errorMsg = document.getElementById('login-error');
-            
             if (((email === 'admin@agrinas.id' || email === 'admin') && password === 'admin123') || 
                 ((email === 'ceo@agrinas.id' || email === 'ceo') && password === 'ceo123')) {
-                const userData = { email: email, name: email.includes('ceo') ? 'BOD Agrinas' : 'Staf PIC HO' };
-                localStorage.setItem('agrinas_user', JSON.stringify(userData));
-                errorMsg.classList.add('hidden');
+                localStorage.setItem('agrinas_user', JSON.stringify({ email: email, name: email.includes('ceo') ? 'BOD Agrinas' : 'Staf PIC HO' }));
+                document.getElementById('login-error').classList.add('hidden');
                 checkLoginState();
             } else {
-                errorMsg.classList.remove('hidden');
+                document.getElementById('login-error').classList.remove('hidden');
             }
         }
 
         function logout() {
-            if(confirm("Apakah Anda yakin ingin memuat ulang / keluar sesi ini?")) {
+            if(confirm("Apakah Anda yakin ingin keluar sesi ini?")) {
                 localStorage.removeItem('agrinas_user');
                 window.location.reload();
             }
@@ -329,11 +325,9 @@
             if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             } else {
                 sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
+                overlay.classList.add('hidden');
             }
         }
 
@@ -347,8 +341,6 @@
         function updateChartTheme(isLight) {
             const textColor = isLight ? '#6b7280' : '#a1a1aa';
             const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.05)';
-            const tooltipBg = isLight ? '#ffffff' : '#151515';
-            const tooltipText = isLight ? '#1f2937' : '#f8fafc';
             Highcharts.charts.forEach(chart => {
                 if (chart) {
                     chart.update({
@@ -356,7 +348,7 @@
                         yAxis: { labels: { style: { color: textColor } }, gridLineColor: gridColor },
                         legend: { itemStyle: { color: textColor } },
                         plotOptions: { pie: { dataLabels: { color: textColor } } },
-                        tooltip: { backgroundColor: tooltipBg, style: { color: tooltipText }, borderColor: gridColor }
+                        tooltip: { backgroundColor: isLight ? '#ffffff' : '#151515', style: { color: isLight ? '#1f2937' : '#f8fafc' }, borderColor: gridColor }
                     });
                 }
             });
@@ -373,8 +365,7 @@
             else if(viewId === 'view-pembatalan') { currentActiveSheet = 'pembatalan'; renderPembatalanDashboard(); }
             else if(viewId === 'view-database') { currentActiveSheet = paramName; loadTable(paramName); }
             
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.sidebar-child-link').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link, .sidebar-child-link').forEach(el => el.classList.remove('active'));
             if (elementId && document.getElementById(elementId)) document.getElementById(elementId).classList.add('active');
             if (window.innerWidth < 768) toggleSidebar();
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
@@ -383,8 +374,9 @@
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
             if (!val) return 0;
-            let s = String(val).trim().replace(/Rp|\$|€|\s/gi, '');
+            let s = String(val).trim();
             if (s === '-' || s === '') return 0;
+            s = s.replace(/Rp|\$|€|\s/gi, ''); 
             let lastDot = s.lastIndexOf('.');
             let lastComma = s.lastIndexOf(',');
             if (lastComma > lastDot && lastDot !== -1) s = s.replace(/\./g, '').replace(',', '.');
@@ -394,12 +386,21 @@
             return isNaN(res) ? 0 : res;
         };
 
-        // =========================================
-        // ENGINE PIVOT TABLE: OTOMATIS BACA DARI GOOGLE SHEET PIVOT
-        // =========================================
+        // --- 2. ENGINE PIVOT TABLE (SUPER ROBUST) ---
         function getPivotData() {
-            let pivotSheet = Object.keys(rawData).find(k => k.toLowerCase().includes('pivot')) || '';
+            // Cari sheet bernama "PIVOT" atau yg mengandung kata PIVOT
+            let pivotSheet = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'PIVOT') 
+                          || Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT')) || '';
             let pivotData = rawData[pivotSheet] || [];
+
+            // Jika masih kosong, cari otomatis sheet mana yg punya tulisan "Total Keseluruhan"
+            if (pivotData.length === 0) {
+                for (let key in rawData) {
+                    if (rawData[key].some(r => Object.values(r).join(" ").toLowerCase().includes("total keseluruhan"))) {
+                        pivotData = rawData[key]; break;
+                    }
+                }
+            }
 
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
@@ -407,50 +408,63 @@
 
             for(let i=0; i<pivotData.length; i++) {
                 let row = pivotData[i];
-                let rowStr = Object.values(row).join(" ").toLowerCase();
+                let vals = Object.values(row).map(v => String(v).trim());
+                let rowStr = vals.join(" ").toLowerCase();
 
-                if(rowStr.includes("pemberhentian") || rowStr.includes("pembatalan") || rowStr.includes("counta")) {
+                // Sensor Pergantian Tabel di Excel
+                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas") || rowStr.includes("pemberhentian") || rowStr.includes("pembatalan")) {
                     currentSection = 'PEMBATALAN';
                 }
 
-                let vals = Object.values(row).map(v => String(v).trim());
-                
-                let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
-                if (croTotalStr) {
-                    let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
-                    let nums = vals.filter(v => v !== croTotalStr && v !== '' && !isNaN(parseNum(v)));
-                    
-                    if(currentSection === 'PENUGASAN') {
-                        penugasan.croMap[croName] = { luas: nums.length > 0 ? parseNum(nums[0]) : 0, pt: nums.length > 1 ? parseNum(nums[1]) : 0 };
+                // A. Cari baris "Total Keseluruhan"
+                let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
+                if (grandTotalStr) {
+                    let nums = [];
+                    vals.forEach(v => {
+                        if (v !== grandTotalStr && v !== '') {
+                            let n = parseNum(v);
+                            if(n > 0 || String(n) === '0') nums.push(n);
+                        }
+                    });
+
+                    if (currentSection === 'PENUGASAN') {
+                        penugasan.totalLuas = nums.length > 0 ? nums[0] : 0;
+                        penugasan.totalPT = nums.length > 1 ? nums[1] : 0;
                     } else {
-                        pembatalan.croMap[croName] = { surat: nums.length > 0 ? parseNum(nums[0]) : 0, luas: nums.length > 1 ? parseNum(nums[1]) : 0 };
+                        pembatalan.totalSurat = nums.length > 0 ? nums[0] : 0;
+                        pembatalan.totalLuas = nums.length > 1 ? nums[1] : 0;
                     }
                     continue; 
                 }
 
-                let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
-                if (grandTotalStr) {
-                    let nums = vals.filter(v => v !== grandTotalStr && v !== '' && !isNaN(parseNum(v)));
-                    if(currentSection === 'PENUGASAN') {
-                        penugasan.totalLuas = nums.length > 0 ? parseNum(nums[0]) : 0;
-                        penugasan.totalPT = nums.length > 1 ? parseNum(nums[1]) : 0;
+                // B. Cari baris "CRO Total"
+                let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
+                if (croTotalStr && !croTotalStr.toLowerCase().includes("keseluruhan")) {
+                    let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
+                    let nums = [];
+                    vals.forEach(v => {
+                        if (v !== croTotalStr && v !== '') {
+                            let n = parseNum(v);
+                            if(n > 0 || String(n) === '0') nums.push(n);
+                        }
+                    });
+
+                    if (currentSection === 'PENUGASAN') {
+                        penugasan.croMap[croName] = { luas: nums.length > 0 ? nums[0] : 0, pt: nums.length > 1 ? nums[1] : 0 };
                     } else {
-                        pembatalan.totalSurat = nums.length > 0 ? parseNum(nums[0]) : 0;
-                        pembatalan.totalLuas = nums.length > 1 ? parseNum(nums[1]) : 0;
+                        pembatalan.croMap[croName] = { surat: nums.length > 0 ? nums[0] : 0, luas: nums.length > 1 ? nums[1] : 0 };
                     }
                 }
             }
             
-            // Auto Backup jika kata 'Total Keseluruhan' tidak terbaca di kolom pertama
+            // Backup Hitungan Manual jika 'Total Keseluruhan' terlewat
             if (penugasan.totalLuas === 0) Object.values(penugasan.croMap).forEach(val => { penugasan.totalLuas += val.luas; penugasan.totalPT += val.pt; });
             if (pembatalan.totalLuas === 0) Object.values(pembatalan.croMap).forEach(val => { pembatalan.totalLuas += val.luas; pembatalan.totalSurat += val.surat; });
 
             return { penugasan, pembatalan };
         }
 
-        // =========================================
-        // DASHBOARD REKAPITULASI (PIVOT + RAW)
-        // =========================================
+        // --- 3. DASHBOARD REKAPITULASI (PIVOT + RAW TABLE) ---
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
             const filterDropdown = document.getElementById('cro-filter');
@@ -480,13 +494,13 @@
             const kpiContainer = document.getElementById('dashboard-kpi-container');
             if(kpiContainer) {
                 kpiContainer.innerHTML = `
-                    <div class="relative overflow-hidden premium-card p-6 border-t-[3px] border-t-blue-500">
+                    <div class="relative overflow-hidden premium-card p-6 border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase mb-2">TOTAL PT (KEBUN)</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium">PT</span></div>
                     </div>
-                    <div class="relative overflow-hidden premium-card p-6 border-t-[3px] border-t-purple-500">
+                    <div class="relative overflow-hidden premium-card p-6 border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase mb-2">TOTAL LUAS TM (HA)</div>
-                        <div class="text-3xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1">${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium">Ha</span></div>
                     </div>
                 `;
             }
@@ -555,9 +569,7 @@
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
-        // =========================================
-        // DASHBOARD PEMBATALAN (PIVOT + RAW + KATEGORI STATIS)
-        // =========================================
+        // --- 4. DASHBOARD PEMBATALAN (PIVOT + RAW TABLE) ---
         function renderPembatalanDashboard() {
             const pivot = getPivotData().pembatalan;
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
@@ -607,7 +619,6 @@
                 });
             }
 
-            // KATEGORI STATIS
             let summaryHtml = '';
             let dataKategori = [
                 { cat: "PT", val1: 44, val2: 32 }, { cat: "CV", val1: 32, val2: 13 },
@@ -626,7 +637,6 @@
             });
             if(document.getElementById('pembatalan-summary-body')) document.getElementById('pembatalan-summary-body').innerHTML = summaryHtml;
 
-            // DAFTAR PERUSAHAAN PEMBATALAN RAW
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan")) || "REKAPITULASI PEMBATALAN";
             let pembatalanData = rawData[batalKey] || [];
             let ptListBatal = [];
@@ -674,9 +684,7 @@
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
-        // =========================================
-        // MASTER DATA & AUTO SYNC
-        // =========================================
+        // --- 5. MASTER DATA & SYNC ---
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
