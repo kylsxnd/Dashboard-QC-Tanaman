@@ -460,20 +460,20 @@
         };
 
         // =========================================
-        // ENGINE PIVOT TABLE (BACA SHEET PIVOT SESUAI FOTO)
+        // ENGINE PIVOT TABLE (FOKUS 100% SHEET "PIVOT" DOANG)
         // =========================================
         function getPivotData() {
-            let pivotSheet = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'PIVOT') 
-                          || Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT')) || '';
-            let pivotData = rawData[pivotSheet] || [];
-
-            if (pivotData.length === 0) {
-                for (let key in rawData) {
-                    if (rawData[key].some(r => Object.values(r).join(" ").toLowerCase().includes("total keseluruhan"))) {
-                        pivotData = rawData[key]; break;
-                    }
-                }
+            // 1. KUNCI TARGET: AMBIL SHEET YANG NAMANYA PERSIS "PIVOT"
+            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'PIVOT');
+            
+            // 2. BACKUP: Kalau ada spasi gaib dari API, cari yang ada kata "PIVOT" TAPI TOLAK MENTAH-MENTAH kata "TABLE"
+            if (!pivotSheetKey) {
+                pivotSheetKey = Object.keys(rawData).find(k => 
+                    k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE')
+                );
             }
+
+            let pivotData = rawData[pivotSheetKey] || [];
 
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
@@ -484,11 +484,12 @@
                 let vals = Object.values(row).map(v => String(v).trim());
                 let rowStr = vals.join(" ").toLowerCase();
 
-                // Batas Pembatalan berdasarkan tulisan di Excel lu
-                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas")) {
+                // Batas Penugasan & Pembatalan
+                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
                     currentSection = 'PEMBATALAN';
                 }
 
+                // A. TANGKAP "TOTAL KESELURUHAN"
                 let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
                 if (grandTotalStr) {
                     let nums = [];
@@ -499,18 +500,21 @@
                         }
                     });
 
-                    if (currentSection === 'PENUGASAN') {
-                        // Penugasan: Kolom C (Luas), Kolom D (PT)
-                        penugasan.totalLuas = nums.length > 0 ? nums[0] : 0;
-                        penugasan.totalPT = nums.length > 1 ? nums[1] : 0;
-                    } else {
-                        // Pembatalan: Kolom C (Surat/Counta), Kolom D (Luas)
-                        pembatalan.totalSurat = nums.length > 0 ? nums[0] : 0;
-                        pembatalan.totalLuas = nums.length > 1 ? nums[1] : 0;
+                    // Logika Anti-Kebalik: Angka gede pasti Luas (131.184), angka kecil pasti PT (210)
+                    if (nums.length >= 2) {
+                        let n1 = nums[0]; let n2 = nums[1];
+                        if (currentSection === 'PENUGASAN') {
+                            penugasan.totalLuas = Math.max(n1, n2);
+                            penugasan.totalPT = Math.min(n1, n2);
+                        } else {
+                            pembatalan.totalLuas = Math.max(n1, n2);
+                            pembatalan.totalSurat = Math.min(n1, n2);
+                        }
                     }
                     continue; 
                 }
 
+                // B. TANGKAP "CRO ... TOTAL"
                 let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
                 if (croTotalStr && !croTotalStr.toLowerCase().includes("keseluruhan")) {
                     let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
@@ -522,26 +526,27 @@
                         }
                     });
 
-                    if (currentSection === 'PENUGASAN') {
-                        penugasan.croMap[croName] = { 
-                            luas: nums.length > 0 ? nums[0] : 0, 
-                            pt: nums.length > 1 ? nums[1] : 0 
-                        };
-                    } else {
-                        pembatalan.croMap[croName] = { 
-                            surat: nums.length > 0 ? nums[0] : 0, 
-                            luas: nums.length > 1 ? nums[1] : 0 
-                        };
+                    if (nums.length >= 2) {
+                        let n1 = nums[0]; let n2 = nums[1];
+                        if (currentSection === 'PENUGASAN') {
+                            penugasan.croMap[croName] = { luas: Math.max(n1, n2), pt: Math.min(n1, n2) };
+                        } else {
+                            pembatalan.croMap[croName] = { luas: Math.max(n1, n2), surat: Math.min(n1, n2) };
+                        }
                     }
                 }
             }
             
-            if (penugasan.totalLuas === 0) Object.values(penugasan.croMap).forEach(val => { penugasan.totalLuas += val.luas; penugasan.totalPT += val.pt; });
-            if (pembatalan.totalLuas === 0) Object.values(pembatalan.croMap).forEach(val => { pembatalan.totalLuas += val.luas; pembatalan.totalSurat += val.surat; });
+            // C. AUTO KALKULASI JIKA "TOTAL KESELURUHAN" GAGAL KETARIK API
+            if (penugasan.totalLuas === 0) {
+                Object.values(penugasan.croMap).forEach(val => { penugasan.totalLuas += val.luas; penugasan.totalPT += val.pt; });
+            }
+            if (pembatalan.totalLuas === 0) {
+                Object.values(pembatalan.croMap).forEach(val => { pembatalan.totalLuas += val.luas; pembatalan.totalSurat += val.surat; });
+            }
 
             return { penugasan, pembatalan };
         }
-
         // =========================================
         // DASHBOARD 1: REKAPITULASI
         // =========================================
