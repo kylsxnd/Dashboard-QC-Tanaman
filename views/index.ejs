@@ -10,85 +10,53 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables & ColReorder Extension -->
+    <!-- DataTables Extension -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-main: #0a0a0a; 
-            --bg-panel: #111111;
-            --bg-card: #151515;
-            --border-color: #262626;
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
+            --bg-main: #0a0a0a; --bg-panel: #111111; --bg-card: #151515;
+            --border-color: #262626; --text-main: #ffffff; --text-muted: #a1a1aa;
             --hover-bg: #27272a;
-            --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.8);
-            --bg-dropdown: rgba(21, 21, 21, 0.95);
         }
-        
         body.light-mode {
-            --bg-main: #f3f4f6; 
-            --bg-panel: #ffffff;
-            --bg-card: #ffffff;
-            --border-color: #e5e7eb;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
+            --bg-main: #f3f4f6; --bg-panel: #ffffff; --bg-card: #ffffff;
+            --border-color: #e5e7eb; --text-main: #1f2937; --text-muted: #6b7280;
             --hover-bg: #f8fafc;
-            --shadow-drop: 0 10px 40px -10px rgba(0,0,0,0.15);
-            --bg-dropdown: rgba(255, 255, 255, 0.98); 
         }
 
-        .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
+        
         .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
         .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
         .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
         .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
 
-        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; transition: all 0.3s ease; }
-        
         .premium-card { 
-            background: rgba(21, 21, 21, 0.72); 
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08); 
-            border-radius: 12px; 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); 
-            transition: all 0.3s ease; 
+            background: rgba(21, 21, 21, 0.72); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); transition: all 0.3s ease; 
         }
-        
-        body.light-mode .premium-card {
-            background: rgba(255, 255, 255, 0.88); 
-            border: 1px solid var(--border-color); 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-        }
+        body.light-mode .premium-card { background: rgba(255, 255, 255, 0.88); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
 
-        .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; margin-bottom: 6px; position: relative; border: 1px solid transparent; }
-        .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.05); transform: translateX(4px); }
-        .sidebar-link.active { color: #ffffff; background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); border-left: 3px solid #83b765; border-color: transparent; border-left-color: #83b765; font-weight: 600; }
+        .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; transition: all 0.3s ease; display: flex; align-items: center; margin-bottom: 6px; border: 1px solid transparent; }
+        .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); transform: translateX(4px); }
+        .sidebar-link.active { color: #ffffff; background: linear-gradient(90deg, rgba(131,183,101,0.2) 0%, transparent 100%); border-left: 3px solid #83b765; font-weight: 600; }
         .sidebar-link.active svg { color: #83b765; filter: drop-shadow(0 0 8px rgba(131,183,101,0.5)); }
 
         .sidebar-child-link { padding: 9px 16px 9px 36px; font-size: 12.5px; font-weight: 500; color: var(--text-muted); border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; margin-bottom: 3px; }
         .sidebar-child-link:hover { color: var(--text-main); background: var(--hover-bg); }
-        .sidebar-child-link.active { color: #83b765; background: rgba(131, 183, 101, 0.08); font-weight: 600; border-right: 3px solid #83b765; }
 
-        .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; transition: all 0.2s; }
-        body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
-        .dataTables_wrapper .dataTables_filter input:focus { border-color: #83b765 !important; }
-
-        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; margin-top: 12px !important; margin-bottom: 20px !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
-        table.dataTable thead th { cursor: grab !important; background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-weight: 600; font-size: 11px; padding: 14px 18px !important; text-transform: uppercase; white-space: nowrap !important; }
-        table.dataTable tbody tr { background-color: transparent !important; transition: all 0.15s ease; }
+        table.dataTable { border-collapse: collapse !important; border-spacing: 0 !important; width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        table.dataTable thead th { background-color: rgba(21, 21, 21, 0.5) !important; color: var(--text-muted) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-weight: 600; font-size: 11px; padding: 14px 18px !important; white-space: nowrap !important; }
         table.dataTable tbody tr:hover { background-color: rgba(255,255,255,0.05) !important; }
-        table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; vertical-align: middle !important; }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; border-color: rgba(255,255,255,0.2) !important; font-weight: 600; }
+        table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; white-space: nowrap !important; }
+        .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; }
+        body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
 
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -98,59 +66,117 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
         
-        .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background-color: rgba(10, 10, 10, 0.65); 
-            z-index: 0;
-        }
-        body.light-mode .bg-overlay {
-            background-color: rgba(243, 244, 246, 0.82); 
-        }
+        .bg-overlay { position: absolute; inset: 0; background-color: rgba(10, 10, 10, 0.65); z-index: 0; }
+        body.light-mode .bg-overlay { background-color: rgba(243, 244, 246, 0.82); }
     </style>
 </head>
-<body class="flex h-screen w-full theme-bg-main theme-text-main relative bg-black">
+<body class="flex h-screen w-full relative bg-black">
 
+    <!-- LOGIN OVERLAY -->
     <div id="login-overlay" class="fixed inset-0 z-[99999] bg-[var(--bg-main)] flex items-center justify-center transition-opacity duration-500">
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-[#83b765] opacity-20 blur-[120px] rounded-full"></div>
-            <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-600 opacity-10 blur-[120px] rounded-full"></div>
         </div>
-        
-        <div class="premium-card w-full max-w-md p-8 md:p-10 relative z-10 mx-4 border-t-4 border-t-[#83b765]">
-            <div class="flex justify-center mb-6">
-                <div class="w-14 h-14 rounded-2xl bg-[#83b765]/10 border border-[#83b765]/30 flex items-center justify-center shadow-[0_0_20px_rgba(131,183,101,0.2)]">
-                    <svg class="w-8 h-8 text-[#83b765]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5
-                        <!-- 1. DASHBOARD REKAPITULASI -->
+        <div class="premium-card w-full max-w-md p-8 relative z-10 mx-4 border-t-4 border-t-[#83b765]">
+            <h2 class="text-2xl font-bold text-center theme-text-main mb-1">Executive Portal</h2>
+            <p class="text-xs text-center theme-text-muted mb-8">Masuk ke Sistem Keamanan Agrinas</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-5">
+                    <label class="block text-[10px] font-bold theme-text-muted uppercase mb-2">Username / Email</label>
+                    <input type="text" id="login-email" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main outline-none" required autocomplete="off">
+                </div>
+                <div class="mb-8">
+                    <label class="block text-[10px] font-bold theme-text-muted uppercase mb-2">Kata Sandi</label>
+                    <input type="password" id="login-password" class="w-full bg-[var(--bg-main)] border theme-border rounded-lg px-4 py-3 text-sm theme-text-main outline-none" required>
+                </div>
+                <button type="submit" class="w-full bg-[#83b765] text-white font-bold py-3.5 rounded-lg text-sm">Masuk Dashboard</button>
+                <div id="login-error" class="hidden mt-4 text-center text-xs text-red-500 bg-red-500/10 py-2.5 rounded">Akses Ditolak: Username/sandi salah!</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+    <aside id="mobile-sidebar" class="w-64 theme-bg-panel border-r theme-border flex flex-col h-full flex-shrink-0 z-50 fixed md:relative transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <div class="h-16 flex items-center px-6 border-b theme-border">
+            <div class="flex flex-col">
+                <h1 class="text-sm font-bold theme-text-main">AGRINAS OPS</h1>
+                <span class="text-[10px] theme-text-muted">PT Agrinas Nusantara</span>
+            </div>
+            <button onclick="toggleSidebar()" class="ml-auto md:hidden text-gray-400">✖</button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-5 px-3">
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-3 px-3">Menu Utama</div>
+            
+            <button onclick="switchView('view-dashboard', 'nav-dashboard')" class="w-full sidebar-link active" id="nav-dashboard">
+                Dashboard Rekapitulasi
+            </button>
+            <button onclick="switchView('view-pembatalan', 'nav-pembatalan')" class="w-full sidebar-link" id="nav-pembatalan">
+                Dashboard Pembatalan
+            </button>
+            <!-- MENU PDF DIHAPUS -->
+
+            <div class="text-[10px] font-bold theme-text-muted uppercase tracking-[0.1em] mb-2 px-3 mt-6">Master Data Kebun</div>
+            <div id="sidebar-master-data" class="mb-2"></div>
+        </div>
+
+        <div class="p-4 border-t theme-border theme-bg-main cursor-pointer" onclick="logout()">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#83b765] flex items-center justify-center text-xs font-bold text-white">PIC</div>
+                <span id="pic-name-display" class="text-xs font-semibold theme-text-main">Staf PIC</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-55" style="background-image: url('https://raw.githubusercontent.com/kylsxnd/Dashboard-QC-Tanaman/main/public/bgkelapasawit.jpeg');"></div>
+        <div class="bg-overlay"></div>
+
+        <header class="h-16 border-b border-gray-600/30 flex items-center justify-between px-4 md:px-6 z-10" style="background: rgba(17,17,17,0.7); backdrop-filter: blur(10px);">
+            <div class="flex items-center text-sm font-medium theme-text-muted">
+                <button onclick="toggleSidebar()" class="md:hidden mr-3">☰</button>
+                <span id="header-title">Executive On-Farm > Dashboard Rekapitulasi</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()" class="theme-text-muted" title="Ganti Tema">◐</button>
+                <div class="flex items-center gap-2 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 rounded-full border border-emerald-500/20">
+                    <span id="sync-dot" class="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span id="sync-text">LIVE SYSTEM</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
+            <!-- 1. DASHBOARD REKAPITULASI -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Rekapitulasi</h2>
-                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Terverifikasi (Sumber: Pivot Table Penugasan).
-                        </p>
+                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1">Data Terverifikasi (Sumber: Pivot Table Penugasan).</p>
                     </div>
-                    <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
-                        <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">FILTER CRO:</span>
-                        <select id="cro-filter" onchange="renderDashboardCharts()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
+                    <div class="premium-card px-4 py-2 rounded-lg">
+                        <span class="text-[10px] font-bold theme-text-muted uppercase">FILTER CRO:</span>
+                        <select id="cro-filter" onchange="renderDashboardCharts()" class="bg-transparent theme-text-main text-sm font-semibold outline-none"></select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8" id="dashboard-kpi-container"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH PT (KEBUN) SE-INDONESIA</h3>
+                    <div class="premium-card p-4 md:p-6">
+                        <h3 id="chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH PT (KEBUN)</h3>
                         <div id="dash-bar-chart" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS TM (HA) SE-INDONESIA</h3>
+                    <div class="premium-card p-4 md:p-6">
+                        <h3 id="chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS TM (HA)</h3>
                         <div id="dash-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
-                <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">DAFTAR RINCIAN PERUSAHAAN (PT)</h3>
+                <div class="premium-card p-4 md:p-6 w-full mb-8">
+                    <h3 id="pt-list-title" class="text-[10px] font-bold theme-text-muted uppercase mb-4">DAFTAR RINCIAN PERUSAHAAN (PT)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
@@ -172,31 +198,26 @@
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight">Dashboard Pembatalan</h2>
-                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1 flex items-center gap-1">
-                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Terverifikasi (Sumber: Pivot Table Pembatalan).
-                        </p>
+                        <p class="text-[10px] md:text-[11px] theme-text-muted mt-1">Data Terverifikasi (Sumber: Pivot Table Pembatalan).</p>
                     </div>
-                    <div class="flex items-center justify-between sm:justify-start gap-3 premium-card border theme-border px-4 py-2 rounded-lg shadow-sm">
-                        <span class="text-[10px] md:text-[11px] font-bold theme-text-muted uppercase tracking-widest">FILTER CRO:</span>
-                        <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent theme-text-main text-xs md:text-sm font-semibold outline-none cursor-pointer border-none !p-0"></select>
+                    <div class="premium-card px-4 py-2 rounded-lg">
+                        <span class="text-[10px] font-bold theme-text-muted uppercase">FILTER CRO:</span>
+                        <select id="pembatalan-cro-filter" onchange="renderPembatalanDashboard()" class="bg-transparent theme-text-main text-sm font-semibold outline-none"></select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] hover:-translate-y-1 cursor-default">
+                    <div class="premium-card p-6 bg-gradient-to-br border-t-[3px] border-t-red-600">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-total-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span></div>
-                        <div class="text-[10px] text-red-400 font-semibold mt-2 bg-red-500/20 inline-block px-2 py-0.5 rounded border border-red-500/30">Arsip Terpusat</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1" id="kpi-total-batal">0 <span class="text-lg text-gray-400">Surat</span></div>
                     </div>
-                    
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-amber-500 shadow-[0_4px_15px_-4px_rgba(245,158,11,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 cursor-default">
+                    <div class="premium-card p-6 bg-gradient-to-br border-t-[3px] border-t-amber-500">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM BATAL</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight" id="kpi-luas-batal">0 <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
-                        <div class="text-[10px] text-amber-400 font-semibold mt-2 bg-amber-500/20 inline-block px-2 py-0.5 rounded border border-amber-500/30">Kerugian Area (Ha)</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1" id="kpi-luas-batal">0 <span class="text-lg text-gray-400">Ha</span></div>
                     </div>
                 </div>
 
-                <!-- TABEL SUMMARY KATEGORI -->
+                <!-- TABEL SUMMARY KATEGORI (Statis) -->
                 <div class="premium-card p-4 md:p-6 w-full mb-8 relative overflow-hidden">
                     <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">REKAPITULASI KATEGORI MITRA</h3>
                     <div class="overflow-x-auto">
@@ -208,25 +229,24 @@
                                     <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center bg-blue-500/20 text-blue-300">JUMLAH PT/CV/KOPERASI</th>
                                 </tr>
                             </thead>
-                            <tbody id="pembatalan-summary-body" class="divide-y divide-gray-600/30">
-                            </tbody>
+                            <tbody id="pembatalan-summary-body" class="divide-y divide-gray-600/30"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
-                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="pembatalan-chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH SURAT PEMBATALAN SE-INDONESIA</h3>
+                    <div class="premium-card p-4 md:p-6">
+                        <h3 id="pembatalan-chart-title-bar" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">JUMLAH SURAT PEMBATALAN</h3>
                         <div id="dash-chart-pembatalan" style="height: 300px; width: 100%;"></div>
                     </div>
-                    <div class="premium-card p-4 md:p-6 w-full lg:col-span-1 relative overflow-hidden">
-                        <h3 id="pembatalan-chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS TM (HA) PEMBATALAN SE-INDONESIA</h3>
+                    <div class="premium-card p-4 md:p-6">
+                        <h3 id="pembatalan-chart-title-pie" class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">LUAS TM (HA) PEMBATALAN</h3>
                         <div id="dash-pie-pembatalan" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
-                <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <h3 class="text-[10px] font-bold theme-text-muted uppercase tracking-widest mb-4">DAFTAR RINCIAN PERUSAHAAN PEMBATALAN</h3>
+                <div class="premium-card p-4 md:p-6 w-full mb-8">
+                    <h3 class="text-[10px] font-bold theme-text-muted uppercase mb-4">DAFTAR RINCIAN PERUSAHAAN PEMBATALAN</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
@@ -234,7 +254,7 @@
                                     <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase">NAMA PERUSAHAAN / MITRA</th>
                                     <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">CRO</th>
                                     <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-right">LUAS TM (HA)</th>
-                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">STATUS DOKUMEN</th>
+                                    <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] theme-text-muted uppercase text-center">STATUS</th>
                                 </tr>
                             </thead>
                             <tbody id="pembatalan-pt-list-body" class="divide-y divide-gray-600/30"></tbody>
@@ -247,9 +267,7 @@
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold theme-text-main tracking-tight" id="database-title">Master Data Repository</h2>
-                    <p class="text-xs md:text-sm theme-text-muted mt-1">Eksplorasi arsip dokumen dan database terpusat.</p>
                 </div>
-                
                 <div class="premium-card p-4 md:p-6 w-full">
                     <div class="w-full overflow-hidden" id="data-wrapper">
                         <div id="table-area" class="w-full">
@@ -261,22 +279,7 @@
         </main>
     </div>
 
-    <!-- MODAL PREVIEW -->
-    <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden transition-all duration-300 opacity-0 z-[9999]">
-        <div class="theme-bg-panel border theme-border rounded-xl w-11/12 md:w-4/5 h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
-            <div class="flex justify-between items-center px-4 md:px-5 py-4 border-b theme-border">
-                <h3 class="theme-text-main font-medium text-xs md:text-sm flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Live Document Viewer
-                </h3>
-                <div class="flex items-center space-x-3 md:space-x-4">
-                    <a id="modalExternalLink" href="#" target="_blank" class="text-[10px] md:text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors flex items-center gap-1.5">Open in Drive <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
-                    <div class="w-px h-4 bg-gray-500"></div>
-                    <button onclick="closePreview()" class="theme-text-muted hover:text-red-500 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                </div>
-            </div>
-            <div class="flex-grow bg-white rounded-b-xl overflow-hidden"><iframe id="documentIframe" src="" class="w-full h-full border-none"></iframe></div>
-        </div>
-    </div><!-- SCRIPT LOGIC -->
+    <!-- SCRIPT LOGIC JAVASCRIPT -->
     <script>
         function checkLoginState() {
             const loggedInUser = localStorage.getItem('agrinas_user');
@@ -338,9 +341,6 @@
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            const themeIcon = document.getElementById('theme-icon');
-            if (isLight) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
-            else themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
             updateChartTheme(isLight);
         }
 
@@ -369,40 +369,22 @@
             
             document.getElementById(viewId).classList.remove('hidden');
             
-            const headerTitle = document.getElementById('header-title');
-            if(viewId === 'view-dashboard') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Rekapitulasi";
-                currentActiveSheet = 'dashboard';
-                renderDashboardCharts(); 
-            }
-            else if(viewId === 'view-pembatalan') {
-                headerTitle.innerText = "Executive On-Farm > Dashboard Pembatalan";
-                currentActiveSheet = 'pembatalan';
-                renderPembatalanDashboard();
-            }
-            else if(viewId === 'view-database') {
-                headerTitle.innerText = "Master Data > " + paramName;
-                currentActiveSheet = paramName;
-                loadTable(paramName);
-            }
+            if(viewId === 'view-dashboard') { currentActiveSheet = 'dashboard'; renderDashboardCharts(); }
+            else if(viewId === 'view-pembatalan') { currentActiveSheet = 'pembatalan'; renderPembatalanDashboard(); }
+            else if(viewId === 'view-database') { currentActiveSheet = paramName; loadTable(paramName); }
             
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.sidebar-child-link').forEach(el => el.classList.remove('active'));
-            
-            if (elementId && document.getElementById(elementId)) {
-                document.getElementById(elementId).classList.add('active');
-            }
-            
+            if (elementId && document.getElementById(elementId)) document.getElementById(elementId).classList.add('active');
             if (window.innerWidth < 768) toggleSidebar();
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
         }
 
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
-            if (val === null || val === undefined) return 0;
-            let s = String(val).trim();
-            if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
-            s = s.replace(/Rp|\$|€|\s/gi, '');
+            if (!val) return 0;
+            let s = String(val).trim().replace(/Rp|\$|€|\s/gi, '');
+            if (s === '-' || s === '') return 0;
             let lastDot = s.lastIndexOf('.');
             let lastComma = s.lastIndexOf(',');
             if (lastComma > lastDot && lastDot !== -1) s = s.replace(/\./g, '').replace(',', '.');
@@ -413,7 +395,7 @@
         };
 
         // =========================================
-        // ENGINE PENYEDOT PIVOT TABLE
+        // ENGINE PIVOT TABLE: OTOMATIS BACA DARI GOOGLE SHEET PIVOT
         // =========================================
         function getPivotData() {
             let pivotSheet = Object.keys(rawData).find(k => k.toLowerCase().includes('pivot')) || '';
@@ -427,36 +409,25 @@
                 let row = pivotData[i];
                 let rowStr = Object.values(row).join(" ").toLowerCase();
 
-                // Deteksi pergantian area dari Penugasan ke Pembatalan
-                if(rowStr.includes("pemberhentian") || rowStr.includes("pembatalan")) {
+                if(rowStr.includes("pemberhentian") || rowStr.includes("pembatalan") || rowStr.includes("counta")) {
                     currentSection = 'PEMBATALAN';
                 }
 
                 let vals = Object.values(row).map(v => String(v).trim());
                 
-                // Deteksi Baris "CRO X Total"
                 let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
                 if (croTotalStr) {
                     let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
                     let nums = vals.filter(v => v !== croTotalStr && v !== '' && !isNaN(parseNum(v)));
                     
                     if(currentSection === 'PENUGASAN') {
-                        // Di Penugasan Pivot: Kolom pertama angka = Luas, Kolom kedua = Jumlah PT
-                        penugasan.croMap[croName] = {
-                            luas: nums.length > 0 ? parseNum(nums[0]) : 0,
-                            pt: nums.length > 1 ? parseNum(nums[1]) : 0
-                        };
+                        penugasan.croMap[croName] = { luas: nums.length > 0 ? parseNum(nums[0]) : 0, pt: nums.length > 1 ? parseNum(nums[1]) : 0 };
                     } else {
-                        // Di Pembatalan Pivot: Kolom pertama angka = Surat/Count, Kolom kedua = Luas
-                        pembatalan.croMap[croName] = {
-                            surat: nums.length > 0 ? parseNum(nums[0]) : 0,
-                            luas: nums.length > 1 ? parseNum(nums[1]) : 0
-                        };
+                        pembatalan.croMap[croName] = { surat: nums.length > 0 ? parseNum(nums[0]) : 0, luas: nums.length > 1 ? parseNum(nums[1]) : 0 };
                     }
                     continue; 
                 }
 
-                // Deteksi Baris "Total Keseluruhan"
                 let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
                 if (grandTotalStr) {
                     let nums = vals.filter(v => v !== grandTotalStr && v !== '' && !isNaN(parseNum(v)));
@@ -470,87 +441,62 @@
                 }
             }
             
-            // Auto Backup jika kata 'Total Keseluruhan' terlewat, hitung manual dari subtotal
-            if (penugasan.totalLuas === 0) {
-                Object.values(penugasan.croMap).forEach(val => { penugasan.totalLuas += val.luas; penugasan.totalPT += val.pt; });
-            }
-            if (pembatalan.totalLuas === 0) {
-                Object.values(pembatalan.croMap).forEach(val => { pembatalan.totalLuas += val.luas; pembatalan.totalSurat += val.surat; });
-            }
+            // Auto Backup jika kata 'Total Keseluruhan' tidak terbaca di kolom pertama
+            if (penugasan.totalLuas === 0) Object.values(penugasan.croMap).forEach(val => { penugasan.totalLuas += val.luas; penugasan.totalPT += val.pt; });
+            if (pembatalan.totalLuas === 0) Object.values(pembatalan.croMap).forEach(val => { pembatalan.totalLuas += val.luas; pembatalan.totalSurat += val.surat; });
 
             return { penugasan, pembatalan };
         }
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (PIVOT + RAW)
+        // DASHBOARD REKAPITULASI (PIVOT + RAW)
         // =========================================
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
             const filterDropdown = document.getElementById('cro-filter');
             
-            // 1. Set Dropdown CRO berdasarkan Pivot
             let croList = Object.keys(pivot.croMap).sort();
             if (filterDropdown && filterDropdown.options.length <= 1 && croList.length > 0) {
                 filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
                 croList.forEach(c => {
-                    let opt = document.createElement('option'); 
-                    opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
                     filterDropdown.appendChild(opt);
                 });
                 filterDropdown.value = "ALL";
             }
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
 
-            // 2. Ambil Angka KPI berdasarkan Filter
             let dispLuas = 0, dispPT = 0;
             let chartBarDataMap = {}, chartPieDataMap = {};
 
             if (selectedCRO === 'ALL') {
-                dispLuas = pivot.totalLuas;
-                dispPT = pivot.totalPT;
-                for(let c in pivot.croMap) {
-                    chartBarDataMap[c] = pivot.croMap[c].pt;
-                    chartPieDataMap[c] = pivot.croMap[c].luas;
-                }
+                dispLuas = pivot.totalLuas; dispPT = pivot.totalPT;
+                for(let c in pivot.croMap) { chartBarDataMap[c] = pivot.croMap[c].pt; chartPieDataMap[c] = pivot.croMap[c].luas; }
             } else if (pivot.croMap[selectedCRO]) {
-                dispLuas = pivot.croMap[selectedCRO].luas;
-                dispPT = pivot.croMap[selectedCRO].pt;
-                chartBarDataMap[selectedCRO] = pivot.croMap[selectedCRO].pt;
-                chartPieDataMap[selectedCRO] = pivot.croMap[selectedCRO].luas;
+                dispLuas = pivot.croMap[selectedCRO].luas; dispPT = pivot.croMap[selectedCRO].pt;
+                chartBarDataMap[selectedCRO] = pivot.croMap[selectedCRO].pt; chartPieDataMap[selectedCRO] = pivot.croMap[selectedCRO].luas;
             }
 
-            // 3. Render KPI
             const kpiContainer = document.getElementById('dashboard-kpi-container');
             if(kpiContainer) {
                 kpiContainer.innerHTML = `
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL PT (KEBUN)</div>
-                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
-                        <div class="text-[10px] text-gray-500 italic mt-2 opacity-80">(Data sinkronisasi dari Pivot Table)</div>
+                    <div class="relative overflow-hidden premium-card p-6 border-t-[3px] border-t-blue-500">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase mb-2">TOTAL PT (KEBUN)</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span></div>
                     </div>
-                    <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-purple-500 shadow-[0_4px_15px_-4px_rgba(168,85,247,0.2)] group transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-1 cursor-default">
-                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL LUAS TM (HA)</div>
-                        <div class="text-3xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1 tracking-tight">${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
-                        <div class="text-[10px] font-semibold text-purple-300 mt-2 bg-purple-500/20 inline-block px-2 py-0.5 rounded border border-purple-500/30">Terverifikasi Pivot</div>
+                    <div class="relative overflow-hidden premium-card p-6 border-t-[3px] border-t-purple-500">
+                        <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase mb-2">TOTAL LUAS TM (HA)</div>
+                        <div class="text-3xl md:text-3xl lg:text-4xl font-extrabold text-white mb-1">${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span></div>
                     </div>
                 `;
             }
 
-            const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
-            if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `JUMLAH PT (KEBUN) ${titleSuffix}`;
-            if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS TM (HA) ${titleSuffix}`;
-            if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `DAFTAR RINCIAN PERUSAHAAN (PT) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
-
-            // 4. Render Charts (Data dari Pivot)
             if(document.getElementById('dash-bar-chart')) {
                 Highcharts.chart('dash-bar-chart', {
-                    chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
-                    title: { text: null },
-                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
-                    xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: '#a1a1aa', fontWeight: '500' } }, lineWidth: 0, tickWidth: 0 },
-                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', labels: { style: { color: '#a1a1aa' } } },
-                    series: [{ name: 'Jumlah PT (Kebun)', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#3b82f6'], [1, 'rgba(59, 130, 246, 0.2)'] ] } }],
-                    plotOptions: { column: { borderRadius: 6, borderWidth: 0, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold' } } } },
+                    chart: { type: 'column', backgroundColor: 'transparent' }, title: { text: null },
+                    xAxis: { categories: Object.keys(chartBarDataMap) }, yAxis: { title: { text: null } },
+                    series: [{ name: 'Jumlah PT (Kebun)', data: Object.values(chartBarDataMap), color: '#3b82f6' }],
+                    plotOptions: { column: { borderRadius: 6, dataLabels: { enabled: true, color: '#ffffff' } } },
                     credits: { enabled: false }
                 });
             }
@@ -558,16 +504,13 @@
             if(document.getElementById('dash-pie-chart')) {
                 Highcharts.chart('dash-pie-chart', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${dispLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
-                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
-                    plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#e5e7eb', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: 'rgba(255,255,255,0.2)' } } },
-                    colors: ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#6366f1', '#14b8a6', '#f97316', '#84cc16'],
+                    title: { text: `<span style="font-size: 10px; color: #a1a1aa;">TOTAL LUAS</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${dispLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    plotOptions: { pie: { innerSize: '75%', dataLabels: { enabled: true, color: '#e5e7eb' } } },
                     series: [{ name: 'Luas TM (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }],
                     credits: { enabled: false }
                 });
             }
 
-            // 5. Render Data Table (Tetap dari Raw Sheet biar eksekutif bisa liat detail)
             let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") || Object.keys(rawData).find(k => k.toLowerCase().includes("rekap") && !k.toLowerCase().includes("batal")) || Object.keys(rawData)[0];
             let rekapData = rawData[rekapKey] || [];
             let ptListRaw = [];
@@ -575,7 +518,7 @@
             if (rekapData.length > 0) {
                 let rCols = Object.keys(rekapData[0] || {});
                 let cCro = rCols.find(k => k.toLowerCase() === 'cro' || k.toLowerCase().includes('regional')) || rCols[2] || rCols[0];
-                let cPt = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan') || k.toLowerCase().includes('koperasi')) || rCols[5] || rCols[1];
+                let cPt = rCols.find(k => k.toLowerCase() === 'nama pt' || k.toLowerCase().includes('perusahaan')) || rCols[5] || rCols[1];
                 let cLuas = rCols.find(k => k.toLowerCase().includes('luas kebun')) || rCols[8] || rCols[2];
                 let cLuasTM = rCols.find(k => k.toLowerCase().includes('luas tm')) || rCols[9] || rCols[3];
                 let cStatus = rCols.find(k => k.toLowerCase().includes('status')) || rCols[24] || rCols[5];
@@ -583,19 +526,14 @@
                 for (let i = 0; i < rekapData.length; i++) {
                     let row = rekapData[i];
                     let rowVals = Object.values(row).map(v => String(v).trim().toLowerCase());
-                    if (rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"))) break; // Sensor Rem
+                    if (rowVals.some(v => v === "total" || v === "kategori" || v.includes("jumlah:"))) break; 
 
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
                     let pt = String(row[cPt] || "").trim();
-                    if (!rawCro || rawCro === "-" || rawCro === "CRO" || rawCro.includes("SUMMARY")) continue;
-                    if (!pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
+                    if (!rawCro || rawCro === "-" || rawCro === "CRO" || rawCro.includes("SUMMARY") || !pt || pt === "-" || pt.toLowerCase() === "nama pt") continue;
 
                     if (selectedCRO === 'ALL' || selectedCRO === rawCro) {
-                        ptListRaw.push({ 
-                            name: pt, cro: rawCro, 
-                            luas: parseNum(row[cLuas]), luasTM: parseNum(row[cLuasTM]), 
-                            status: String(row[cStatus] || "-").trim() 
-                        });
+                        ptListRaw.push({ name: pt, cro: rawCro, luas: parseNum(row[cLuas]), luasTM: parseNum(row[cLuasTM]), status: String(row[cStatus] || "-").trim() });
                     }
                 }
             }
@@ -605,85 +543,56 @@
             if (ptListRaw.length > 0) {
                 ptListRaw.forEach(pt => {
                     let stc = pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'theme-text-muted');
-                    ptHtml += `
-                        <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-black/40 px-1.5 md:px-2 py-0.5 rounded border border-gray-600/50 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center ${stc}">${pt.status}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                            <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-purple-400 font-semibold text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        </tr>`;
+                    ptHtml += `<tr class="hover:bg-white/5 border-b border-gray-600/30">
+                        <td class="py-3 px-4 text-sm theme-text-main">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-2 text-[10px] theme-text-muted bg-black/40 px-2 py-0.5 rounded border border-gray-600/50">${pt.cro}</span>` : ''}</td>
+                        <td class="py-3 px-4 text-xs text-center ${stc}">${pt.status}</td>
+                        <td class="py-3 px-4 text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 text-sm text-purple-400 font-semibold text-right">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                    </tr>`;
                 });
-            } else {
-                ptHtml = `<tr><td colspan="4" class="py-6 text-center text-[11px] md:text-sm theme-text-muted">Tidak ada rincian data perusahaan.</td></tr>`;
-            }
+            } else { ptHtml = `<tr><td colspan="4" class="py-6 text-center text-sm theme-text-muted">Tidak ada rincian data perusahaan.</td></tr>`; }
             if(document.getElementById('pt-list-body')) document.getElementById('pt-list-body').innerHTML = ptHtml;
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (PIVOT + RAW + STATIS)
+        // DASHBOARD PEMBATALAN (PIVOT + RAW + KATEGORI STATIS)
         // =========================================
         function renderPembatalanDashboard() {
             const pivot = getPivotData().pembatalan;
             const filterDropdown = document.getElementById('pembatalan-cro-filter');
             
-            // 1. Set Dropdown CRO berdasarkan Pivot
             let croList = Object.keys(pivot.croMap).sort();
             if (filterDropdown && filterDropdown.options.length <= 1 && croList.length > 0) {
                 filterDropdown.innerHTML = '<option value="ALL" class="bg-[#111111] text-white">Semua CRO</option>';
                 croList.forEach(c => {
-                    let opt = document.createElement('option'); 
-                    opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c; opt.className = "bg-[#111111] text-white"; 
                     filterDropdown.appendChild(opt);
                 });
                 filterDropdown.value = "ALL";
             }
             const selectedCRO = filterDropdown ? filterDropdown.value : 'ALL';
 
-            // 2. Ambil Angka KPI berdasarkan Filter
             let dispSurat = 0, dispLuas = 0;
             let chartBarDataMap = {}, chartPieDataMap = {};
 
             if (selectedCRO === 'ALL') {
-                dispSurat = pivot.totalSurat;
-                dispLuas = pivot.totalLuas;
-                for(let c in pivot.croMap) {
-                    chartBarDataMap[c] = pivot.croMap[c].surat;
-                    chartPieDataMap[c] = pivot.croMap[c].luas;
-                }
+                dispSurat = pivot.totalSurat; dispLuas = pivot.totalLuas;
+                for(let c in pivot.croMap) { chartBarDataMap[c] = pivot.croMap[c].surat; chartPieDataMap[c] = pivot.croMap[c].luas; }
             } else if (pivot.croMap[selectedCRO]) {
-                dispSurat = pivot.croMap[selectedCRO].surat;
-                dispLuas = pivot.croMap[selectedCRO].luas;
-                chartBarDataMap[selectedCRO] = pivot.croMap[selectedCRO].surat;
-                chartPieDataMap[selectedCRO] = pivot.croMap[selectedCRO].luas;
+                dispSurat = pivot.croMap[selectedCRO].surat; dispLuas = pivot.croMap[selectedCRO].luas;
+                chartBarDataMap[selectedCRO] = pivot.croMap[selectedCRO].surat; chartPieDataMap[selectedCRO] = pivot.croMap[selectedCRO].luas;
             }
 
-            // 3. Render KPI
-            document.getElementById('kpi-total-batal').innerHTML = `${dispSurat.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
-            
-            const luasKpi = document.getElementById('kpi-luas-batal');
-            if(luasKpi) {
-                luasKpi.innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
-            }
-
-            const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
-            if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN ${titleSuffix}`;
-            if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
-
-            // 4. Render Charts (Data dari Pivot)
-            let categories = Object.keys(chartBarDataMap).sort();
-            let chartData = categories.map(c => chartBarDataMap[c]);
+            document.getElementById('kpi-total-batal').innerHTML = `${dispSurat.toLocaleString('id-ID')} <span class="text-lg text-gray-400">Surat</span>`;
+            document.getElementById('kpi-luas-batal').innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400">Ha</span>`;
 
             if(document.getElementById('dash-chart-pembatalan')) {
                 Highcharts.chart('dash-chart-pembatalan', {
-                    chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
-                    title: { text: null },
-                    legend: { enabled: false },
-                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
-                    xAxis: { categories: categories, labels: { style: { color: '#e5e7eb', fontWeight: '600', fontSize: '11px' } }, lineWidth: 0, tickWidth: 0 },
-                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', gridLineDashStyle: 'Dash', labels: { style: { color: '#a1a1aa' } } },
-                    series: [{ name: 'Jumlah Surat', data: chartData, color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
-                    plotOptions: { column: { borderRadius: 6, borderWidth: 0, pointPadding: 0.15, groupPadding: 0.1, maxPointWidth: 70, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, y: -5 } } },
+                    chart: { type: 'column', backgroundColor: 'transparent' }, title: { text: null },
+                    xAxis: { categories: Object.keys(chartBarDataMap) }, yAxis: { title: { text: null } },
+                    series: [{ name: 'Jumlah Surat', data: Object.values(chartBarDataMap), color: '#ef4444' }],
+                    plotOptions: { column: { borderRadius: 6, dataLabels: { enabled: true, color: '#ffffff' } } },
                     credits: { enabled: false }
                 });
             }
@@ -691,45 +600,33 @@
             if(document.getElementById('dash-pie-pembatalan')) {
                 Highcharts.chart('dash-pie-pembatalan', {
                     chart: { type: 'pie', backgroundColor: 'transparent' },
-                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL LUAS (HA)</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${dispLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
-                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
-                    plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#e5e7eb', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: 'rgba(255,255,255,0.2)' } } },
-                    colors: ['#ef4444', '#f59e0b', '#8b5cf6', '#3b82f6', '#10b981', '#f43f5e', '#06b6d4', '#6366f1', '#14b8a6', '#f97316'],
+                    title: { text: `<span style="font-size: 10px; color: #a1a1aa;">TOTAL LUAS</span><br><span style="font-size: 18px; font-weight: bold; color: #ffffff;">${dispLuas.toLocaleString('id-ID', {maximumFractionDigits:0})}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    plotOptions: { pie: { innerSize: '75%', dataLabels: { enabled: true, color: '#e5e7eb' } } },
                     series: [{ name: 'Luas TM Batal (Ha)', data: Object.keys(chartPieDataMap).map(k => [k, chartPieDataMap[k]]) }],
                     credits: { enabled: false }
                 });
             }
 
-            // 5. RENDER TABEL KATEGORI (Statis Hardcode)
+            // KATEGORI STATIS
             let summaryHtml = '';
             let dataKategori = [
-                { cat: "PT", val1: 44, val2: 32 },
-                { cat: "CV", val1: 32, val2: 13 },
-                { cat: "Koperasi", val1: 18, val2: 12 },
-                { cat: "Kelompok Tani", val1: 2, val2: 2 },
-                { cat: "Bumdes", val1: 0, val2: 0 },
-                { cat: "Perkumpulan", val1: 0, val2: 0 },
+                { cat: "PT", val1: 44, val2: 32 }, { cat: "CV", val1: 32, val2: 13 },
+                { cat: "Koperasi", val1: 18, val2: 12 }, { cat: "Kelompok Tani", val1: 2, val2: 2 },
                 { cat: "Total Penugasan", val1: 96, val2: 59 }
             ];
-
             dataKategori.forEach(item => {
                 let isTotal = item.cat === "Total Penugasan";
-                let rowClass = isTotal ? "bg-blue-500/10 font-bold" : "hover:bg-white/5 transition-colors";
+                let rowClass = isTotal ? "bg-blue-500/10 font-bold" : "hover:bg-white/5";
                 let textClass = isTotal ? "text-blue-400" : "theme-text-main";
-
-                summaryHtml += `
-                    <tr class="${rowClass} border-b border-gray-600/30 last:border-0">
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass}">${item.cat}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass} text-center">${item.val1}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm ${textClass} text-center">${item.val2}</td>
-                    </tr>
-                `;
+                summaryHtml += `<tr class="${rowClass} border-b border-gray-600/30">
+                    <td class="py-3 px-4 text-sm ${textClass}">${item.cat}</td>
+                    <td class="py-3 px-4 text-sm ${textClass} text-center">${item.val1}</td>
+                    <td class="py-3 px-4 text-sm ${textClass} text-center">${item.val2}</td>
+                </tr>`;
             });
-            if(document.getElementById('pembatalan-summary-body')) {
-                document.getElementById('pembatalan-summary-body').innerHTML = summaryHtml;
-            }
+            if(document.getElementById('pembatalan-summary-body')) document.getElementById('pembatalan-summary-body').innerHTML = summaryHtml;
 
-            // 6. RENDER DATA TABLE BAWAH DARI RAW EXCEL (Buat Detail Proses TTD / Terbit)
+            // DAFTAR PERUSAHAAN PEMBATALAN RAW
             let batalKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || Object.keys(rawData).find(k => k.toLowerCase().includes("pembatalan")) || "REKAPITULASI PEMBATALAN";
             let pembatalanData = rawData[batalKey] || [];
             let ptListBatal = [];
@@ -743,25 +640,19 @@
                 for (let i = 0; i < pembatalanData.length; i++) {
                     let row = pembatalanData[i];
                     let rowValsString = Object.values(row).map(v => String(v).trim().toLowerCase()).join(" ");
-                    if (rowValsString.includes("total") || rowValsString.includes("kategori") || rowValsString.includes("jumlah:")) break; // Sensor Rem
+                    if (rowValsString.includes("total") || rowValsString.includes("kategori") || rowValsString.includes("jumlah:")) break; 
                     
                     let pt = String(row[pPtCol] || "-").trim();
                     let rawCro = String(row[pCroCol] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
                     let luas = parseNum(row[pLuasTM]);
                     let displayStatus = rowValsString.includes("proses ttd") ? "Proses TTD" : "Telah Terbit";
 
-                    let hasData = false;
-                    if (pt !== "-" && pt.toLowerCase() !== "nama pt") hasData = true;
-                    if (displayStatus === "Proses TTD") hasData = true;
-                    if (luas > 0) hasData = true;
-
-                    if (hasData) {
-                        if (rawCro && rawCro !== "-" && rawCro !== "CRO") {
-                            if (!rawCro.startsWith("CRO")) rawCro = "CRO " + rawCro;
-                        } else { rawCro = "Belum Ada CRO"; }
+                    if (pt !== "-" && pt.toLowerCase() !== "nama pt" && luas > 0) {
+                        if (rawCro && rawCro !== "-") { if (!rawCro.startsWith("CRO")) rawCro = "CRO " + rawCro; } 
+                        else { rawCro = "Belum Ada CRO"; }
 
                         if (selectedCRO === 'ALL' || selectedCRO === rawCro) {
-                            ptListBatal.push({ name: pt === "-" ? "Data Proses" : pt, cro: rawCro, luas: luas, status: displayStatus });
+                            ptListBatal.push({ name: pt, cro: rawCro, luas: luas, status: displayStatus });
                         }
                     }
                 }
@@ -770,49 +661,29 @@
             let ptBatalHtml = '';
             ptListBatal.sort((a,b) => b.luas - a.luas); 
             ptListBatal.forEach(pt => {
-                let statusBadge = pt.status === "Proses TTD" 
-                    ? `<span class="inline-block px-2 py-1 rounded border bg-yellow-500/20 text-yellow-400 border-yellow-500/30 font-semibold shadow-sm">${pt.status}</span>`
-                    : `<span class="inline-block px-2 py-1 rounded border bg-red-500/20 text-red-400 border-red-500/30 font-semibold shadow-sm">${pt.status}</span>`;
-
-                ptBatalHtml += `
-                    <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main font-medium">${pt.name} ${selectedCRO === 'ALL' && pt.cro !== 'Belum Ada CRO' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] theme-text-muted bg-black/40 px-1.5 md:px-2 py-0.5 rounded border border-gray-600/50 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm text-center theme-text-muted">${pt.cro}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[11px] md:text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
-                        <td class="py-2 md:py-3 px-3 md:px-4 text-[10px] md:text-[11px] text-center">${statusBadge}</td>
-                    </tr>
-                `;
+                let statusBadge = pt.status === "Proses TTD" ? `<span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded">${pt.status}</span>` : `<span class="px-2 py-1 bg-red-500/20 text-red-400 rounded">${pt.status}</span>`;
+                ptBatalHtml += `<tr class="hover:bg-white/5 border-b border-gray-600/30">
+                    <td class="py-3 px-4 text-sm theme-text-main">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-2 text-[10px] theme-text-muted bg-black/40 px-2 py-0.5 rounded border border-gray-600/50">${pt.cro}</span>` : ''}</td>
+                    <td class="py-3 px-4 text-sm text-center theme-text-muted">${pt.cro}</td>
+                    <td class="py-3 px-4 text-sm theme-text-main text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-xs text-center">${statusBadge}</td>
+                </tr>`;
             });
-            if (ptListBatal.length === 0) ptBatalHtml = `<tr><td colspan="4" class="text-center py-6 theme-text-muted text-xs md:text-sm">Tidak ada rincian perusahaan.</td></tr>`;
+            if (ptListBatal.length === 0) ptBatalHtml = `<tr><td colspan="4" class="text-center py-6 theme-text-muted text-sm">Tidak ada rincian perusahaan.</td></tr>`;
             if(document.getElementById('pembatalan-pt-list-body')) document.getElementById('pembatalan-pt-list-body').innerHTML = ptBatalHtml;
-            
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
 
         // =========================================
-        // SISA KODE LAINNYA 
+        // MASTER DATA & AUTO SYNC
         // =========================================
-        function getFileIcon(fileName) {
-            const ext = fileName.toLowerCase();
-            if (ext.includes('.pdf')) return `<svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`; 
-            else if (ext.includes('.doc') || ext.includes('.docx')) return `<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`; 
-            else return `<svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`; 
-        }
-
         function loadTable(sheetName) {
             document.getElementById('table-area').classList.remove('hidden');
             let actualKey = sheetName;
-            
-            if (sheetName === "REKAPITULASI") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) 
-                            || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
-                            || "REKAPITULASI PENUGASAN";
-            } else if (sheetName === "REKAPITULASI PEMBATALAN") {
-                actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
-            }
+            if (sheetName === "REKAPITULASI") actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase().includes("REKAPITULASI PENUGASAN")) || "REKAPITULASI PENUGASAN";
+            else if (sheetName === "REKAPITULASI PEMBATALAN") actualKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PEMBATALAN") || "REKAPITULASI PEMBATALAN";
 
             const dataFull = rawData[actualKey] || [];
-            
             let data = [];
             for(let i=0; i<dataFull.length; i++) {
                 let rowVals = Object.values(dataFull[i]).map(v => String(v).trim().toLowerCase());
@@ -821,126 +692,56 @@
             }
 
             if ($.fn.DataTable.isDataTable('#mainTable')) { $('#mainTable').DataTable().destroy(); $('#mainTable').empty(); }
-            
-            if (data.length === 0) { 
-                $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data tersedia pada sheet ini.</td></tr></tbody>`); 
-                return; 
-            }
+            if (data.length === 0) { $('#mainTable').html(`<tbody><tr><td class="text-center py-12 theme-text-muted text-sm">Tidak ada data.</td></tr></tbody>`); return; }
 
             const validKeys = [];
             let allKeysSet = new Set();
             data.forEach(row => Object.keys(row).forEach(k => allKeysSet.add(k)));
-            let allKeys = Array.from(allKeysSet);
-
-            allKeys.forEach(key => {
+            Array.from(allKeysSet).forEach(key => {
                 let isGhost = true;
-                for(let i=0; i < data.length; i++) {
-                    let v = data[i][key];
-                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') { isGhost = false; break; }
-                }
-                if (isGhost) return;
-                validKeys.push(key);
+                for(let i=0; i < data.length; i++) { if (data[i][key] !== undefined && String(data[i][key]).trim() !== '-' && String(data[i][key]).trim() !== '') { isGhost = false; break; } }
+                if (!isGhost) validKeys.push(key);
             });
 
             const columns = validKeys.map(key => {
-                let displayTitle = key;
-                if (displayTitle.startsWith('__EMPTY')) displayTitle = "-"; 
-                else displayTitle = displayTitle.replace(/_\d+$/, '').trim(); 
-
-                let numTitle = parseFloat(displayTitle);
-                if (!isNaN(numTitle) && numTitle > 40000 && numTitle < 50000) {
-                    let d = new Date(Math.round((numTitle - 25569) * 86400000));
-                    displayTitle = d.getUTCDate() + '/' + (d.getUTCMonth() + 1);
-                }
-
-                let isDateCol = displayTitle.toLowerCase().includes('tgl') || displayTitle.toLowerCase().includes('tanggal') || displayTitle.toLowerCase().includes('waktu');
-                
-                return { 
-                    title: `<span class="whitespace-nowrap">${displayTitle}</span>`, 
-                    data: key, 
-                    defaultContent: "-", 
-                    render: function(val) {
-                        if (isDateCol && typeof val === 'number') {
-                            let d = new Date(Math.round((val - 25569) * 86400000));
-                            return `${d.getUTCDate().toString().padStart(2, '0')}/${(d.getUTCMonth() + 1).toString().padStart(2, '0')}/${d.getUTCFullYear()}`;
-                        }
-                        if (typeof val === 'number') return val % 1 !== 0 ? val.toLocaleString('id-ID', {maximumFractionDigits: 2}) : val.toLocaleString('id-ID');
-                        return val;
-                    }
+                let displayTitle = key.startsWith('__EMPTY') ? "-" : key.replace(/_\d+$/, '').trim();
+                return { title: `<span class="whitespace-nowrap">${displayTitle}</span>`, data: key, defaultContent: "-", 
+                    render: function(val) { return typeof val === 'number' ? (val % 1 !== 0 ? val.toLocaleString('id-ID', {maximumFractionDigits: 2}) : val.toLocaleString('id-ID')) : val; }
                 };
             });
 
-            currentDataTable = $('#mainTable').DataTable({
-                data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false, colReorder: true, 
-                language: { search: "", searchPlaceholder: "Cari Data...", lengthMenu: "Tampil _MENU_ baris", info: "Menampilkan _START_ - _END_ dari _TOTAL_ data", paginate: { previous: "Prev", next: "Next" } }
-            });
+            currentDataTable = $('#mainTable').DataTable({ data: data, columns: columns, scrollX: true, pageLength: 10, ordering: false, language: { search: "", searchPlaceholder: "Cari Data..." } });
         }
 
         document.addEventListener("DOMContentLoaded", function() {
             checkLoginState(); 
+            if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
             
-            if (localStorage.getItem('theme') === 'light') {
-                document.body.classList.add('light-mode');
-                const themeIcon = document.getElementById('theme-icon');
-                if(themeIcon) themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>`;
-            }
-
             const sidebarMaster = document.getElementById('sidebar-master-data');
             if(sidebarMaster) {
                 const masterItems = [ { id: "REKAPITULASI", display: "REKAPITULASI" }, { id: "REKAPITULASI PEMBATALAN", display: "REKAPITULASI PEMBATALAN" } ];
                 masterItems.forEach((item, idx) => {
-                    const btn = document.createElement('button'); 
-                    btn.id = 'nav-md-' + idx; 
-                    btn.className = 'w-full sidebar-child-link text-left group'; 
-                    btn.innerHTML = `<svg class="w-4 h-4 mr-3 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> <span class="whitespace-normal leading-snug tracking-wide">${item.display}</span>`;
-                    btn.onclick = () => switchView('view-database', btn.id, item.id);
+                    const btn = document.createElement('button'); btn.id = 'nav-md-' + idx; btn.className = 'w-full sidebar-child-link text-left'; 
+                    btn.innerHTML = `<span>${item.display}</span>`; btn.onclick = () => switchView('view-database', btn.id, item.id);
                     sidebarMaster.appendChild(btn);
                 });
             }
 
-            const isLightInit = document.body.classList.contains('light-mode');
             Highcharts.setOptions({ colors: ['#3b82f6', '#8b5cf6', '#f97316', '#10b981', '#f43f5e', '#06b6d4'], credits: { enabled: false }, chart: { style: { fontFamily: 'Inter' } } });
-            updateChartTheme(isLightInit);
-
+            updateChartTheme(document.body.classList.contains('light-mode'));
             switchView('view-dashboard', 'nav-dashboard'); 
             
-            window.addEventListener('resize', () => {
-                if(currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 200);
-            });
-            
             async function syncData() {
-                const syncText = document.getElementById('sync-text');
-                const syncDot = document.getElementById('sync-dot');
-
                 try {
                     const response = await fetch('/api/check-updates?t=' + new Date().getTime());
                     const result = await response.json();
-                    
                     if (result.rawData && Object.keys(result.rawData).length > 0 && JSON.stringify(rawData) !== JSON.stringify(result.rawData)) {
                         rawData = result.rawData;
-                        
                         if (currentActiveSheet === 'dashboard') renderDashboardCharts(); 
                         else if (currentActiveSheet === 'pembatalan') renderPembatalanDashboard(); 
                         else loadTable(currentActiveSheet);
-
-                        if(syncText && syncDot) {
-                            syncText.innerText = "UPDATING...";
-                            syncText.classList.remove('text-emerald-500', 'text-red-500'); syncText.classList.add('text-blue-500');
-                            syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>`;
-                            
-                            setTimeout(() => { 
-                                syncText.innerText = "LIVE SYSTEM"; syncText.classList.add('text-emerald-500'); syncText.classList.remove('text-blue-500');
-                                syncDot.innerHTML = `<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>`;
-                            }, 3000);
-                        }
                     }
-                } catch (err) { 
-                    console.error("Gagal sinkronisasi background:", err); 
-                    if(syncText && syncDot) {
-                        syncText.innerText = "KONEKSI LAMBAT"; syncText.classList.remove('text-blue-500', 'text-emerald-500'); syncText.classList.add('text-red-500');
-                        syncDot.innerHTML = `<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>`;
-                    }
-                }
+                } catch (err) { console.error("Sync gagal", err); }
             }
             setInterval(syncData, 10000); 
         });
