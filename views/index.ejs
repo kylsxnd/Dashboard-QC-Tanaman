@@ -10,28 +10,58 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
-    <!-- DataTables Extension -->
+    <!-- DataTables & ColReorder Extension -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-main: #0a0a0a; --bg-panel: #111111; --bg-card: #151515;
-            --border-color: #262626; --text-main: #ffffff; --text-muted: #a1a1aa;
+            --bg-main: #0a0a0a; 
+            --bg-panel: #111111;
+            --bg-card: #151515;
+            --border-color: #262626;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
             --hover-bg: #27272a;
         }
+        
         body.light-mode {
-            --bg-main: #f3f4f6; --bg-panel: #ffffff; --bg-card: #ffffff;
-            --border-color: #e5e7eb; --text-main: #1f2937; --text-muted: #6b7280;
+            --bg-main: #f3f4f6; 
+            --bg-panel: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
             --hover-bg: #f8fafc;
         }
+
+        .theme-bg-main { background-color: var(--bg-main); transition: all 0.3s ease; }
+        .theme-bg-panel { background-color: var(--bg-panel); transition: all 0.3s ease; }
+        .theme-border { border-color: var(--border-color); transition: all 0.3s ease; }
+        .theme-text-main { color: var(--text-main); transition: all 0.3s ease; }
+        .theme-text-muted { color: var(--text-muted); transition: all 0.3s ease; }
+
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        .premium-card { background: rgba(21, 21, 21, 0.72); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); transition: all 0.3s ease; }
-        body.light-mode .premium-card { background: rgba(255, 255, 255, 0.88); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .premium-card { 
+            background: rgba(21, 21, 21, 0.72); 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 12px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); 
+            transition: all 0.3s ease; 
+        }
+        
+        body.light-mode .premium-card {
+            background: rgba(255, 255, 255, 0.88); 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+        }
 
         .sidebar-link { padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); border-radius: 10px; display: flex; align-items: center; margin-bottom: 6px; border: 1px solid transparent; transition: all 0.2s;}
         .sidebar-link:hover { color: var(--text-main); background: rgba(255,255,255,0.04); transform: translateX(4px); }
@@ -130,7 +160,7 @@
         <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10 text-[var(--text-main)]">
             
             <!-- ============================================== -->
-            <!-- 1. DASHBOARD REKAPITULASI PENUGASAN (MURNI PIVOT) -->
+            <!-- 1. DASHBOARD REKAPITULASI PENUGASAN -->
             <!-- ============================================== -->
             <section id="view-dashboard" class="fade-in block">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
@@ -146,7 +176,6 @@
                     </div>
                 </div>
 
-                <!-- KPI CARD -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-blue-500 shadow-[0_4px_15px_-4px_rgba(59,130,246,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL JUMLAH PT (KEBUN)</div>
@@ -158,7 +187,6 @@
                     </div>
                 </div>
 
-                <!-- CHARTS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">JUMLAH PT (KEBUN) PER CRO</h3>
@@ -170,7 +198,6 @@
                     </div>
                 </div>
 
-                <!-- TABEL PIVOT SUMMARY (MENGGANTIKAN TABEL RAW LAMA) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
                     <h3 id="pt-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">REKAPITULASI PIVOT (PENUGASAN)</h3>
                     <div class="overflow-x-auto">
@@ -189,7 +216,7 @@
             </section>
 
             <!-- ============================================== -->
-            <!-- 2. DASHBOARD PEMBATALAN (MURNI PIVOT) -->
+            <!-- 2. DASHBOARD PEMBATALAN -->
             <!-- ============================================== -->
             <section id="view-pembatalan" class="fade-in hidden">
                 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
@@ -205,7 +232,6 @@
                     </div>
                 </div>
 
-                <!-- KPI CARD -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="relative overflow-hidden premium-card p-6 bg-gradient-to-br from-[rgba(17,17,17,0.8)] to-[rgba(21,21,21,0.9)] border-t-[3px] border-t-red-600 shadow-[0_4px_15px_-4px_rgba(220,38,38,0.2)]">
                         <div class="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-widest mb-2">TOTAL SURAT PEMBATALAN</div>
@@ -217,7 +243,6 @@
                     </div>
                 </div>
 
-                <!-- CHARTS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
                         <h3 id="pembatalan-chart-title-bar" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">JUMLAH SURAT PEMBATALAN PER CRO</h3>
@@ -229,7 +254,6 @@
                     </div>
                 </div>
 
-                <!-- TABEL PIVOT SUMMARY PEMBATALAN (MENGGANTIKAN TABEL RAW LAMA) -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
                     <h3 id="pembatalan-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">REKAPITULASI PIVOT (PEMBATALAN)</h3>
                     <div class="overflow-x-auto">
@@ -247,7 +271,9 @@
                 </div>
             </section>
 
+            <!-- ============================================== -->
             <!-- 3. MASTER DATA REPOSITORY -->
+            <!-- ============================================== -->
             <section id="view-database" class="fade-in hidden">
                 <div class="mb-6">
                     <h2 class="text-xl md:text-2xl font-bold tracking-tight" id="database-title">Master Data Repository</h2>
@@ -335,99 +361,117 @@
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
         }
 
+        // =========================================
+        // ROBUST NUMBER PARSER
+        // =========================================
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
-            if (!val) return 0;
-            let s = String(val).replace(/Rp|\$|€|\s/gi, '').replace(/\./g, '').replace(',', '.');
+            if (val === null || val === undefined) return 0;
+            
+            let s = String(val).trim();
+            if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
+
+            s = s.replace(/Rp|\$|€|\s/gi, '');
+            let lastDot = s.lastIndexOf('.');
+            let lastComma = s.lastIndexOf(',');
+
+            if (lastComma > lastDot && lastDot !== -1) {
+                s = s.replace(/\./g, '').replace(',', '.');
+            } else if (lastDot > lastComma && lastComma !== -1) {
+                s = s.replace(/,/g, '');
+            } else if (lastComma !== -1 && lastDot === -1) {
+                s = s.replace(',', '.');
+            }
+
             let res = parseFloat(s);
             return isNaN(res) ? 0 : res;
         };
 
         // =========================================
-        // MESIN EKSTRAKTOR PIVOT (ANTI-NOL)
+        // MESIN EKSTRAKSI PIVOT (ANTI-NOL)
         // =========================================
         function getPivotData() {
-            // Coba cari nama sheet yang mengandung "PIVOT" tapi bukan "TABLE"
-            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT')
-                             || Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE'));
-
-            // Jalur Darurat: Geledah isi file Excel, cari yang ada tulisan "Total Keseluruhan"
+            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT');
+            if (!pivotSheetKey) pivotSheetKey = Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE'));
+            
             if (!pivotSheetKey) {
-                 pivotSheetKey = Object.keys(rawData).find(k => {
-                     let sheet = rawData[k];
-                     if(!Array.isArray(sheet)) return false;
-                     return sheet.some(r => Object.values(r).join(" ").toLowerCase().includes("total keseluruhan"));
-                 });
+                pivotSheetKey = Object.keys(rawData).find(k => {
+                    let sheet = rawData[k];
+                    if(!Array.isArray(sheet)) return false;
+                    return sheet.some(r => Object.values(r).join(" ").toLowerCase().includes("total keseluruhan"));
+                });
             }
 
             let pivotData = rawData[pivotSheetKey] || [];
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
-            let currentSection = 'PENUGASAN';
+            let currentSection = 'PENUGASAN'; 
 
-            // FUNGSI KHUSUS NGEKSTRAK SEMUA ANGKA DARI BARIS EXCEL
             const extractNumbers = (rowObj) => {
                 let numbers = [];
                 Object.values(rowObj).forEach(val => {
-                    if (typeof val === 'number') numbers.push(val);
-                    else if (typeof val === 'string') {
+                    if (typeof val === 'number') {
+                        if (val > 0) numbers.push(val);
+                    } else if (typeof val === 'string') {
                         let s = val.trim();
-                        // Kalau string ada hurufnya (selain huruf E buat math), buang.
+                        if (s === '-' || s === '') return;
+                        // Hapus string yang murni huruf (misal: "Tahap 2" bakal dibuang, jadi 0 ga nyangkut)
                         if (/[a-zA-Z]/.test(s.replace(/[eE]/g, ''))) return;
                         let parsed = parseNum(s);
-                        if (s !== '' && !isNaN(parsed)) numbers.push(parsed);
+                        if (!isNaN(parsed) && parsed > 0) numbers.push(parsed);
                     }
                 });
+                // Sort Descending: Angka terbesar (Luas TM) duluan, angka kecil (PT/Surat) belakangan
+                numbers.sort((a, b) => b - a); 
                 return numbers;
             };
 
             for(let i=0; i < pivotData.length; i++) {
                 let row = pivotData[i];
-                let rowStr = Object.values(row).join(" ").toLowerCase();
+                let vals = Object.values(row).map(v => String(v).trim());
+                let rowStr = vals.join(" ").toLowerCase();
 
-                // Deteksi batas antara tabel penugasan dan pembatalan (Dari Gambar)
-                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas")) {
+                // Batas antara tabel penugasan dan pembatalan
+                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
                     currentSection = 'PEMBATALAN';
                 }
 
-                // 1. TANGKAP "TOTAL KESELURUHAN"
-                if (rowStr.includes("total keseluruhan")) {
+                // TANGKAP "TOTAL KESELURUHAN"
+                let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
+                if (grandTotalStr) {
                     let nums = extractNumbers(row);
                     if (nums.length >= 2) {
-                        // Logika Pasti: Angka gede = Luas TM (Misal 131.184), Angka kecil = PT/Surat (Misal 210)
                         if (currentSection === 'PENUGASAN') {
-                            penugasan.totalLuas = Math.max(nums[0], nums[1]);
-                            penugasan.totalPT = Math.min(nums[0], nums[1]);
+                            penugasan.totalLuas = nums[0]; // Terbesar pasti Luas
+                            penugasan.totalPT = nums[1];   // Terkecil pasti PT
                         } else {
-                            pembatalan.totalLuas = Math.max(nums[0], nums[1]);
-                            pembatalan.totalSurat = Math.min(nums[0], nums[1]);
+                            pembatalan.totalLuas = nums[0]; // Terbesar pasti Luas
+                            pembatalan.totalSurat = nums[1]; // Terkecil pasti Surat
                         }
                     }
-                    continue;
+                    continue; 
                 }
 
-                // 2. TANGKAP "CRO ... TOTAL"
-                let isCroTotal = rowStr.includes("total") && rowStr.includes("cro") && !rowStr.includes("keseluruhan");
-                if (isCroTotal) {
-                    let croNameMatch = Object.values(row).find(v => typeof v === 'string' && v.toLowerCase().includes('total') && v.toLowerCase().includes('cro'));
-                    let croName = croNameMatch ? croNameMatch.replace(/Total/ig, '').trim().toUpperCase() : "UNKNOWN";
-                    
+                // TANGKAP "CRO ... TOTAL"
+                let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
+                if (croTotalStr && !croTotalStr.toLowerCase().includes("keseluruhan")) {
+                    let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
                     let nums = extractNumbers(row);
                     if (nums.length >= 2) {
                         if (currentSection === 'PENUGASAN') {
-                            penugasan.croMap[croName] = { luas: Math.max(nums[0], nums[1]), pt: Math.min(nums[0], nums[1]) };
+                            penugasan.croMap[croName] = { luas: nums[0], pt: nums[1] };
                         } else {
-                            pembatalan.croMap[croName] = { luas: Math.max(nums[0], nums[1]), surat: Math.min(nums[0], nums[1]) };
+                            pembatalan.croMap[croName] = { luas: nums[0], surat: nums[1] };
                         }
                     }
                 }
             }
             
-            // Backup Hitung Otomatis jika "Total Keseluruhan" benar-benar gagal kebaca
-            if (penugasan.totalLuas === 0) {
+            // Failsafe backup
+            if (penugasan.totalPT === 0) {
                 Object.values(penugasan.croMap).forEach(v => { penugasan.totalLuas += v.luas; penugasan.totalPT += v.pt; });
             }
-            if (pembatalan.totalLuas === 0) {
+            if (pembatalan.totalSurat === 0) {
                 Object.values(pembatalan.croMap).forEach(v => { pembatalan.totalLuas += v.luas; pembatalan.totalSurat += v.surat; });
             }
 
@@ -435,7 +479,7 @@
         }
 
         // =========================================
-        // DASHBOARD 1: REKAPITULASI (PENUGASAN)
+        // DASHBOARD 1: RENDER PENUGASAN
         // =========================================
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
@@ -540,7 +584,7 @@
         }
 
         // =========================================
-        // DASHBOARD 2: PEMBATALAN (MURNI PIVOT)
+        // DASHBOARD 2: RENDER PEMBATALAN
         // =========================================
         function renderPembatalanDashboard() {
             const pivot = getPivotData().pembatalan;
@@ -586,18 +630,19 @@
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN ${titleSuffix}`;
             if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
-            if(document.getElementById('pembatalan-list-title')) document.getElementById('pembatalan-list-title').innerText = `REKAPITULASI PIVOT (PEMBATALAN) ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
+            if(document.getElementById('pembatalan-list-title')) document.getElementById('pembatalan-list-title').innerText = `REKAPITULASI PIVOT PEMBATALAN ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
             // 3. RENDER CHARTS
             if(document.getElementById('dash-chart-pembatalan')) {
                 Highcharts.chart('dash-chart-pembatalan', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
                     title: { text: null },
+                    legend: { enabled: false },
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
-                    xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: '#a1a1aa', fontWeight: '500' } }, lineWidth: 0, tickWidth: 0 },
-                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', labels: { style: { color: '#a1a1aa' } } },
-                    series: [{ name: 'Jumlah Surat', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
-                    plotOptions: { column: { borderRadius: 6, borderWidth: 0, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold' }, y: -5 } } },
+                    xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: '#e5e7eb', fontWeight: '600', fontSize: '11px' } }, lineWidth: 0, tickWidth: 0 },
+                    yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', gridLineDashStyle: 'Dash', labels: { style: { color: '#a1a1aa' } } },
+                    series: [{ name: 'Jumlah Surat Selesai', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
+                    plotOptions: { column: { borderRadius: 6, borderWidth: 0, pointPadding: 0.15, groupPadding: 0.1, maxPointWidth: 70, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, y: -5 } } },
                     credits: { enabled: false }
                 });
             }
