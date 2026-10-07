@@ -460,18 +460,23 @@
         };
 
         // =========================================
-        // ENGINE PIVOT TABLE (BACA DARI SHEET CERMIN "API_PIVOT")
+        // ENGINE PIVOT TABLE (FIX JUMLAH PT KOSONG)
         // =========================================
         function getPivotData() {
-            // TARGET: Langsung tembak ke sheet cermin yang barusan kita bikin
+            // Target ke sheet cermin API_PIVOT
             let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT');
+            // Kalau nggak nemu API_PIVOT, coba cari PIVOT biasa
+            if (!pivotSheetKey) {
+                pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'PIVOT' || k.toUpperCase().includes('PIVOT'));
+            }
+            
             let pivotData = rawData[pivotSheetKey] || [];
 
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
             
             if (pivotData.length === 0) {
-                 console.log("Menunggu data dari sheet API_PIVOT...");
+                 console.log("Menunggu data dari sheet PIVOT/API_PIVOT...");
                  return { penugasan, pembatalan };
             }
 
@@ -479,10 +484,12 @@
 
             for(let i=0; i<pivotData.length; i++) {
                 let row = pivotData[i];
+                
+                // Ambil semua *value* dari *object* row, bersihin spasinya
                 let vals = Object.values(row).map(v => String(v).trim());
                 let rowStr = vals.join(" ").toLowerCase();
 
-                // Batas Penugasan & Pembatalan (Berdasarkan tulisan di Excel lu)
+                // Batas Penugasan & Pembatalan
                 if(rowStr.includes("counta") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
                     currentSection = 'PEMBATALAN';
                 }
@@ -490,11 +497,13 @@
                 // 1. TANGKAP "TOTAL KESELURUHAN"
                 let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
                 if (grandTotalStr) {
+                    // Cari SEMUA angka di baris ini
                     let nums = vals.filter(v => v !== grandTotalStr && v !== '' && !isNaN(parseNum(v)));
+                    
                     if (nums.length >= 2) {
                         let n1 = parseNum(nums[0]); 
                         let n2 = parseNum(nums[1]);
-                        // Logika Pasti Jitu: Angka gede = Luas (131.184), Angka kecil = PT (210)
+                        
                         if (currentSection === 'PENUGASAN') {
                             penugasan.totalLuas = Math.max(n1, n2);
                             penugasan.totalPT = Math.min(n1, n2);
@@ -502,6 +511,10 @@
                             pembatalan.totalLuas = Math.max(n1, n2);
                             pembatalan.totalSurat = Math.min(n1, n2);
                         }
+                    } else if (nums.length === 1) {
+                        // Kalau anehnya cuma nemu 1 angka, anggap itu Luas
+                        if (currentSection === 'PENUGASAN') penugasan.totalLuas = parseNum(nums[0]);
+                        else pembatalan.totalLuas = parseNum(nums[0]);
                     }
                     continue; 
                 }
@@ -520,8 +533,29 @@
                         } else {
                             pembatalan.croMap[croName] = { luas: Math.max(n1, n2), surat: Math.min(n1, n2) };
                         }
+                    } else if (nums.length === 1) {
+                         if (currentSection === 'PENUGASAN') {
+                            penugasan.croMap[croName] = { luas: parseNum(nums[0]), pt: 0 };
+                        } else {
+                            pembatalan.croMap[croName] = { luas: parseNum(nums[0]), surat: 0 };
+                        }
                     }
                 }
+            }
+
+            // --- FAILSAFE MANUAL ---
+            // Kalau "Total PT" masih 0 (karena baris Total Keseluruhan gagal kebaca sempurna), 
+            // kita jumlahin paksa dari hasil tangkapan tiap CRO
+            if (penugasan.totalPT === 0) {
+                let hitungManualPT = 0;
+                Object.values(penugasan.croMap).forEach(val => { hitungManualPT += val.pt; });
+                if (hitungManualPT > 0) penugasan.totalPT = hitungManualPT;
+            }
+
+            if (pembatalan.totalSurat === 0) {
+                let hitungManualSurat = 0;
+                Object.values(pembatalan.croMap).forEach(val => { hitungManualSurat += val.surat; });
+                if (hitungManualSurat > 0) pembatalan.totalSurat = hitungManualSurat;
             }
 
             console.log("Data berhasil disedot dari API_PIVOT:", {penugasan, pembatalan});
