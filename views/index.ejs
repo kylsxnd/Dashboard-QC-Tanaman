@@ -76,9 +76,6 @@
         table.dataTable tbody td { border-bottom: 1px solid rgba(255,255,255,0.05) !important; font-size: 13px; padding: 12px 18px !important; color: var(--text-main) !important; }
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; }
         body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; border-color: rgba(255,255,255,0.2) !important; font-weight: 600; }
 
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -221,21 +218,11 @@
                     </div>
                 </div>
 
-                <!-- TABEL RAW DAFTAR PT DENGAN FITUR FILTER & PAGINATION -->
+                <!-- TABEL RAW DAFTAR PT DITAMBAHKAN KEMBALI -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
-                        <h3 id="pt-raw-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">DAFTAR PERUSAHAAN (PT)</h3>
-                        <div class="flex items-center gap-2 bg-black/40 border border-gray-600/30 px-3 py-1.5 rounded-lg">
-                            <span class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">STATUS:</span>
-                            <select id="status-filter" onchange="renderDashboardCharts()" class="bg-transparent text-[var(--text-main)] text-xs font-semibold outline-none cursor-pointer border-none !p-0">
-                                <option value="ALL" class="bg-[#111111] text-white">Semua</option>
-                                <option value="SUDAH" class="bg-[#111111] text-blue-400">Sudah Dikelola</option>
-                                <option value="BELUM" class="bg-[#111111] text-red-400">Belum Dikelola</option>
-                            </select>
-                        </div>
-                    </div>
+                    <h3 id="pt-raw-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">DAFTAR PERUSAHAAN (PT)</h3>
                     <div class="overflow-x-auto">
-                        <table id="pt-raw-table" class="w-full text-left border-collapse min-w-[600px]">
+                        <table class="w-full text-left border-collapse min-w-[600px]">
                             <thead>
                                 <tr>
                                     <th class="border-b border-gray-600/30 py-3 px-4 text-[10px] text-gray-400 uppercase bg-blue-500/10 rounded-tl-lg">NAMA PERUSAHAAN (PT)</th>
@@ -398,34 +385,17 @@
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
         }
 
-        // =========================================
-        // ROBUST NUMBER PARSER
-        // =========================================
+        // PARSER ANGKA
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
-            if (val === null || val === undefined) return 0;
-            
-            let s = String(val).trim();
-            if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
-
-            s = s.replace(/Rp|\$|€|\s/gi, '');
-            let lastDot = s.lastIndexOf('.');
-            let lastComma = s.lastIndexOf(',');
-
-            if (lastComma > lastDot && lastDot !== -1) {
-                s = s.replace(/\./g, '').replace(',', '.');
-            } else if (lastDot > lastComma && lastComma !== -1) {
-                s = s.replace(/,/g, '');
-            } else if (lastComma !== -1 && lastDot === -1) {
-                s = s.replace(',', '.');
-            }
-
+            if (!val) return 0;
+            let s = String(val).replace(/Rp|\$|€|\s/gi, '').replace(/\./g, '').replace(',', '.');
             let res = parseFloat(s);
             return isNaN(res) ? 0 : res;
         };
 
         // =========================================
-        // MESIN EKSTRAKSI PIVOT (ANTI-NOL)
+        // MESIN EKSTRAKTOR PIVOT (ANTI-NOL)
         // =========================================
         function getPivotData() {
             let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT');
@@ -510,7 +480,7 @@
         }
 
         // =========================================
-        // DASHBOARD 1: RENDER PENUGASAN
+        // DASHBOARD 1: RENDER PENUGASAN (DENGAN RAW & STATUS KELOLA)
         // =========================================
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
@@ -550,13 +520,14 @@
                 }
             }
 
-            // --- EKSTRAK RAW DATA (Untuk Tabel PT & Grafik Status) ---
+            // --- EKSTRAK RAW DATA (Untuk Hitung Status Kelola & Tabel Daftar PT) ---
             let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") 
                         || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
                         || Object.keys(rawData)[0];
             let rekapDataRaw = rawData[rekapKey] || [];
             
-            let totalSudah = 0, totalBelum = 0;
+            let totalSudah = 0;
+            let totalBelum = 0;
             let ptListRaw = [];
 
             if (rekapDataRaw.length > 0) {
@@ -668,30 +639,27 @@
             if(document.getElementById('pivot-penugasan-body')) document.getElementById('pivot-penugasan-body').innerHTML = ptHtml;
 
 
-            // 5. GENERATE TABEL RAW PT DENGAN FILTER & PAGINATION
-            const statusFilter = document.getElementById('status-filter') ? document.getElementById('status-filter').value : 'ALL';
-            
-            let displayRawList = ptListRaw.filter(pt => {
-                if (statusFilter === 'SUDAH') return pt.status.toLowerCase().includes('sudah');
-                if (statusFilter === 'BELUM') return pt.status.toLowerCase().includes('belum');
-                return true;
-            });
-
-            displayRawList.sort((a,b) => b.target - a.target);
-            
-            // Hapus DataTable lama kalau udah ada biar ga numpuk/error
-            if ($.fn.DataTable.isDataTable('#pt-raw-table')) { 
-                $('#pt-raw-table').DataTable().destroy(); 
-            }
-
+            // 5. GENERATE TABEL RAW PT (YANG DI-REQUEST KEMBALI) - DENGAN WARNA STATUS FIX
             let ptRawHtml = '';
-            if (displayRawList.length > 0) {
-                displayRawList.forEach(pt => {
-                    let stc = pt.status.toLowerCase().includes('sudah') ? 'text-blue-400 font-bold' : (pt.status.toLowerCase().includes('belum') ? 'text-red-400 font-bold' : 'text-[var(--text-muted)]');
+            ptListRaw.sort((a,b) => b.target - a.target);
+            
+            if (ptListRaw.length > 0) {
+                ptListRaw.forEach(pt => {
+                    
+                    // PERBAIKAN WARNA STATUS (BADGE INLINE STYLES)
+                    let stcBadge = '';
+                    if (pt.status.toLowerCase().includes('sudah')) {
+                        stcBadge = `<span style="background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 11px; white-space: nowrap;">${pt.status}</span>`;
+                    } else if (pt.status.toLowerCase().includes('belum')) {
+                        stcBadge = `<span style="background-color: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 11px; white-space: nowrap;">${pt.status}</span>`;
+                    } else {
+                        stcBadge = `<span style="background-color: rgba(156, 163, 175, 0.15); color: #9ca3af; border: 1px solid rgba(156, 163, 175, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 11px; white-space: nowrap;">${pt.status}</span>`;
+                    }
+
                     ptRawHtml += `
                         <tr class="hover:bg-white/5 transition-colors border-b border-gray-600/30 last:border-0">
                             <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] font-medium">${pt.name} ${selectedCRO === 'ALL' ? `<span class="ml-1 md:ml-2 text-[9px] md:text-[10px] text-[var(--text-muted)] bg-black/40 px-1.5 md:px-2 py-0.5 rounded border border-gray-600/50 whitespace-nowrap">${pt.cro}</span>` : ''}</td>
-                            <td class="py-3 px-4 text-xs md:text-sm text-center ${stc}">${pt.status}</td>
+                            <td class="py-3 px-4 text-xs md:text-sm text-center">${stcBadge}</td>
                             <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] text-right">${pt.luas.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-3 px-4 text-xs md:text-sm text-purple-400 text-right font-semibold">${pt.luasTM.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
                             <td class="py-3 px-4 text-xs md:text-sm text-[var(--text-main)] text-right font-semibold">${pt.target.toLocaleString('id-ID', {maximumFractionDigits: 2})}</td>
@@ -700,26 +668,7 @@
             } else {
                 ptRawHtml = `<tr><td colspan="5" class="py-6 text-center text-xs md:text-sm text-[var(--text-muted)]">Tidak ada data perusahaan.</td></tr>`;
             }
-            
-            document.getElementById('pt-raw-list-body').innerHTML = ptRawHtml;
-
-            // Inisialisasi Pagination DataTable untuk Daftar PT
-            if (displayRawList.length > 0) {
-                $('#pt-raw-table').DataTable({
-                    pageLength: 5,
-                    lengthMenu: [5, 10, 25, 50, 100],
-                    ordering: true,
-                    info: true,
-                    searching: true,
-                    language: { 
-                        search: "", 
-                        searchPlaceholder: "Cari Nama PT...", 
-                        lengthMenu: "Tampil _MENU_ PT", 
-                        info: "_START_-_END_ dari _TOTAL_ PT", 
-                        paginate: { previous: "Prev", next: "Next" } 
-                    }
-                });
-            }
+            if(document.getElementById('pt-raw-list-body')) document.getElementById('pt-raw-list-body').innerHTML = ptRawHtml;
 
             updateChartTheme(document.body.classList.contains('light-mode'));
         }
