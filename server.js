@@ -24,9 +24,7 @@ let fetchPromise = null;
 
 let emailDatabase = [
     { id: 1, sender: "Direktorat Operasi", subject: "Surat Pengawasan Panen PT Sumber Sawindo Kencana", snippet: "Kepada Yth. CRO III Regional Riau 2 & 3...", time: "22:33", label: "BELUM DI CRO", unread: false },
-    { id: 2, sender: "Direktorat Operasi", subject: "Surat Pengawasan Panen PT Mutiara Naga Indonesia", snippet: "Kepada Yth. CRO III Regional Riau 2 & 3...", time: "22:35", label: "SUDAH DI CRO", unread: false },
-    { id: 3, sender: "Jaden Fergil Simatu...", subject: "Review dan Pengajuan Vendor Regional I Sumut - Aceh", snippet: "Selamat pagi, berikut kami kirim data vendor PT Wira Tiga Putra...", time: "07:59", label: "BELUM DI CRO", unread: false },
-    { id: 4, sender: "Jaden Fergil Simatu...", subject: "Review dan Pengajuan Vendor Regional I Sumut - Aceh", snippet: "Selamat pagi, berikut kami kirim data vendor PT Perkebunan Sungai Wang...", time: "08:02", label: "SUDAH DI CRO", unread: false }
+    { id: 2, sender: "Direktorat Operasi", subject: "Surat Pengawasan Panen PT Mutiara Naga Indonesia", snippet: "Kepada Yth. CRO III Regional Riau 2 & 3...", time: "22:35", label: "SUDAH DI CRO", unread: false }
 ];
 
 function fetchGoogleSheets() {
@@ -34,51 +32,30 @@ function fetchGoogleSheets() {
     
     fetchPromise = (async () => {
         try {
-            console.log("Mulai menarik data dari Google Sheets...");
-            const url1 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/export?format=xlsx`;
-            const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
-
+            console.log("Mulai menarik data dari Google Sheets (Mode Jalur Cepat CSV)...");
             let allSheets = {};
 
-            // PROSES SHEET 1 (MASTER DATA) DENGAN SISTEM ANTI-CRASH (FALLBACK JALUR BELAKANG)
-            try {
-                const response1 = await axios.get(url1, { responseType: 'arraybuffer', timeout: 15000 });
-                const workbook1 = xlsx.read(response1.data, { type: 'buffer' });
-                workbook1.SheetNames.forEach(sheetName => {
-                    let options = { defval: "-" };
-                    if (sheetName === 'Pembayaran Vendor' || sheetName === 'Pivot Table') options.range = 1;
-                    const sheet = workbook1.Sheets[sheetName];
-                    for (let cellAddress in sheet) {
-                        if (cellAddress.startsWith('!')) continue;
-                        const cell = sheet[cellAddress];
-                        if (cell && cell.l && cell.l.Target) {
-                            cell.v = cell.v + "|||" + cell.l.Target;
-                            if (cell.w) cell.w = cell.v;
-                        }
-                    }
-                    allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
-                });
-            } catch (err1) {
-                console.error("XLSX gagal karena grafik berat! Otomatis beralih ke Mode Jalur Belakang (CSV)...");
-                
-                // Kalau gagal, paksa narik 3 Sheet Penting lewat jalur CSV yang kebal Error Grafik
-                const criticalSheets = ['REKAPITULASI', 'REKAPITULASI PEMBATALAN', 'API_PIVOT'];
-                for (let sheetName of criticalSheets) {
-                    try {
-                        const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
-                        const resCsv = await axios.get(csvUrl, { responseType: 'arraybuffer' });
-                        const wbCsv = xlsx.read(resCsv.data, { type: 'buffer' });
-                        const sheet = wbCsv.Sheets[wbCsv.SheetNames[0]];
-                        allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, { defval: "-" });
-                    } catch (e) {
-                        console.error(`Gagal narik CSV untuk sheet: ${sheetName}`);
-                    }
+            // 1. TARIK DATA MASTER (SHEET 1) LANGSUNG PAKAI CSV
+            // Bypass format XLSX total biar ga kena limit Vercel 10 detik gara-gara ada grafik
+            const criticalSheets = ['REKAPITULASI', 'REKAPITULASI PEMBATALAN', 'API_PIVOT'];
+            
+            await Promise.all(criticalSheets.map(async (sheetName) => {
+                try {
+                    const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID_1}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+                    const resCsv = await axios.get(csvUrl, { responseType: 'arraybuffer' });
+                    const wbCsv = xlsx.read(resCsv.data, { type: 'buffer' });
+                    const sheet = wbCsv.Sheets[wbCsv.SheetNames[0]];
+                    allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, { defval: "-" });
+                    console.log(`Sukses narik: ${sheetName}`);
+                } catch (e) {
+                    console.error(`Gagal narik CSV: ${sheetName}`, e.message);
                 }
-            }
+            }));
 
-            // PROSES SHEET 2 (EVALUASI KINERJA)
+            // 2. TARIK DATA EVALUASI KINERJA (SHEET 2) NORMAL (Karena ini aman ga ada grafik berat)
             try {
-                const response2 = await axios.get(url2, { responseType: 'arraybuffer', timeout: 15000 });
+                const url2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=xlsx`;
+                const response2 = await axios.get(url2, { responseType: 'arraybuffer' });
                 const workbook2 = xlsx.read(response2.data, { type: 'buffer' });
                 workbook2.SheetNames.forEach(sheetName => {
                     let options = { defval: "-" };
@@ -93,13 +70,14 @@ function fetchGoogleSheets() {
                     }
                     allSheets[sheetName] = xlsx.utils.sheet_to_json(sheet, options);
                 });
+                console.log("Sukses narik Sheet 2 (Evaluasi)");
             } catch (err2) {
                 console.error("Gagal menarik Sheet 2:", err2.message);
             }
 
             cachedData = allSheets;
             lastFetchTime = Date.now();
-            console.log("Data berhasil ditarik dan di-cache! Jumlah Sheet:", Object.keys(cachedData).length);
+            console.log("Semua data berhasil di-cache! Total Sheet:", Object.keys(cachedData).length);
             return cachedData;
             
         } catch (error) {
@@ -113,7 +91,6 @@ function fetchGoogleSheets() {
     return fetchPromise;
 }
 
-// Jalankan tarikan data pertama kali saat server nyala
 fetchGoogleSheets().catch(console.error);
 
 app.get('/', (req, res) => res.redirect('/login'));
@@ -121,7 +98,7 @@ app.get('/login', (req, res) => res.render('login'));
 
 app.get('/dashboard', async (req, res) => {
     if (Object.keys(cachedData).length === 0) {
-        console.log("Data kosong, menahan halaman sampai data ditarik...");
+        console.log("Data kosong, menunggu fetch...");
         await fetchGoogleSheets();
     }
     res.render('index', { 
