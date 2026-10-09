@@ -192,7 +192,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
                         <h3 id="chart-title-bar" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">JUMLAH PT (KEBUN) PER CRO</h3>
                         <div id="dash-bar-chart" style="height: 300px; width: 100%;"></div>
@@ -200,6 +200,10 @@
                     <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
                         <h3 id="chart-title-pie" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">LUAS TM (HA) PER CRO</h3>
                         <div id="dash-pie-chart" style="height: 300px; width: 100%;"></div>
+                    </div>
+                    <div class="premium-card p-4 md:p-6 w-full relative overflow-hidden">
+                        <h3 id="chart-title-status" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">STATUS KELOLA PT</h3>
+                        <div id="status-pie-chart" style="height: 300px; width: 100%;"></div>
                     </div>
                 </div>
 
@@ -219,7 +223,7 @@
                     </div>
                 </div>
 
-                <!-- TABEL RAW DAFTAR PT DENGAN FITUR FILTER STATUS & PAGINATION -->
+                <!-- TABEL DAFTAR PT DENGAN FITUR FILTER STATUS & PAGINATION -->
                 <div class="premium-card p-4 md:p-6 mt-5 w-full mb-8">
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
                         <h3 id="pt-raw-list-title" class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">DAFTAR PERUSAHAAN (PT)</h3>
@@ -344,6 +348,15 @@
             rawData = rawDataTemp;
         }
 
+        // --- ALAT CEK ERROR UNTUK CONSOLE (F12) ---
+        console.log("1. Data Mentah dari Backend:", rawData);
+        let listSheet = Object.keys(rawData);
+        console.log("2. Daftar Sheet yang Terbaca Server:", listSheet);
+        if(!listSheet.some(s => s.toUpperCase().includes('PIVOT'))) {
+             console.error("WADUH! Sheet 'API_PIVOT' nggak dikirim sama backend/API lu bos! Wajib Redeploy Vercel.");
+        }
+        // ------------------------------------------
+
         let currentDataTable = null;
         let currentActiveSheet = null; 
 
@@ -407,20 +420,14 @@
             if(viewId === 'view-database' && currentDataTable) setTimeout(() => currentDataTable.columns.adjust(), 50);
         }
 
-        // =========================================
-        // ROBUST NUMBER PARSER
-        // =========================================
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
             if (val === null || val === undefined) return 0;
-            
             let s = String(val).trim();
             if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
-
             s = s.replace(/Rp|\$|€|\s/gi, '');
             let lastDot = s.lastIndexOf('.');
             let lastComma = s.lastIndexOf(',');
-
             if (lastComma > lastDot && lastDot !== -1) {
                 s = s.replace(/\./g, '').replace(',', '.');
             } else if (lastDot > lastComma && lastComma !== -1) {
@@ -428,14 +435,10 @@
             } else if (lastComma !== -1 && lastDot === -1) {
                 s = s.replace(',', '.');
             }
-
             let res = parseFloat(s);
             return isNaN(res) ? 0 : res;
         };
 
-        // =========================================
-        // MESIN EKSTRAKSI PIVOT (STATE MACHINE MENCEGAH BUG TOTAL KESELURUHAN)
-        // =========================================
         function getPivotData() {
             let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT');
             if (!pivotSheetKey) pivotSheetKey = Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE'));
@@ -451,8 +454,6 @@
             let pivotData = rawData[pivotSheetKey] || [];
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
-            
-            // SYSTEM PENGUNCI STATE
             let currentSection = 'PENUGASAN'; 
 
             const extractNumbers = (rowObj) => {
@@ -477,10 +478,12 @@
                 let vals = Object.values(row).map(v => String(v).trim());
                 let rowStr = vals.join(" ").toLowerCase();
 
-                // Kalau udah sampai Pivot ke-3 (Status Kelola), buang semua data bawahnya.
                 if (currentSection === 'IGNORE') continue;
 
-                // TANGKAP "TOTAL KESELURUHAN"
+                if(rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
+                    currentSection = 'PEMBATALAN';
+                }
+
                 let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
                 if (grandTotalStr) {
                     let nums = extractNumbers(row);
@@ -488,17 +491,16 @@
                         if (currentSection === 'PENUGASAN') {
                             penugasan.totalLuas = nums[0]; 
                             penugasan.totalPT = nums[1];
-                            currentSection = 'PEMBATALAN'; // Begitu kelar ngitung penugasan, KUNCI ganti ke pembatalan
+                            currentSection = 'PEMBATALAN'; 
                         } else if (currentSection === 'PEMBATALAN') {
                             pembatalan.totalLuas = nums[0]; 
                             pembatalan.totalSurat = nums[1]; 
-                            currentSection = 'IGNORE'; // Begitu kelar ngitung pembatalan, KUNCI dan buang sisa excel di bawahnya
+                            currentSection = 'IGNORE'; 
                         }
                     }
                     continue; 
                 }
 
-                // TANGKAP "CRO ... TOTAL"
                 let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
                 if (croTotalStr && !croTotalStr.toLowerCase().includes("keseluruhan")) {
                     let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
@@ -524,7 +526,7 @@
         }
 
         // =========================================
-        // DASHBOARD 1: RENDER PENUGASAN (DENGAN FILTER & PAGINATION)
+        // DASHBOARD 1: RENDER PENUGASAN 
         // =========================================
         function renderDashboardCharts() {
             const pivot = getPivotData().penugasan;
@@ -564,12 +566,13 @@
                 }
             }
 
-            // --- EKSTRAK RAW DATA ---
             let rekapKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI PENUGASAN") 
                         || Object.keys(rawData).find(k => k.trim().toUpperCase() === "REKAPITULASI") 
                         || Object.keys(rawData)[0];
             let rekapDataRaw = rawData[rekapKey] || [];
             
+            let totalSudah = 0;
+            let totalBelum = 0;
             let ptListRaw = [];
 
             if (rekapDataRaw.length > 0) {
@@ -586,6 +589,7 @@
                     let rawCro = String(row[cCro] || "").replace(/^[+-]\s*/, '').trim().toUpperCase();
                     let pt = String(row[cPt] || "").trim();
                     let status = String(row[cStatus] || "-").trim();
+                    let sLow = status.toLowerCase();
 
                     if (pt.toLowerCase().includes("total") || rawCro.includes("TOTAL")) break; 
                     if (!rawCro || rawCro === "-" || rawCro === "CRO" || !pt || pt === "-") continue;
@@ -596,22 +600,23 @@
                         let target = parseNum(row[cTarget]);
 
                         ptListRaw.push({ name: pt, cro: rawCro, luas: luas, luasTM: luasTM, target: target, status: status });
+
+                        if (sLow.includes('sudah')) totalSudah++;
+                        else totalBelum++;
                     }
                 }
             }
 
-            // 1. UPDATE KPI
             document.getElementById('dash-kpi-pt').innerHTML = `${dispPT.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">PT</span>`;
             document.getElementById('dash-kpi-luas').innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
 
-            // 2. UPDATE TEXT TITLES
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('chart-title-bar')) document.getElementById('chart-title-bar').innerText = `JUMLAH PT (KEBUN) ${titleSuffix}`;
             if(document.getElementById('chart-title-pie')) document.getElementById('chart-title-pie').innerText = `LUAS TM (HA) ${titleSuffix}`;
+            if(document.getElementById('chart-title-status')) document.getElementById('chart-title-status').innerText = `STATUS KELOLA PT ${titleSuffix}`;
             if(document.getElementById('pt-list-title')) document.getElementById('pt-list-title').innerText = `REKAPITULASI PIVOT PENUGASAN ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
             if(document.getElementById('pt-raw-list-title')) document.getElementById('pt-raw-list-title').innerText = `DAFTAR PERUSAHAAN (PT) ${titleSuffix}`;
 
-            // 3. RENDER CHARTS
             if(document.getElementById('dash-bar-chart')) {
                 Highcharts.chart('dash-bar-chart', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
@@ -637,7 +642,18 @@
                 });
             }
 
-            // 4. GENERATE TABEL SUMMARY PIVOT
+            if(document.getElementById('status-pie-chart')) {
+                Highcharts.chart('status-pie-chart', {
+                    chart: { type: 'pie', backgroundColor: 'transparent' },
+                    title: { text: `<span style="font-size: 10px; color: #a1a1aa; letter-spacing: 1px; font-weight: normal;">TOTAL PT</span><br><span style="font-size: 20px; font-weight: bold; color: #ffffff;">${totalSudah + totalBelum}</span>`, align: 'center', verticalAlign: 'middle', y: 10, useHTML: true },
+                    tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8 },
+                    plotOptions: { pie: { innerSize: '75%', borderWidth: 0, dataLabels: { enabled: true, color: '#e5e7eb', style: { textOutline: 'none', fontWeight: '500' }, connectorColor: 'rgba(255,255,255,0.2)' } } },
+                    colors: ['#3b82f6', '#f43f5e'], 
+                    series: [{ name: 'Jumlah PT', data: [{name: 'Sudah Dikelola', y: totalSudah}, {name: 'Belum Dikelola', y: totalBelum}] }],
+                    credits: { enabled: false }
+                });
+            }
+
             let ptHtml = '';
             for(let croName in tableDataMap) {
                 let data = tableDataMap[croName];
@@ -659,9 +675,7 @@
             } else {
                 ptHtml = `<tr><td colspan="3" class="py-6 text-center text-xs md:text-sm text-[var(--text-muted)]">Data Pivot kosong atau tidak ditemukan.</td></tr>`;
             }
-
             if(document.getElementById('pivot-penugasan-body')) document.getElementById('pivot-penugasan-body').innerHTML = ptHtml;
-
 
             // 5. TABEL RAW PT DENGAN FILTER STATUS & PAGINATION
             const statusFilter = document.getElementById('status-filter') ? document.getElementById('status-filter').value : 'ALL';
@@ -674,7 +688,6 @@
 
             displayRawList.sort((a,b) => b.target - a.target);
             
-            // Hancurkan DataTable lama kalau udah ada biar ga numpuk
             if ($.fn.DataTable.isDataTable('#pt-raw-table')) { 
                 $('#pt-raw-table').DataTable().clear().destroy(); 
             }
@@ -682,7 +695,6 @@
             let ptRawHtml = '';
             if (displayRawList.length > 0) {
                 displayRawList.forEach(pt => {
-                    // WARNA BADGE INLINE (ANTI NYARU)
                     let stcBadge = '';
                     if (pt.status.toLowerCase().includes('sudah')) {
                         stcBadge = `<span style="background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 11px; white-space: nowrap;">${pt.status}</span>`;
@@ -707,7 +719,6 @@
             
             document.getElementById('pt-raw-list-body').innerHTML = ptRawHtml;
 
-            // INIT DATATABLE PAGINATION (1, 2, 3...)
             if (displayRawList.length > 0) {
                 $('#pt-raw-table').DataTable({
                     pageLength: 5,
@@ -767,17 +778,14 @@
                 tableDataMap = { [selectedCRO]: pivot.croMap[selectedCRO] };
             }
 
-            // 1. UPDATE KPI
             document.getElementById('kpi-total-batal').innerHTML = `${dispSurat.toLocaleString('id-ID')} <span class="text-lg text-gray-400 font-medium tracking-normal">Surat</span>`;
             document.getElementById('kpi-luas-batal').innerHTML = `${dispLuas.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-gray-400 font-medium tracking-normal">Ha</span>`;
 
-            // 2. UPDATE TEXT TITLES
             const titleSuffix = selectedCRO === 'ALL' ? 'SE-INDONESIA' : `(REGIONAL ${selectedCRO})`;
             if(document.getElementById('pembatalan-chart-title-bar')) document.getElementById('pembatalan-chart-title-bar').innerText = `JUMLAH SURAT PEMBATALAN ${titleSuffix}`;
             if(document.getElementById('pembatalan-chart-title-pie')) document.getElementById('pembatalan-chart-title-pie').innerText = `LUAS TM (HA) PEMBATALAN ${titleSuffix}`;
             if(document.getElementById('pembatalan-list-title')) document.getElementById('pembatalan-list-title').innerText = `REKAPITULASI PIVOT PEMBATALAN ${selectedCRO !== 'ALL' ? '- ' + selectedCRO : ''}`;
 
-            // 3. RENDER CHARTS
             if(document.getElementById('dash-chart-pembatalan')) {
                 Highcharts.chart('dash-chart-pembatalan', {
                     chart: { type: 'column', backgroundColor: 'transparent', marginTop: 30 },
@@ -804,7 +812,6 @@
                 });
             }
 
-            // 4. GENERATE TABEL SUMMARY PIVOT PEMBATALAN
             let ptBatalHtml = '';
             for(let croName in tableDataMap) {
                 let data = tableDataMap[croName];
