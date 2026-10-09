@@ -77,7 +77,6 @@
         .dataTables_wrapper select, .dataTables_wrapper .dataTables_filter input { background-color: rgba(21, 21, 21, 0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--text-main) !important; padding: 6px 12px !important; border-radius: 6px !important; outline: none !important; }
         body.light-mode .dataTables_wrapper select, body.light-mode .dataTables_wrapper .dataTables_filter input { background-color: #ffffff !important; border: 1px solid var(--border-color) !important; }
         
-        /* CSS KHUSUS PAGINATION */
         .dataTables_wrapper .dataTables_paginate .paginate_button { background: transparent !important; border: 1px solid transparent !important; border-radius: 6px !important; color: var(--text-muted) !important; padding: 4px 10px !important; margin: 0 2px !important; transition: all 0.2s; cursor: pointer; }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: rgba(255,255,255,0.1) !important; color: var(--text-main) !important; border-color: rgba(255,255,255,0.2) !important; font-weight: 600; }
@@ -353,7 +352,6 @@
             if(confirm("Apakah Anda yakin ingin memuat ulang sesi ini?")) window.location.reload();
         }
 
-        // --- PENYELAMAT DATA ---
         let rawDataTemp = <%- sheetData %> || {};
         let rawData = {};
         if (typeof rawDataTemp === 'string') {
@@ -426,52 +424,36 @@
         }
 
         // =========================================================================
-        // INI DIA OBATNYA BOS! PARSER ANGKA SUPER CERDAS ANTI-KEBALIK
+        // PARSER & EXTRACTION LOGIC TERBARU: MURNI URUTAN KIRI - KANAN (TANPA SORT)
         // =========================================================================
         const parseNum = (val) => {
             if (typeof val === 'number') return val;
-            if (val === null || val === undefined) return 0;
+            if (!val) return 0;
             let s = String(val).trim();
-            if (s === '-' || s === '' || s.toLowerCase().includes('hanya')) return 0;
+            if (s === '-' || s === '') return 0;
             s = s.replace(/Rp|\$|€|\s/gi, '');
-            
+
             let lastDot = s.lastIndexOf('.');
             let lastComma = s.lastIndexOf(',');
-            
+
             if (lastComma > lastDot && lastDot !== -1) {
-                // Indo format: 1.234.567,89
                 s = s.replace(/\./g, '').replace(',', '.');
             } else if (lastDot > lastComma && lastComma !== -1) {
-                // US format: 1,234,567.89
                 s = s.replace(/,/g, '');
             } else if (lastComma !== -1 && lastDot === -1) {
-                // Koma doang (contoh: 133,042)
-                if (s.length - lastComma - 1 === 3) s = s.replace(/,/g, ''); // Kalo 3 digit, itu ribuan
-                else s = s.replace(',', '.'); // Kalo bukan 3 digit, itu desimal
+                if (s.length - lastComma - 1 === 3) s = s.replace(/,/g, '');
+                else s = s.replace(',', '.');
             } else if (lastDot !== -1 && lastComma === -1) {
-                // Titik doang (contoh: 133.042)
-                let parts = s.split('.');
-                if (parts[parts.length - 1].length === 3) s = s.replace(/\./g, ''); // Kalo 3 digit belakang, itu ribuan
+                if (s.length - lastDot - 1 === 3) s = s.replace(/\./g, '');
             }
-            
             let res = parseFloat(s);
             return isNaN(res) ? 0 : res;
         };
-        // =========================================================================
 
         function getPivotData() {
-            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT');
-            if (!pivotSheetKey) pivotSheetKey = Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT') && !k.toUpperCase().includes('TABLE'));
-            
-            if (!pivotSheetKey) {
-                pivotSheetKey = Object.keys(rawData).find(k => {
-                    let sheet = rawData[k];
-                    if(!Array.isArray(sheet)) return false;
-                    return sheet.some(r => Object.values(r).join(" ").toLowerCase().includes("total keseluruhan"));
-                });
-            }
-
+            let pivotSheetKey = Object.keys(rawData).find(k => k.trim().toUpperCase() === 'API_PIVOT') || Object.keys(rawData).find(k => k.toUpperCase().includes('PIVOT'));
             let pivotData = rawData[pivotSheetKey] || [];
+            
             let penugasan = { totalLuas: 0, totalPT: 0, croMap: {} };
             let pembatalan = { totalLuas: 0, totalSurat: 0, croMap: {} };
             let kategoriMitra = []; 
@@ -482,18 +464,28 @@
                 let vals = Object.values(row).map(v => String(v).trim());
                 let rowStr = vals.join(" ").toLowerCase();
 
-                if (rowStr.includes("counta dari nama pt") || rowStr.includes("plang satgas") || rowStr.includes("pembatalan")) {
+                // BLOKIR KERAS BAGIAN YANG GAK BERHUBUNGAN BIAR GAK NABRAK
+                if (rowStr.includes("rekap pembatalan") || (rowStr.includes("counta") && currentSection === 'PENUGASAN' && !rowStr.includes("plang"))) {
                     currentSection = 'PEMBATALAN';
-                } 
+                    continue;
+                }
+                // Jika ketemu Status Kelola, stop baca total-totalan biar nggak masuk ke Pembatalan
+                if (rowStr.includes("status kelola") || rowStr.includes("belum dikelola") || (rowStr.includes("status") && rowStr.includes("counta"))) {
+                    currentSection = 'STATUS_KELOLA';
+                    continue;
+                }
                 if (rowStr.includes("jumlah pt/cv/kop") || (rowStr.includes("kategori") && rowStr.includes("kebun"))) {
                     currentSection = 'KATEGORI';
-                    continue; 
+                    continue;
                 }
 
-                let rawNums = vals.map(parseNum).filter(n => n > 0);
+                if (currentSection === 'STATUS_KELOLA') continue;
+
+                // EKSTRAK ANGKA: Karena CSV Google ngasih Luas di kiri dan PT di kanan, urutannya PASTI index 0 (Luas), index 1 (PT)
+                let rawNums = vals.map(parseNum).filter(n => !isNaN(n) && n > 0);
 
                 if (currentSection === 'KATEGORI') {
-                    let stringVal = vals.find(v => isNaN(parseNum(v)) && v !== '' && !v.toLowerCase().includes("jumlah"));
+                    let stringVal = vals.find(v => isNaN(parseNum(v)) && v !== '' && !v.toLowerCase().includes("jumlah") && !v.toLowerCase().includes("total"));
                     if (stringVal && rawNums.length >= 2) {
                         kategoriMitra.push({
                             kategori: stringVal,
@@ -504,35 +496,44 @@
                     continue; 
                 }
 
-                let sortedNums = [...rawNums].sort((a, b) => b - a);
-                
-                let grandTotalStr = vals.find(v => v.toLowerCase().includes("total keseluruhan"));
-                if (grandTotalStr) {
-                    if (sortedNums.length >= 2) {
+                let isGrandTotal = rowStr.includes("total keseluruhan") || rowStr.includes("grand total");
+                let isCroTotal = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
+
+                if (isGrandTotal) {
+                    if (rawNums.length >= 2) {
+                        // KIRI = LUAS, KANAN = SURAT/PT. TANPA DISORTIR LAGI!
+                        let l = rawNums[0];
+                        let p = rawNums[1];
+
                         if (currentSection === 'PENUGASAN') {
-                            penugasan.totalLuas = sortedNums[0]; 
-                            penugasan.totalPT = sortedNums[1];
+                            penugasan.totalLuas = l; 
+                            penugasan.totalPT = p;
                         } else if (currentSection === 'PEMBATALAN') {
-                            pembatalan.totalLuas = sortedNums[0]; 
-                            pembatalan.totalSurat = sortedNums[1]; 
+                            pembatalan.totalLuas = l; 
+                            pembatalan.totalSurat = p;
+                            currentSection = 'STATUS_KELOLA'; // Biar matiin bacaan setelah dapet Grand Total Pembatalan
                         }
                     }
                     continue; 
                 }
 
-                let croTotalStr = vals.find(v => v.toLowerCase().includes('total') && (v.toLowerCase().includes('cro') || v.toLowerCase().match(/cro\s*[ivx]+/)));
-                if (croTotalStr && !croTotalStr.toLowerCase().includes("keseluruhan")) {
-                    let croName = croTotalStr.replace(/Total/ig, '').trim().toUpperCase();
-                    if (sortedNums.length >= 2) {
+                if (isCroTotal && !isGrandTotal) {
+                    let croName = isCroTotal.replace(/Total/ig, '').trim().toUpperCase();
+                    if (rawNums.length >= 2) {
+                        // KIRI = LUAS, KANAN = SURAT/PT. TANPA DISORTIR LAGI!
+                        let l = rawNums[0];
+                        let p = rawNums[1];
+
                         if (currentSection === 'PENUGASAN') {
-                            penugasan.croMap[croName] = { luas: sortedNums[0], pt: sortedNums[1] };
+                            penugasan.croMap[croName] = { luas: l, pt: p };
                         } else if (currentSection === 'PEMBATALAN') {
-                            pembatalan.croMap[croName] = { luas: sortedNums[0], surat: sortedNums[1] };
+                            pembatalan.croMap[croName] = { luas: l, surat: p };
                         }
                     }
                 }
             }
             
+            // Backup Hitung Manual jika Grand Total Excel kosong
             if (penugasan.totalPT === 0) {
                 Object.values(penugasan.croMap).forEach(v => { penugasan.totalLuas += v.luas; penugasan.totalPT += v.pt; });
             }
@@ -833,7 +834,7 @@
                     tooltip: { backgroundColor: 'rgba(21, 21, 21, 0.95)', style: { color: '#ffffff' }, borderWidth: 1, borderColor: '#333333', borderRadius: 8, padding: 12 },
                     xAxis: { categories: Object.keys(chartBarDataMap), labels: { style: { color: '#e5e7eb', fontWeight: '600', fontSize: '11px' } }, lineWidth: 0, tickWidth: 0 },
                     yAxis: { title: { text: null }, gridLineColor: 'rgba(255,255,255,0.05)', gridLineDashStyle: 'Dash', labels: { style: { color: '#a1a1aa' } } },
-                    series: [{ name: 'Jumlah Surat Selesai', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
+                    series: [{ name: 'Jumlah Surat Pembatalan', data: Object.values(chartBarDataMap), color: { linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 }, stops: [ [0, '#ef4444'], [1, '#7f1d1d'] ] } }],
                     plotOptions: { column: { borderRadius: 6, borderWidth: 0, pointPadding: 0.15, groupPadding: 0.1, maxPointWidth: 70, dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold', fontSize: '14px' }, y: -5 } } },
                     credits: { enabled: false }
                 });
